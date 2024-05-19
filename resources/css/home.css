@@ -1,0 +1,17 @@
+
+
+html, body, #map {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.coordinates-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: white;
+    padding: 5px;
+    border: 1px solid black;
+    display: none;
+}
