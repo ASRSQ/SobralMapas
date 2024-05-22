@@ -352,7 +352,19 @@
                            'LAYERS': layerName,
                            'TILED': true
                        },
-                       serverType: 'geoserver'
+                       serverType: 'geoserver',
+                       options: {
+                        // Force HTTP requests
+                        proxy: function(request) {
+                          var url = request.getUrl();
+                          if (url.startsWith('https')) {
+                            // Replace 'https' with 'http'
+                            url = url.replace('https', 'http');
+                            request.setUrl(url);
+                          }
+                          return request;
+                        }
+                    }
                    }),
                    name: layerName // Define o nome da camada para identificação posterior
                });
