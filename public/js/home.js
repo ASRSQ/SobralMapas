@@ -347,7 +347,7 @@
                // Adicionar outras camadas selecionadas
                var newLayer = new ol.layer.Tile({
                    source: new ol.source.TileWMS({
-                       url: wmsUrl,
+                       url: wmsUrl+'?http=true',
                        params: {
                            'LAYERS': layerName,
                            'TILED': true
