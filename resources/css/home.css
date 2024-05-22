@@ -1,17 +1,16 @@
 
-
-html, body, #map {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+ /* Defina as dimensões do contêiner do mapa */
+ #map {
+    width: 100%;
+    height: 100%; /* Defina a altura desejada */
 }
-
-.coordinates-label {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: white;
-    padding: 5px;
-    border: 1px solid black;
-    display: none;
+.layer-button {
+    margin-right: 10px;
+}
+#layerCheckboxList {
+    height: 100vh; /* Ocupa toda a altura da tela */
+    overflow-y: auto; /* Adiciona rolagem vertical */
+}
+.layer-checkbox input[type="checkbox"] {
+    margin-right: 5px;
 }
