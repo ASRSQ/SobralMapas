@@ -15,3 +15,4 @@ use App\Http\Controllers\HomeController;
 */
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/tiles', [HomeController::class, 'tile']);
+Route::get('/coord', [HomeController::class, 'coord']);

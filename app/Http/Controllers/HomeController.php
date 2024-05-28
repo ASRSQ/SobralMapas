@@ -14,4 +14,8 @@ class HomeController extends Controller
     {
         return view('home.tile');
     }
+    public function coord()
+    {
+        return view('home.coord');
+    }
 }
