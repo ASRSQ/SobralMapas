@@ -166,7 +166,7 @@
        'sde:prdSobral_2022',
        'sde:prdSobral_atual2',
        'sobral:prdSobral_atual_v03_2024',
-       'Ceara:prdTaperuaba',
+    //    'Ceara:prdTaperuaba',
     //    'sobral:princesa_isabel',
        'Ceara:projecoes_a',
        'sobral:projeto_padre_palhano',
