@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-
+use App\Http\Controllers\DeployController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,4 +15,4 @@ use App\Http\Controllers\HomeController;
 */
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/tiles', [HomeController::class, 'tile']);
-Route::get('/coord', [HomeController::class, 'coord']);
+Route::post('/deploy', [DeployController::class, 'deploy']);

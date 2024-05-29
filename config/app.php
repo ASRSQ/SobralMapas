@@ -122,6 +122,7 @@ return [
     'key' => env('APP_KEY','6jy5ipsaklikqloijvp4pqgkvorcswvt'),
 
     'cipher' => 'AES-256-CBC',
+    'deploy_secret' => env('M3uirm@o07'),
 
     /*
     |--------------------------------------------------------------------------
