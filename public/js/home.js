@@ -162,7 +162,7 @@
        'Ceara:prdAracatiacu',
        'Ceara:prdJaibaras',
        'Ceara:prdSobral',
-       'sobral:prdSobral_2007',
+    //    'sobral:prdSobral_2007',
        'sde:prdSobral_2022',
        'sde:prdSobral_atual2',
     //    'sobral:prdSobral_atual_v03_2024',
