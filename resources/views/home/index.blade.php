@@ -33,6 +33,7 @@
                 </div>
                 <!-- Div para o mapa -->
                 <div class="col-md-9">
+                    <div id="coordinates"></div>
                     <div id="map" class="map"></div>
                 </div>
                 
