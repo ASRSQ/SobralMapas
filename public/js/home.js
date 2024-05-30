@@ -2,7 +2,7 @@ import { layers } from './layers.js';
 
 // URL do serviço WMS
 var wmsUrl = 'http://geoserver.sobral.ce.gov.br/geoserver/ows';
-var geoJsonUrl = 'https://polygons.openstreetmap.fr/get_geojson.py?id=302610&params=0';
+var geoJsonUrl = 'http://polygons.openstreetmap.fr/get_geojson.py?id=302610&params=0';
 
 // Referência ao elemento da lista de checkboxes
 var layerCheckboxList = document.getElementById('layerCheckboxList');
