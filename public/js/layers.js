@@ -1,5 +1,5 @@
 // Lista de camadas
-var layers = [
+export const layers = [
     //'Ceara:logradouro_sobral',
  //    'sobral:lot_mae_rainha',
     //'sobral:CORTE',
