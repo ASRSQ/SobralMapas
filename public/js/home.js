@@ -75,3 +75,99 @@ layerCheckboxList.addEventListener('change', function(event) {
         }
     }
 });
+
+
+// Função para atualizar o conteúdo do dropdown com as camadas selecionadas
+function updateCustomMapDropdown() {
+    // Selecionar o elemento do dropdown
+    var dropdown = document.getElementById('customMapDropdown');
+    // Limpar o conteúdo anterior do dropdown
+    dropdown.innerHTML = '';
+
+    // Obter todas as camadas selecionadas
+    var selectedLayers = Array.from(document.querySelectorAll('#layerCheckboxList input[type="checkbox"]:checked')).map(function(checkbox) {
+        return checkbox.id;
+    });
+    
+    // Adicionar cada camada selecionada ao dropdown como um item da lista
+    selectedLayers.forEach(function(layerName) {
+        var listItem = document.createElement('li');
+        listItem.className = 'dropdown-item';
+        
+        // Adicionar o texto da camada e um ícone "x" para removê-la
+        listItem.innerHTML = '<span>' + layerName + '</span><span class="close-icon">&times;</span>';
+        
+        // Adicionar evento de clique ao ícone "x" para desmarcar a camada
+        listItem.querySelector('.close-icon').addEventListener('click', function() {
+            // Desmarcar a camada correspondente
+            var checkbox = document.getElementById(layerName);
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+            // Remover a camada do mapa
+            map.getLayers().forEach(function(layer) {
+                if (layer.get('name') === layerName) {
+                    map.removeLayer(layer);
+                }
+            });
+            // Atualizar o conteúdo do dropdown
+            updateCustomMapDropdown();
+        });
+
+        // Adicionar o item ao dropdown
+        dropdown.appendChild(listItem);
+    });
+}
+
+// Chamar a função de atualização quando houver uma alteração nas camadas selecionadas
+document.getElementById('layerCheckboxList').addEventListener('change', updateCustomMapDropdown);
+
+// Chamar a função de atualização ao carregar a página
+updateCustomMapDropdown();
+
+// Função para atualizar a legenda com base nas camadas selecionadas
+function updateLegend() {
+    // Selecionar o elemento da legenda
+    var legendBody = document.getElementById('legend_body');
+    // Limpar o conteúdo anterior da legenda
+    legendBody.innerHTML = '';
+
+    // Obter todas as camadas selecionadas
+    var selectedLayers = Array.from(document.querySelectorAll('#layerCheckboxList input[type="checkbox"]:checked')).map(function(checkbox) {
+        return checkbox.id;
+    });
+    
+    // Para cada camada selecionada, criar um novo dropdown na legenda
+    selectedLayers.forEach(function(layerName) {
+        // Criar o elemento do dropdown
+        var dropdown = document.createElement('div');
+        dropdown.classList.add('dropdown');
+
+        // Criar o botão do dropdown com o nome da camada como título
+        var dropdownButton = document.createElement('button');
+        dropdownButton.classList.add('btn', 'btn-secondary', 'dropdown-toggle');
+        dropdownButton.setAttribute('type', 'button');
+        dropdownButton.setAttribute('id', 'dropdownMenuButton_' + layerName); // Adiciona um ID único
+        dropdownButton.setAttribute('data-bs-toggle', 'dropdown');
+        dropdownButton.setAttribute('aria-expanded', 'false');
+        dropdownButton.textContent = layerName; // Define o texto do botão como o nome da camada
+        dropdown.appendChild(dropdownButton);
+
+        // Criar o menu do dropdown
+        var dropdownMenu = document.createElement('ul');
+        dropdownMenu.classList.add('dropdown-menu');
+        dropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuButton_' + layerName); // Referência ao ID único do botão
+        dropdown.appendChild(dropdownMenu);
+
+        // Adicionar o dropdown à legenda
+        legendBody.appendChild(dropdown);
+    });
+}
+
+// Chamar a função de atualização quando houver uma alteração nas camadas selecionadas
+document.getElementById('layerCheckboxList').addEventListener('change', updateLegend);
+
+// Chamar a função de atualização ao carregar a página
+updateLegend();
+
+

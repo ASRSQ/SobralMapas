@@ -212,3 +212,59 @@ details[open] summary {
     border-color: #555; 
     box-shadow: 0 0 5px rgba(85, 85, 85, 0.5); /
 }
+
+#legend {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    max-width: 250px; /* Defina a largura máxima da legenda conforme necessário */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#legend_heading {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#legend_body {
+    padding: 10px 0;
+}
+
+.legend-item-header {
+    margin-bottom: 10px;
+}
+
+.label-name {
+    font-weight: bold;
+}
+
+.collapse-legend {
+    cursor: pointer;
+}
+
+.collapse-legend i {
+    margin-left: 5px;
+}
+
+.info-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.info-label i {
+    margin-right: 5px;
+}
+
+.source-label {
+    font-size: 0.8em;
+}
+
+
