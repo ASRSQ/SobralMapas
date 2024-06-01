@@ -240,3 +240,20 @@ let config = {
           map.on(eventType, hideMenu);
         });
       });
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('.layer-category input[type="checkbox"]');
+    
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('click', function() {
+                if (checkbox.checked) {
+                    console.log('Checkbox marcada:', checkbox.id);
+                    // Aqui você pode adicionar a lógica para mostrar a camada correspondente no mapa
+                } else {
+                    console.log('Checkbox desmarcada:', checkbox.id);
+                    // Aqui você pode adicionar a lógica para ocultar a camada correspondente no mapa
+                }
+            });
+        });
+    });
+    
