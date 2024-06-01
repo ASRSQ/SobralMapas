@@ -1,33 +1,9 @@
-import { layers } from './layers.js';
-
 // URL do serviço WMS
 var wmsUrl = 'http://geoserver.sobral.ce.gov.br/geoserver/ows';
 var geoJsonUrl = 'http://polygons.openstreetmap.fr/get_geojson.py?id=302610&params=0';
 
 // Referência ao elemento da lista de checkboxes
 var layerCheckboxList = document.getElementById('layerCheckboxList');
-
-// Criar checkboxes para o OpenStreetMap e ArcGIS e adicionar à lista
-var osmCheckboxDiv = document.createElement('div');
-osmCheckboxDiv.className = 'layer-checkbox';
-
-layers.forEach(function(layerName) {
-    var checkboxDiv = document.createElement('div');
-    checkboxDiv.className = 'layer-checkbox';
-
-    var checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.value = layerName;
-    checkbox.id = layerName;
-
-    var label = document.createElement('label');
-    label.htmlFor = layerName;
-    label.textContent = layerName.split(':')[1]; // Extrair o nome da camada sem o namespace
-
-    checkboxDiv.appendChild(checkbox);
-    checkboxDiv.appendChild(label);
-    layerCheckboxList.appendChild(checkboxDiv);
-});
 
 // Criar o mapa
 var map = new ol.Map({
@@ -68,44 +44,34 @@ var vectorLayer = new ol.layer.Vector({
 map.addLayer(vectorLayer);
 
 // Event listener para alterações nas checkboxes de camadas
-layerCheckboxList.addEventListener('change', function() {
-    // Remover todas as camadas exceto a do OpenStreetMap
-    map.getLayers().forEach(function(layer) {
-        if (layer !== vectorLayer && layer.get('name') !== 'OpenStreetMap') {
-            map.removeLayer(layer);
-        }
-    });
+layerCheckboxList.addEventListener('change', function(event) {
+    // Verificar se o elemento alterado é um checkbox
+    if (event.target.type === 'checkbox') {
+        var checkbox = event.target;
+        var layerName = checkbox.id;
 
-    // Adicionar as camadas selecionadas ao mapa
-    var selectedLayers = Array.from(layerCheckboxList.querySelectorAll('input[type="checkbox"]:checked')).map(function(checkbox) {
-        return checkbox.value;
-    });
-
-    selectedLayers.forEach(function(layerName) {
-        // Adicionar outras camadas selecionadas
-        var newLayer = new ol.layer.Tile({
-            source: new ol.source.TileWMS({
-                url: wmsUrl+'?http=true',
-                params: {
-                    'LAYERS': layerName,
-                    'TILED': true
-                },
-                serverType: 'geoserver',
-                options: {
-                    // Force HTTP requests
-                    proxy: function(request) {
-                        var url = request.getUrl();
-                        if (url.startsWith('https')) {
-                            // Replace 'https' with 'http'
-                            url = url.replace('https', 'http');
-                            request.setUrl(url);
-                        }
-                        return request;
-                    }
+        if (checkbox.checked) {
+            // Adicionar a camada selecionada ao mapa
+            var newLayer = new ol.layer.Tile({
+                source: new ol.source.TileWMS({
+                    url: wmsUrl,
+                    params: {
+                        'LAYERS': layerName,
+                        'TILED': true
+                    },
+                    serverType: 'geoserver',
+                    transition: 0
+                }),
+                name: layerName // Define o nome da camada para identificação posterior
+            });
+            map.addLayer(newLayer);
+        } else {
+            // Remover a camada desmarcada do mapa
+            map.getLayers().forEach(function(layer) {
+                if (layer.get('name') === layerName) {
+                    map.removeLayer(layer);
                 }
-            }),
-            name: layerName // Define o nome da camada para identificação posterior
-        });
-        map.addLayer(newLayer);
-    });
+            });
+        }
+    }
 });
