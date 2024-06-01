@@ -11,7 +11,7 @@
     <meta http-equiv="Content-Security-Policy">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-
+<!-- 
     <style>
         #layerCheckboxList {
             height: 100vh; /* Ocupa toda a altura da tela */
@@ -209,7 +209,8 @@
             box-shadow: 0 0 5px rgba(85, 85, 85, 0.5); /
         }
 
-    </style>
+    </style> -->
+    
 </head>
 
 <body>
