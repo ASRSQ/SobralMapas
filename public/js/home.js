@@ -43,6 +43,33 @@ var vectorLayer = new ol.layer.Vector({
 
 map.addLayer(vectorLayer);
 
+// Função para adicionar ou remover camadas do mapa
+function toggleLayer(layerName, addLayer) {
+    if (addLayer) {
+        // Adicionar a camada selecionada ao mapa
+        var newLayer = new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: wmsUrl,
+                params: {
+                    'LAYERS': layerName,
+                    'TILED': true
+                },
+                serverType: 'geoserver',
+                transition: 0
+            }),
+            name: layerName // Define o nome da camada para identificação posterior
+        });
+        map.addLayer(newLayer);
+    } else {
+        // Remover a camada desmarcada do mapa
+        map.getLayers().forEach(function(layer) {
+            if (layer.get('name') === layerName) {
+                map.removeLayer(layer);
+            }
+        });
+    }
+}
+
 // Event listener para alterações nas checkboxes de camadas
 layerCheckboxList.addEventListener('change', function(event) {
     // Verificar se o elemento alterado é um checkbox
@@ -50,32 +77,11 @@ layerCheckboxList.addEventListener('change', function(event) {
         var checkbox = event.target;
         var layerName = checkbox.id;
 
-        if (checkbox.checked) {
-            // Adicionar a camada selecionada ao mapa
-            var newLayer = new ol.layer.Tile({
-                source: new ol.source.TileWMS({
-                    url: wmsUrl,
-                    params: {
-                        'LAYERS': layerName,
-                        'TILED': true
-                    },
-                    serverType: 'geoserver',
-                    transition: 0
-                }),
-                name: layerName // Define o nome da camada para identificação posterior
-            });
-            map.addLayer(newLayer);
-        } else {
-            // Remover a camada desmarcada do mapa
-            map.getLayers().forEach(function(layer) {
-                if (layer.get('name') === layerName) {
-                    map.removeLayer(layer);
-                }
-            });
-        }
+        toggleLayer(layerName, checkbox.checked);
+        updateCustomMapDropdown();
+        updateLegend();
     }
 });
-
 
 // Função para atualizar o conteúdo do dropdown com as camadas selecionadas
 function updateCustomMapDropdown() {
@@ -88,42 +94,31 @@ function updateCustomMapDropdown() {
     var selectedLayers = Array.from(document.querySelectorAll('#layerCheckboxList input[type="checkbox"]:checked')).map(function(checkbox) {
         return checkbox.id;
     });
-    
+
     // Adicionar cada camada selecionada ao dropdown como um item da lista
     selectedLayers.forEach(function(layerName) {
         var listItem = document.createElement('li');
         listItem.className = 'dropdown-item';
-        
+
         // Adicionar o texto da camada e um ícone "x" para removê-la
-        listItem.innerHTML = '<span>' + layerName + '</span><span class="close-icon">&times;</span>';
-        
+        listItem.innerHTML = '<span>' + layerName + '</span><span class="close-icon" style="cursor: pointer; margin-left: 10px;">&times;</span>';
+
         // Adicionar evento de clique ao ícone "x" para desmarcar a camada
         listItem.querySelector('.close-icon').addEventListener('click', function() {
             // Desmarcar a camada correspondente
             var checkbox = document.getElementById(layerName);
             if (checkbox) {
                 checkbox.checked = false;
+                toggleLayer(layerName, false);
+                updateCustomMapDropdown();
+                updateLegend();
             }
-            // Remover a camada do mapa
-            map.getLayers().forEach(function(layer) {
-                if (layer.get('name') === layerName) {
-                    map.removeLayer(layer);
-                }
-            });
-            // Atualizar o conteúdo do dropdown
-            updateCustomMapDropdown();
         });
 
         // Adicionar o item ao dropdown
         dropdown.appendChild(listItem);
     });
 }
-
-// Chamar a função de atualização quando houver uma alteração nas camadas selecionadas
-document.getElementById('layerCheckboxList').addEventListener('change', updateCustomMapDropdown);
-
-// Chamar a função de atualização ao carregar a página
-updateCustomMapDropdown();
 
 // Função para atualizar a legenda com base nas camadas selecionadas
 function updateLegend() {
@@ -136,7 +131,7 @@ function updateLegend() {
     var selectedLayers = Array.from(document.querySelectorAll('#layerCheckboxList input[type="checkbox"]:checked')).map(function(checkbox) {
         return checkbox.id;
     });
-    
+
     // Para cada camada selecionada, criar um novo dropdown na legenda
     selectedLayers.forEach(function(layerName) {
         // Criar o elemento do dropdown
@@ -165,9 +160,11 @@ function updateLegend() {
 }
 
 // Chamar a função de atualização quando houver uma alteração nas camadas selecionadas
-document.getElementById('layerCheckboxList').addEventListener('change', updateLegend);
+document.getElementById('layerCheckboxList').addEventListener('change', function() {
+    updateCustomMapDropdown();
+    updateLegend();
+});
 
 // Chamar a função de atualização ao carregar a página
+updateCustomMapDropdown();
 updateLegend();
-
-
