@@ -49,40 +49,40 @@
                     
                     <!-- Categoria: Linhas do Transol -->
                     <details>
-                        <summary>Linhas do Transol</summary>
-
+                        <summary>Mobiliadade Urbana</summary>
                         <div class="layer-category">
                             <input type="checkbox" id="transol_linha_1">
                             <label for="transol_linha_1">Linha 1 do Transol</label>
                         </div>
                         <div class="layer-category">
-                            <input type="checkbox" id="transol_linha_2">
-                            <label for="transol_linha_2">Linha 2 do Transol</label>
-                        </div>
-                        <div class="layer-category">
                             <input type="checkbox" id="transol_linha_3">
-                            <label for="transol_linha_3">Linha 3 do Transol</label>
+                            <label for="transol_linha_3">Linha 2 do Transol</label>
                         </div>
                         <div class="layer-category">
                             <input type="checkbox" id="transol_linha_4">
-                            <label for="transol_linha_4">Linha 4 do Transol</label>
+                            <label for="transol_linha_4">Linha 3 do Transol</label>
                         </div>
                         <div class="layer-category">
                             <input type="checkbox" id="transol_linha_5">
-                            <label for="transol_linha_5">Linha 5 do Transol</label>
+                            <label for="transol_linha_5">Linha 4 do Transol</label>
                         </div>
                         <div class="layer-category">
                             <input type="checkbox" id="transol_linha_6">
-                            <label for="transol_linha_6">Linha 6 do Transol</label>
+                            <label for="transol_linha_6">Linha 5 do Transol</label>
                         </div>
                         <div class="layer-category">
                             <input type="checkbox" id="transol_linha_7">
-                            <label for="transol_linha_7">Linha 7 do Transol</label>
+                            <label for="transol_linha_7">Linha 6 do Transol</label>
                         </div>
                         <div class="layer-category">
                             <input type="checkbox" id="transol_linha_8">
-                            <label for="transol_linha_8">Linha 8 do Transol</label>
+                            <label for="transol_linha_8">Linha 7 do Transol</label>
                         </div>
+                        <div class="layer-category">
+                            <input type="checkbox" id="ciclovia_a">
+                            <label for="ciclovia_a">Ciclovia</label>
+                        </div>
+                     
                     </details>
 
                     <!-- Categoria: Infraestrutura -->
