@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header">Lista de Layers</div>
 
@@ -20,6 +20,7 @@
                                 <th>Nome</th>
                                 <th>Layer</th>
                                 <th>Descrição</th>
+                                <th>Categoria</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -30,6 +31,7 @@
                                 <td>{{ $layer->name }}</td>
                                 <td>{{ $layer->layer }}</td>
                                 <td>{{ $layer->description }}</td>
+                                <td>{{ $layer->category->name }}</td>
                                 <td>
                                     <a href="{{ route('layers.edit', $layer->id) }}" class="btn btn-sm btn-primary">Editar</a>
                                     <form action="{{ route('layers.destroy', $layer->id) }}" method="POST" style="display: inline;">
