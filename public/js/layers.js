@@ -9,7 +9,7 @@ export const layers = [
     //'sde:SC_Cidades_Aracatiacu_CE',
     //'sde:SC_Cidades_Jaibaras_CE',
     //'sde:SC_Cidades_Taperuaba_CE',
-    // 'Ceara:acesso_a',
+    'Ceara:acesso_a',
     //'sobral:admiro',
     //'sde:alto_grande',
     // 'Ceara:alvara_contrucao_p',

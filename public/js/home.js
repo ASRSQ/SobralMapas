@@ -131,9 +131,13 @@ function updateLegend() {
     var selectedLayers = Array.from(document.querySelectorAll('#layerCheckboxList input[type="checkbox"]:checked')).map(function(checkbox) {
         return checkbox.id;
     });
-
+    console.log(selectedLayers)
     // Para cada camada selecionada, criar um novo dropdown na legenda
     selectedLayers.forEach(function(layerName) {
+        // Buscar a descrição da camada
+        var layerDescription = layersData.find(layer => layer.layer === layerName).description;
+        var newname = layersData.find(layer => layer.layer === layerName).name;
+        console.log(layerDescription)
         // Criar o elemento do dropdown
         var dropdown = document.createElement('div');
         dropdown.classList.add('dropdown');
@@ -142,16 +146,22 @@ function updateLegend() {
         var dropdownButton = document.createElement('button');
         dropdownButton.classList.add('btn', 'btn-secondary', 'dropdown-toggle');
         dropdownButton.setAttribute('type', 'button');
-        dropdownButton.setAttribute('id', 'dropdownMenuButton_' + layerName); // Adiciona um ID único
+        dropdownButton.setAttribute('id', 'dropdownMenuButton_' +  newname); // Adiciona um ID único
         dropdownButton.setAttribute('data-bs-toggle', 'dropdown');
         dropdownButton.setAttribute('aria-expanded', 'false');
-        dropdownButton.textContent = layerName; // Define o texto do botão como o nome da camada
+        dropdownButton.textContent =  newname; // Define o texto do botão como o nome da camada
         dropdown.appendChild(dropdownButton);
 
         // Criar o menu do dropdown
         var dropdownMenu = document.createElement('ul');
         dropdownMenu.classList.add('dropdown-menu');
-        dropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuButton_' + layerName); // Referência ao ID único do botão
+        dropdownMenu.setAttribute('aria-labelledby', 'dropdownMenuButton_' +  newname); // Referência ao ID único do botão
+
+        // Adicionar a descrição da camada ao menu do dropdown
+        var dropdownItem = document.createElement('li');
+        dropdownItem.textContent = layerDescription; // Define o texto do item como a descrição da camada
+        dropdownMenu.appendChild(dropdownItem);
+
         dropdown.appendChild(dropdownMenu);
 
         // Adicionar o dropdown à legenda

@@ -10,7 +10,6 @@
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
     <meta http-equiv="Content-Security-Policy">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 </head>
 
 <body>
@@ -36,105 +35,27 @@
         <div class="row">
             <!-- Div para a caixa de seleção -->
             <div class="col-md-3">
-
-            <div class="search-container">
-                <button type="button" class="search-button"><i class="fas fa-search"></i></button>
-                <input type="text" id="searchInput" placeholder="Pesquisar por mapas...">
-            </div>
-
+                <div class="search-container">
+                    <button type="button" class="search-button"><i class="fas fa-search"></i></button>
+                    <input type="text" id="searchInput" placeholder="Pesquisar por mapas...">
+                </div>
                 <h3>Selecione um mapa para ter visualização:</h3>
                 <div id="layerCheckboxList">
-
-                    <!-- Alguns exemplos de como ficaria as categorias-->
-                    
-                    <!-- Categoria: Linhas do Transol -->
+                    <!-- Iterar sobre as categorias -->
+                    @foreach($categories as $category)
                     <details>
-                        <summary>Mobiliadade Urbana</summary>
+                        <summary>{{ $category->name }}</summary>
+                        <!-- Iterar sobre as camadas da categoria -->
+                        @foreach($layers as $layer)
+                        @if($layer->category_id == $category->id)
                         <div class="layer-category">
-                            <input type="checkbox" id="transol_linha_1">
-                            <label for="transol_linha_1">Linha 1 do Transol</label>
+                            <input type="checkbox" id="{{ $layer->layer }}" name="{{ $layer->name }}">
+                            <label for="{{ $layer->layer }}">{{ $layer->name }}</label>
                         </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="transol_linha_3">
-                            <label for="transol_linha_3">Linha 2 do Transol</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="transol_linha_4">
-                            <label for="transol_linha_4">Linha 3 do Transol</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="transol_linha_5">
-                            <label for="transol_linha_5">Linha 4 do Transol</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="transol_linha_6">
-                            <label for="transol_linha_6">Linha 5 do Transol</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="transol_linha_7">
-                            <label for="transol_linha_7">Linha 6 do Transol</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="transol_linha_8">
-                            <label for="transol_linha_8">Linha 7 do Transol</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="ciclovia_a">
-                            <label for="ciclovia_a">Ciclovia</label>
-                        </div>
-                     
+                        @endif
+                        @endforeach
                     </details>
-
-                    <!-- Categoria: Infraestrutura -->
-                    <details>
-                        <summary>Infraestrutura</summary>
-                        <div class="layer-category">
-                            <input type="checkbox" id="acesso_a">
-                            <label for="acesso_a">acesso_a</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="alvara_contrucao_p">
-                            <label for="alvara_contrucao_p">alvara_contrucao_p</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="area_csf_pl">
-                            <label for="area_csf_pl">area_csf_pl</label>
-                        </div>
-                    </details>
-
-                    <!-- Categoria: Educação -->
-                    <details>
-                        <summary>Educação</summary>
-                        <div class="layer-category">
-                            <input type="checkbox" id="ensino_sobral">
-                            <label for="ensino_sobral">ensino_sobral</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="ensino_sobral_municipal">
-                            <label for="ensino_sobral_municipal">ensino_sobral_municipal</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="escolas_municipal">
-                            <label for="escolas_municipal">escolas_municipal</label>
-                        </div>
-                    </details>
-
-                    <!-- Categoria: Saúde -->
-                    <details>
-                        <summary>Saúde</summary>
-                        <div class="layer-category">
-                            <input type="checkbox" id="saude_sobral">
-                            <label for="saude_sobral">saude_sobral</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="saude_sobral_municipal">
-                            <label for="saude_sobral_municipal">saude_sobral_municipal</label>
-                        </div>
-                        <div class="layer-category">
-                            <input type="checkbox" id="pop_saude_2022">
-                            <label for="pop_saude_2022">pop_saude_2022</label>
-                        </div>
-                    </details>
+                    @endforeach
                     <div id="collapseDragDropMaps" class="container drag-drop-body p-0 collapse show" style="">
                         <div class="drag-drop-list">
                             <!-- Outros mapas ativos existentes -->
@@ -151,10 +72,8 @@
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
+               
             </div>
             <!-- Div para o mapa -->
             <div class="col-md-9">
@@ -167,13 +86,13 @@
                     <!-- Aqui será inserida a legenda dinamicamente -->
                 </div>
             </div>
-
             </div>
         </div>
     </div>
-
+    <script type="text/javascript">
+    var layersData = @json($layers);
+    </script>
     <script type="module" src="{{ asset('js/home.js') }}"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
