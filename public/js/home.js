@@ -130,6 +130,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                         data.subcategories.forEach(subcategory => {
                             if (subcategory.category_id === category.id) {
+                                console.log("esse if")
                                 var subcategoryDetails = document.createElement('details');
                                 subcategoryDetails.classList.add('subcategory');
                                 var subcategorySummary = document.createElement('summary');
