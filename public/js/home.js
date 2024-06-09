@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Atualiza os resultados da pesquisa
                 console.log("Dados recebidos da pesquisa:", data);
                 var layerCheckboxList = document.getElementById("layerCheckboxList");
+                console.log(layerCheckboxList)
 
                 // Salva o conteúdo do "Mapa Personalizado"
                 var customMapDropdown = document.getElementById("customMapDropdown");
