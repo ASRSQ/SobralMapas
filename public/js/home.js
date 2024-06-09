@@ -127,7 +127,8 @@ document.addEventListener("DOMContentLoaded", function() {
                         var categorySummary = document.createElement('summary');
                         categorySummary.textContent = category.name;
                         categoryDetails.appendChild(categorySummary);
-
+                        console.log(subcategory.category_id)
+                        console.log(category.id)
                         data.subcategories.forEach(subcategory => {
                             if (subcategory.category_id === category.id) {
                                 console.log("esse if")
