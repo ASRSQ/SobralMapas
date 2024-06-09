@@ -112,14 +112,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Atualiza os resultados da pesquisa
                 console.log("Dados recebidos da pesquisa:", data);
                 var layerCheckboxList = document.getElementById("layerCheckboxList");
-                console.log(layerCheckboxList)
+                
 
                 // Salva o conteúdo do "Mapa Personalizado"
                 var customMapDropdown = document.getElementById("customMapDropdown");
                 var customMapContent = customMapDropdown.parentNode.parentNode.cloneNode(true);
 
                 layerCheckboxList.innerHTML = '';
-
+                console.log(Array.isArray(data.categories) && Array.isArray(data.subcategories) && Array.isArray(data.layers))
                 if (Array.isArray(data.categories) && Array.isArray(data.subcategories) && Array.isArray(data.layers)) {
                     data.categories.forEach(category => {
                         var categoryDetails = document.createElement('details');
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     // Adiciona o conteúdo do "Mapa Personalizado" de volta
                     layerCheckboxList.appendChild(customMapContent);
-
+                    console.log(layerCheckboxList)
                     // Após a atualização da lista de camadas, atualize o dropdown personalizado e a legenda
                     console.log("Atualizando dropdown personalizado e legenda após pesquisa.");
                     updateCustomMapDropdown();
