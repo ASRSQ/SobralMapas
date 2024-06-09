@@ -92,13 +92,17 @@ document.addEventListener("DOMContentLoaded", function() {
             var searchTerm = document.getElementById("searchInput").value.toLowerCase();
 
             // Envia a solicitação AJAX
+            console.log("Enviando solicitação AJAX para pesquisa:", searchTerm);
             fetch(`${baseUrl}?search=${encodeURIComponent(searchTerm)}`, {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log("Resposta recebida da solicitação AJAX:", response);
+                return response.json();
+            })
             .then(data => {
                 // Armazena os IDs dos checkboxes marcados antes de limpar a lista
                 checkedIds = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(function(checkbox) {
@@ -106,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
 
                 // Atualiza os resultados da pesquisa
+                console.log("Dados recebidos da pesquisa:", data);
                 var layerCheckboxList = document.getElementById("layerCheckboxList");
 
                 // Salva o conteúdo do "Mapa Personalizado"
@@ -159,15 +164,18 @@ document.addEventListener("DOMContentLoaded", function() {
                     layerCheckboxList.appendChild(customMapContent);
 
                     // Após a atualização da lista de camadas, atualize o dropdown personalizado e a legenda
+                    console.log("Atualizando dropdown personalizado e legenda após pesquisa.");
                     updateCustomMapDropdown();
                     updateLegend();
                 }
             })
             .catch(error => console.error('Erro:', error));
+
+            // Adiciona console.log para acompanhar o que acontece nesta função
+            console.log("Pesquisa e atualização de resultados executadas.");
         });
     }
 });
-;
 
 
 // Função para atualizar o conteúdo do dropdown com as camadas selecionadas
