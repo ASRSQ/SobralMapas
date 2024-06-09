@@ -35,34 +35,32 @@
         <div class="row">
             <!-- Div para a caixa de seleção -->
             <div class="col-md-3">
-                <div class="search-container">
-                    <button type="button" class="search-button"><i class="fas fa-search"></i></button>
-                    <input type="text" id="searchInput" placeholder="Pesquisar por mapas...">
+            <div class="search-container">
+        <button type="button" class="search-button"><i class="fas fa-search"></i></button>
+        <input type="text" id="searchInput" placeholder="Pesquisar por mapas...">
+    </div>
+    <h3>Selecione um mapa para ter visualização:</h3>
+    <div id="layerCheckboxList">
+        @foreach($categories as $category)
+        <details class="category">
+            <summary>{{ $category->name }}</summary>
+            @foreach($subcategories as $subcategory)
+            @if($subcategory->category_id == $category->id)
+            <details class="subcategory">
+                <summary>{{ $subcategory->name }}</summary>
+                @foreach($layers as $layer)
+                @if($layer->subcategory_id == $subcategory->id)
+                <div class="layer-category">
+                    <input type="checkbox" id="{{ $layer->layer }}" name="{{ $layer->name }}">
+                    <label for="{{ $layer->layer }}">{{ $layer->name }}</label>
                 </div>
-                <h3>Selecione um mapa para ter visualização:</h3>
-                <div id="layerCheckboxList">
-                @foreach($categories as $category)
-                    <details>
-                        <summary>{{ $category->name }}</summary>
-                        <!-- Iterar sobre as subcategorias da categoria -->
-                        @foreach($subcategories as $subcategory)
-                        @if($subcategory->category_id == $category->id)
-                        <details>
-                            <summary>{{ $subcategory->name }}</summary>
-                            <!-- Iterar sobre as camadas da subcategoria -->
-                            @foreach($layers as $layer)
-                            @if($layer->subcategory_id == $subcategory->id)
-                            <div class="layer-category">
-                                <input type="checkbox" id="{{ $layer->layer }}" name="{{ $layer->name }}">
-                                <label for="{{ $layer->layer }}">{{ $layer->name }}</label>
-                            </div>
-                            @endif
-                            @endforeach
-                        </details>
-                        @endif
-                        @endforeach
-                    </details>
-                    @endforeach
+                @endif
+                @endforeach
+            </details>
+            @endif
+            @endforeach
+        </details>
+        @endforeach
                     <div id="collapseDragDropMaps" class="container drag-drop-body p-0 collapse show" style="">
                         <div class="drag-drop-list">
                             <!-- Outros mapas ativos existentes -->
@@ -99,6 +97,10 @@
     <script type="text/javascript">
     var layersData = @json($layers);
     </script>
+    <script>
+    var baseUrl = "{{ url('/') }}";
+    </script>
+
     <script type="module" src="{{ asset('js/home.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>

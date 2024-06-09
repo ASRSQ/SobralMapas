@@ -18,7 +18,7 @@ use App\Http\Controllers\SubcategoryController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/tiles', [HomeController::class, 'tile']);
 Route::post('/deploy', [DeployController::class, 'deploy']);
 // Definir rotas para categorias

@@ -82,6 +82,93 @@ layerCheckboxList.addEventListener('change', function(event) {
         updateLegend();
     }
 });
+//busca
+document.addEventListener("DOMContentLoaded", function() {
+    var searchButton = document.querySelector(".search-button");
+    var checkedIds = []; // Array para armazenar os IDs dos checkboxes marcados
+
+    if (searchButton) {
+        searchButton.addEventListener("click", function() {
+            var searchTerm = document.getElementById("searchInput").value.toLowerCase();
+
+            // Envia a solicitação AJAX
+            fetch(`${baseUrl}?search=${encodeURIComponent(searchTerm)}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Armazena os IDs dos checkboxes marcados antes de limpar a lista
+                checkedIds = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(function(checkbox) {
+                    return checkbox.id;
+                });
+
+                // Atualiza os resultados da pesquisa
+                var layerCheckboxList = document.getElementById("layerCheckboxList");
+
+                // Salva o conteúdo do "Mapa Personalizado"
+                var customMapDropdown = document.getElementById("customMapDropdown");
+                var customMapContent = customMapDropdown.parentNode.parentNode.cloneNode(true);
+
+                layerCheckboxList.innerHTML = '';
+
+                if (Array.isArray(data.categories) && Array.isArray(data.subcategories) && Array.isArray(data.layers)) {
+                    data.categories.forEach(category => {
+                        var categoryDetails = document.createElement('details');
+                        categoryDetails.classList.add('category');
+                        var categorySummary = document.createElement('summary');
+                        categorySummary.textContent = category.name;
+                        categoryDetails.appendChild(categorySummary);
+
+                        data.subcategories.forEach(subcategory => {
+                            if (subcategory.category_id === category.id) {
+                                var subcategoryDetails = document.createElement('details');
+                                subcategoryDetails.classList.add('subcategory');
+                                var subcategorySummary = document.createElement('summary');
+                                subcategorySummary.textContent = subcategory.name;
+                                subcategoryDetails.appendChild(subcategorySummary);
+
+                                data.layers.forEach(layer => {
+                                    if (layer.subcategory_id === subcategory.id) {
+                                        var layerDiv = document.createElement('div');
+                                        layerDiv.classList.add('layer-category');
+                                        var checkbox = document.createElement('input');
+                                        checkbox.type = 'checkbox';
+                                        checkbox.id = layer.layer;
+                                        checkbox.name = layer.name;
+                                        checkbox.checked = checkedIds.includes(layer.layer); // Marcar se estiver na lista de IDs marcados
+                                        var label = document.createElement('label');
+                                        label.htmlFor = layer.layer;
+                                        label.textContent = layer.name;
+                                        layerDiv.appendChild(checkbox);
+                                        layerDiv.appendChild(label);
+                                        subcategoryDetails.appendChild(layerDiv);
+                                    }
+                                });
+
+                                categoryDetails.appendChild(subcategoryDetails);
+                            }
+                        });
+
+                        layerCheckboxList.appendChild(categoryDetails);
+                    });
+
+                    // Adiciona o conteúdo do "Mapa Personalizado" de volta
+                    layerCheckboxList.appendChild(customMapContent);
+
+                    // Após a atualização da lista de camadas, atualize o dropdown personalizado e a legenda
+                    updateCustomMapDropdown();
+                    updateLegend();
+                }
+            })
+            .catch(error => console.error('Erro:', error));
+        });
+    }
+});
+;
+
 
 // Função para atualizar o conteúdo do dropdown com as camadas selecionadas
 function updateCustomMapDropdown() {
@@ -178,3 +265,12 @@ document.getElementById('layerCheckboxList').addEventListener('change', function
 // Chamar a função de atualização ao carregar a página
 updateCustomMapDropdown();
 updateLegend();
+
+
+
+
+
+
+
+
+
