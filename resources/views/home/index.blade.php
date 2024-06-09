@@ -41,17 +41,24 @@
                 </div>
                 <h3>Selecione um mapa para ter visualização:</h3>
                 <div id="layerCheckboxList">
-                    <!-- Iterar sobre as categorias -->
-                    @foreach($categories as $category)
+                @foreach($categories as $category)
                     <details>
                         <summary>{{ $category->name }}</summary>
-                        <!-- Iterar sobre as camadas da categoria -->
-                        @foreach($layers as $layer)
-                        @if($layer->category_id == $category->id)
-                        <div class="layer-category">
-                            <input type="checkbox" id="{{ $layer->layer }}" name="{{ $layer->name }}">
-                            <label for="{{ $layer->layer }}">{{ $layer->name }}</label>
-                        </div>
+                        <!-- Iterar sobre as subcategorias da categoria -->
+                        @foreach($subcategories as $subcategory)
+                        @if($subcategory->category_id == $category->id)
+                        <details>
+                            <summary>{{ $subcategory->name }}</summary>
+                            <!-- Iterar sobre as camadas da subcategoria -->
+                            @foreach($layers as $layer)
+                            @if($layer->subcategory_id == $subcategory->id)
+                            <div class="layer-category">
+                                <input type="checkbox" id="{{ $layer->layer }}" name="{{ $layer->name }}">
+                                <label for="{{ $layer->layer }}">{{ $layer->name }}</label>
+                            </div>
+                            @endif
+                            @endforeach
+                        </details>
                         @endif
                         @endforeach
                     </details>

@@ -73,6 +73,25 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="form-group row mt-2">
+                        <label for="subcategory_id" class="col-md-4 col-form-label text-md-right">{{ __('Subcategory') }}</label>
+
+                        <div class="col-md-6">
+                            <select id="subcategory_id" class="form-control @error('subcategory_id') is-invalid @enderror" name="subcategory_id" required>
+                                <option value="">Select Subcategory</option>
+                                @foreach($subcategories as $subcategory)
+                                    <option value="{{ $subcategory->id }}">{{ $subcategory->name }}</option>
+                                @endforeach
+                            </select>
+
+                            @error('subcategory_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+
 
                         <div class="form-group row mb-0 mt-2">
                             <div class="col-md-6 offset-md-4">

@@ -6,6 +6,8 @@ use App\Http\Controllers\DeployController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LayerController;
 
+use App\Http\Controllers\SubcategoryController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,3 +34,10 @@ Route::post('/layers', [LayerController::class, 'store'])->name('layers.store');
 Route::get('/layers/{layer}/edit', [LayerController::class, 'edit'])->name('layers.edit');
 Route::put('/layers/{layer}', [LayerController::class, 'update'])->name('layers.update');
 Route::delete('/layers/{layer}', [LayerController::class, 'destroy'])->name('layers.destroy');
+Route::get('/subcategories', [SubcategoryController::class, 'index'])->name('subcategories.index');
+Route::get('/subcategories/create', [SubcategoryController::class, 'create'])->name('subcategories.create');
+Route::post('/subcategories', [SubcategoryController::class, 'store'])->name('subcategories.store');
+Route::get('/subcategories/{subcategory}', [SubcategoryController::class, 'show'])->name('subcategories.show');
+Route::get('/subcategories/{subcategory}/edit', [SubcategoryController::class, 'edit'])->name('subcategories.edit');
+Route::put('/subcategories/{subcategory}', [SubcategoryController::class, 'update'])->name('subcategories.update');
+Route::delete('/subcategories/{subcategory}', [SubcategoryController::class, 'destroy'])->name('subcategories.destroy');

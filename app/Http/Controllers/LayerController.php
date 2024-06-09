@@ -5,6 +5,8 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Layer;
 
+use App\Models\Subcategory;
+
 class LayerController extends Controller
 {
      /**
@@ -26,8 +28,10 @@ class LayerController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('layers.create', compact('categories'));
+        $subcategories = Subcategory::all();
+        return view('layers.create', compact('categories', 'subcategories'));
     }
+    
     
 
     /**
@@ -38,15 +42,19 @@ class LayerController extends Controller
      */
     public function store(Request $request)
 {
+   
+
     Layer::create([
         'name' => $request->input('name'),
         'layer' => $request->input('layer'),
         'description' => $request->input('description'),
         'category_id' => $request->input('category_id'),
+        'subcategory_id' => $request->input('subcategory_id'), // Adicione esta linha
     ]);
 
     return redirect()->route('layers.index')->with('success', 'Layer criado com sucesso!');
 }
+
 
 
     /**
@@ -55,13 +63,15 @@ class LayerController extends Controller
      * @param  \App\Models\Layer  $layer
      * @return \Illuminate\View\View
      */
-    public function edit(Layer $layer)
-    {
-        // Aqui você precisa obter as opções de camada e passá-las para a visualização
-        $layerOptions = Layer::pluck('name', 'id');
-    
-        return view('layers.edit', compact('layer'));
-    }
+   public function edit($id)
+{
+    $layer = Layer::findOrFail($id);
+    $categories = Category::all();
+    $subcategories = Subcategory::all(); // Adicione esta linha
+
+    return view('layers.edit', compact('layer', 'categories', 'subcategories'));
+}
+
     
 
 
@@ -74,11 +84,25 @@ class LayerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $layer = Layer::findOrFail($id);
-        $layer->update($request->all());
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'layer' => 'required|string|max:255',
+            'description' => 'required|string',
+            'subcategory_id' => 'required|integer|exists:subcategories,id',
+            'category_id' => 'required|integer|exists:categories,id'
+        ]);
     
-        return redirect()->route('layers.index')->with('success', 'Layer atualizado com sucesso!');
+        $layer = Layer::findOrFail($id);
+        $layer->name = $request->name;
+        $layer->layer = $request->layer;
+        $layer->description = $request->description;
+        $layer->subcategory_id = $request->subcategory_id;
+        $layer->category_id = $request->category_id; // Adicione esta linha
+        $layer->save();
+    
+        return redirect()->route('layers.index')->with('success', 'Layer updated successfully.');
     }
+    
     
 
     /**
