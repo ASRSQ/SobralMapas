@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 categoryDetails.appendChild(subcategoryDetails);
                             }
                         });
-
+                        console.log(categoryDetails)
                         layerCheckboxList.appendChild(categoryDetails);
                     });
 
