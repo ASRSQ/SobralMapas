@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 subcategoryDetails.appendChild(subcategorySummary);
 
                                 data.layers.forEach(layer => {
-                                    if (layer.subcategory_id === subcategory.id) {
+                                    if (layer.subcategory_id == subcategory.id) {
                                         var layerDiv = document.createElement('div');
                                         layerDiv.classList.add('layer-category');
                                         var checkbox = document.createElement('input');
