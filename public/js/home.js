@@ -113,13 +113,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.log("Dados recebidos da pesquisa:", data);
                 var layerCheckboxList = document.getElementById("layerCheckboxList");
                 
-
                 // Salva o conteúdo do "Mapa Personalizado"
                 var customMapDropdown = document.getElementById("customMapDropdown");
                 var customMapContent = customMapDropdown.parentNode.parentNode.cloneNode(true);
 
                 layerCheckboxList.innerHTML = '';
-                console.log(Array.isArray(data.categories) && Array.isArray(data.subcategories) && Array.isArray(data.layers))
+
                 if (Array.isArray(data.categories) && Array.isArray(data.subcategories) && Array.isArray(data.layers)) {
                     data.categories.forEach(category => {
                         var categoryDetails = document.createElement('details');
@@ -127,11 +126,9 @@ document.addEventListener("DOMContentLoaded", function() {
                         var categorySummary = document.createElement('summary');
                         categorySummary.textContent = category.name;
                         categoryDetails.appendChild(categorySummary);
-                        console.log(subcategory.category_id)
-                        console.log(category.id)
+                        
                         data.subcategories.forEach(subcategory => {
                             if (subcategory.category_id === category.id) {
-                                console.log("esse if")
                                 var subcategoryDetails = document.createElement('details');
                                 subcategoryDetails.classList.add('subcategory');
                                 var subcategorySummary = document.createElement('summary');
@@ -159,13 +156,13 @@ document.addEventListener("DOMContentLoaded", function() {
                                 categoryDetails.appendChild(subcategoryDetails);
                             }
                         });
-                        console.log(categoryDetails)
+
                         layerCheckboxList.appendChild(categoryDetails);
                     });
 
                     // Adiciona o conteúdo do "Mapa Personalizado" de volta
                     layerCheckboxList.appendChild(customMapContent);
-                    console.log(layerCheckboxList)
+
                     // Após a atualização da lista de camadas, atualize o dropdown personalizado e a legenda
                     console.log("Atualizando dropdown personalizado e legenda após pesquisa.");
                     updateCustomMapDropdown();
@@ -179,6 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
 
 
 // Função para atualizar o conteúdo do dropdown com as camadas selecionadas
