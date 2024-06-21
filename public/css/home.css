@@ -1,7 +1,5 @@
-
-
 html, body, #map {
-    height: 100%;
+    height: 100vh;
     margin: 0;
     padding: 0;
 }
@@ -23,11 +21,11 @@ html, body, #map {
 }
 
 .layer-checkbox input[type="checkbox"] {
-     margin-right: 5px;
+    margin-right: 5px;
 }
 
 header {
-    background-color: #1C184A;
+    background-color: #0094EE;
     color: white;
     display: flex;
     justify-content: space-between;
@@ -78,33 +76,72 @@ nav button:hover {
     color: gray;
 }
 
+.search-container {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+#searchInput {
+    padding: 8px 30px 8px 8px;
+    width: 100%;
+    border: px solid #ccc;
+    border-radius: 20px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.search-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.search-button i {
+    color: #777;
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: #555; 
+    box-shadow: 0 0 5px rgba(85, 85, 85, 0.5); /
+}
+
+
 main {
     display: flex;
 }
 
 .container-fluid {
+    height: 100%;
     background-color: white; 
-    padding: 20px; 
+    padding: 20px;
+    padding-bottom: -20px; 
 }
 
 
 h3 {
-    color: #2F4471;
-    font-size: 1.2rem;
+    color: #0094EE;
+    font-size: 1rem;
     margin-bottom: 15px;
 }
 
 #layerCheckboxList {
-    background-color: #2F4471;
-    padding: 20px;
+    background-color: #0094EE;
     border-radius: 10px;
     color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    max-height: 600px; /* Define a altura máxima desejada */
+    overflow-y: auto;
 }
 
 .map {
-    height: 500px; /* Ajuste conforme necessário */
-    border: 1px solid #ddd;
+    height: 100%; /* Ajuste conforme necessário */
+    max-height: 700px;
+    border: 1px solid black;
     border-radius: 10px;
 }
 
@@ -135,7 +172,7 @@ details {
 }
 
 details:hover {
-    background-color: #1c2736;
+    background-color: #007bb5;
 }
 
 details summary {
@@ -179,78 +216,60 @@ details[open] summary {
     color: #f0f0f0;
 }
 
-.search-container {
-    position: relative;
-    margin-bottom: 10px;
-}
-
-#searchInput {
-    padding: 8px 30px 8px 8px;
-    width: 100%;
-    border: px solid #ccc;
-    border-radius: 20px;
-    box-sizing: border-box;
-    font-size: 16px;
-}
-
-.search-button {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-.search-button i {
-    color: #777;
-}
-
-#searchInput:focus {
-    outline: none;
-    border-color: #555; 
-    box-shadow: 0 0 5px rgba(85, 85, 85, 0.5); /
-}
-
 #legend {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
     z-index: 1000;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    max-width: 250px; /* Defina a largura máxima da legenda conforme necessário */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    margin-bottom: 50px;
+    margin-right: 20px;
+    border: 1px solid black;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+
 #legend_heading {
-    background-color: #f0f0f0;
-    border-bottom: 1px solid #ccc;
-    padding: 5px 10px;
+    background-color: #fff;
+    border-bottom: 1px solid black;
+    max-height: 30px;
     cursor: pointer;
+    border: none;
+    margin: -10px;
+    outline: none;
+    transition: background-color 0.3s; 
+}
+
+#legend_heading:hover {
+    background-color: #eaeaea; 
+}
+
+h4 {
+    color: black;
+    font-size: 0.9rem;
 }
 
 #legend_body {
-    padding: 10px 0;
+    border: none;
 }
 
 .legend-item-header {
     margin-bottom: 10px;
 }
 
-.label-name {
-    font-weight: bold;
+.legend-item-body {
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
-.collapse-legend {
-    cursor: pointer;
+.collapse-legend span {
+    color: black;
+    margin-left: 145px;
+    transition: transform 0.5s ease;
+    font-size: 20px;
 }
 
-.collapse-legend i {
-    margin-left: 5px;
+.collapse-legend[aria-expanded="true"] span {
+    transform: rotate(180deg); 
 }
 
 .info-label {
@@ -260,11 +279,55 @@ details[open] summary {
 }
 
 .info-label i {
-    margin-right: 5px;
+    margin-right: 25px;
 }
 
 .source-label {
-    font-size: 0.8em;
+    font-size: 1em;
 }
 
+#collapseDragDropMaps {
+    background-color: #0094EE;
+    border-radius: 10px;
+    margin-top: 50px;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+#collapseDragDropMaps .dropdown-toggle {
+    background-color: #0094EE;
+    color: white;
+    border: none;
+    border-bottom: 1px solid white;
+    font-weight: bold;
+    text-align: center;
+    height: 80px;
+    width: 100%;
+    position: relative; 
+    padding-right: 30px; 
+    appearance: none; 
+}
+
+#collapseDragDropMaps .dropdown-toggle::after {
+    position: absolute;
+    right: 10px; 
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-size: 30px; 
+    transition: transform 0.5s ease;
+}
+
+#collapseDragDropMaps .dropdown-toggle[aria-expanded="true"]::after {
+    transform: translateY(-50%) rotate(0deg); 
+}
+
+#collapseDragDropMaps .dropdown-toggle:hover {
+    background-color: #007bb5;
+}
+
+#collapseDragDropMaps .dropdown-menu {
+    background-color: #fff;
+    color: white;
+    width: 100%;
+    height: 100px;
+}
