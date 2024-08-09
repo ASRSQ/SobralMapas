@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DeployController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LayerController;
+use App\Http\Controllers\ChatbotController;
 
 use App\Http\Controllers\SubcategoryController;
 
@@ -20,7 +21,7 @@ use App\Http\Controllers\SubcategoryController;
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/tiles', [HomeController::class, 'tile']);
-Route::post('/deploy', [DeployController::class, 'deploy']);
+Route::get('/coord', [HomeController::class, 'coord']);
 // Definir rotas para categorias
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -41,3 +42,5 @@ Route::get('/subcategories/{subcategory}', [SubcategoryController::class, 'show'
 Route::get('/subcategories/{subcategory}/edit', [SubcategoryController::class, 'edit'])->name('subcategories.edit');
 Route::put('/subcategories/{subcategory}', [SubcategoryController::class, 'update'])->name('subcategories.update');
 Route::delete('/subcategories/{subcategory}', [SubcategoryController::class, 'destroy'])->name('subcategories.destroy');
+Route::get('/bot', [ChatbotController::class, 'index']);
+Route::post('/chat', [ChatbotController::class, 'chat']);
