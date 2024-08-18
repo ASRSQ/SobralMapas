@@ -347,8 +347,81 @@
             width: 100%;
             height: 100px;
         }
+        /* Configurações do visual do chat */
+        #chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 450px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            background-color: #f9f9f9;
+        }
 
+        #messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #fff;
+        }
 
+        .message {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: #fff;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #e9e9e9;
+            align-self: flex-start;
+        }
+
+        #message-input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #007bff;
+        }
+
+        #message-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #send-button {
+            background-color: #0069d9;
+            border: none;
+            padding: 10px 15px;
+            margin-left: 5px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        #show-chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 18px;
+        }
     </style>
 
 </head>
@@ -441,6 +514,19 @@
             </div>
         </div>
     </div>
+   <!-- Botão para mostrar o chat -->
+   <button id="show-chat-button">Chat</button>
+
+    <!-- Contêiner do chat -->
+    <div id="chat-container">
+        <!-- Área onde as mensagens aparecerão -->
+        <div id="messages"></div>
+        <!-- Caixa de input e botão de envio -->
+        <div id="message-input-container">
+            <input type="text" id="message-input" placeholder="Digite sua mensagem...">
+            <button id="send-button">Enviar</button>
+        </div>
+    </div>
 
     <script type="text/javascript">
     var layersData = @json($layers);
@@ -451,6 +537,65 @@
 
     <script type="module" src="{{ asset('js/home.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        // Função para mostrar a caixa de chat ao clicar no botão
+        document.getElementById('show-chat-button').addEventListener('click', function() {
+            var chatContainer = document.getElementById('chat-container');
+            chatContainer.style.display = 'block';
+            this.style.display = 'none'; // Esconde o botão depois que o chat é mostrado
+        });
+
+        // Função de envio de mensagens com AJAX
+        document.getElementById('send-button').addEventListener('click', function() {
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value.trim();
+            if (message !== '') {
+                addMessageToChat('user', message);
+                messageInput.value = '';
+
+                // Envia a mensagem ao servidor usando AJAX
+                fetch('http://localhost/sobralmapas/public/send-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        data.forEach(msg => {
+                            addMessageToChat('bot', msg.text);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    addMessageToChat('bot', 'Erro ao se comunicar com o servidor.');
+                });
+            }
+        });
+
+        // Enviar mensagem ao pressionar Enter
+        document.getElementById('message-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('send-button').click();
+            }
+        });
+
+        // Função para adicionar mensagens ao chat
+        function addMessageToChat(sender, text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+            messageDiv.textContent = text;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    </script>
+    
 </body>
 </html>
 

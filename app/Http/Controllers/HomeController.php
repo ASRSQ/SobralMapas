@@ -5,6 +5,8 @@ use App\Models\Layer;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Subcategory;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 class HomeController extends Controller
 {
     public function index(Request $request)
@@ -69,5 +71,38 @@ class HomeController extends Controller
     public function coord()
     {
         return view('home.coord');
+    }
+
+    public function sendMessage(Request $request)
+    {
+        // Log para verificar se o método está sendo chamado
+        Log::info('Método sendMessage foi chamado.');
+    
+        // Log para ver o conteúdo da mensagem recebida
+        Log::info('Mensagem recebida: ', ['message' => $request->input('message')]);
+    
+        try {
+            $message = $request->input('message');
+    
+            // Log para ver se a requisição para o servidor do chatbot está sendo feita
+            Log::info('Enviando mensagem para o chatbot.');
+    
+            $response = Http::post('http://localhost:5005/webhooks/rest/webhook', [
+                'message' => $message,
+                'sender' => 'user'
+            ]);
+    
+            // Log para verificar a resposta recebida do chatbot
+            Log::info('Resposta recebida do chatbot: ', $response->json());
+    
+            $responses = $response->json();
+    
+            // Retornar a resposta no formato JSON
+            return response()->json($responses);
+        } catch (\Exception $e) {
+            // Log para capturar qualquer erro que ocorra
+            Log::error('Erro no método sendMessage: ', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Algo deu errado.'], 500);
+        }
     }
 }
