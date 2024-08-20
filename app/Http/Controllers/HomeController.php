@@ -87,7 +87,7 @@ class HomeController extends Controller
             // Log para ver se a requisição para o servidor do chatbot está sendo feita
             Log::info('Enviando mensagem para o chatbot.');
     
-            $response = Http::post('http://localhost:5005/webhooks/rest/webhook', [
+            $response = Http::post('https://0e54-177-200-92-79.ngrok-free.app/webhooks/rest/webhook', [
                 'message' => $message,
                 'sender' => 'user'
             ]);

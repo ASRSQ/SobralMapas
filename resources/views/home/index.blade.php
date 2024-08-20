@@ -11,8 +11,11 @@
     <meta http-equiv="Content-Security-Policy">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> front-end-updates
 </head>
 
 <body>
@@ -27,9 +30,9 @@
         
         <div class="header-right">
             <nav>
-                <button>TUTORIAL</button>
-                <button>SOBRE</button>
-                <button>CONTATO</button>
+                <button><i class="fas fa-book"></i>  TUTORIAL</button>
+                <button><i class="fas fa-info-circle"></i>  SOBRE</button>
+                <button><i class="fas fa-envelope"></i> CONTATO</button>
             </nav>
         </div>
     </header>
@@ -68,7 +71,6 @@
         <div id="collapseDragDropMaps" class="drag-drop-body p-0 collapse show" style="">
             <div class="drag-drop-list">
                 <!-- Outros mapas ativos existentes -->
-
                 <!-- Dropdown para o mapa personalizado -->
                 <div class="dropdown">
                     
@@ -87,29 +89,48 @@
             <!-- Div para o mapa -->
             <div class="col-md-9">
                 <div id="map" class="map"></div>
-
-                <div id="legend" class="card">
-                    <div id="legend_heading" class="card-header p-0">
-                        <button class="btn d-flex justify-content-between collapse-legend" data-bs-toggle="collapse" data-bs-target="#legend_body" aria-expanded="true">
-                            <h4>LEGENDA</h4> 
-                            <span class="fas fa-caret-up"></span>
-                        </button>
-                    </div>
-                    <div id="legend_body" class="card-body collapse">
-                        <!-- Conteúdo da legenda alocado dinamicamente -->
-                    </div>
                 </div>
             </div>
-            </div>
+            
         </div>
     </div>
+
+    <div id="legend" class="card">
+        <div id="legend_heading" class="card-header p-0">
+            <button class="btn d-flex justify-content-between collapse-legend" data-bs-toggle="collapse" data-bs-target="#legend_body" aria-expanded="true">
+                <h4>
+                    <i class="fas fa-circle"></i>
+                    Legenda - SobralMapas
+                </h4> 
+                <span class="fas fa-caret-down"></span>
+            </button>
+        </div>
+        <div id="legend_body" class="card-body collapse">
+            <!-- Conteúdo da legenda alocado dinamicamente -->
+        </div>
+    </div>
+    
    <!-- Botão para mostrar o chat -->
-   <button id="show-chat-button">Chat</button>
+   <button id="show-chat-button"><i class="fas fa-comment"></i>  Chat - SobralMapas </button>
 
     <!-- Contêiner do chat -->
     <div id="chat-container">
+        <div class="header">
+            Chat - SobralMapas
+            <button id="toggle-chat-button">
+                <i class="fas fa-times" id="toggle-icon"></i>
+            </button>
+        </div>
         <!-- Área onde as mensagens aparecerão -->
-        <div id="messages"></div>
+        <div id="messages">
+            <!-- Mensagem de boas-vindas -->
+            <div class="welcome-message">
+                <p><strong>Bem-vindo ao SobralMapas!</strong></p>
+                <p>Resolva as suas dúvidas.</p>
+            </div>
+            <hr>
+            <div class="message received"></div>
+        </div>
         <!-- Caixa de input e botão de envio -->
         <div id="message-input-container">
             <input type="text" id="message-input" placeholder="Digite sua mensagem...">
@@ -178,11 +199,44 @@
         function addMessageToChat(sender, text) {
             const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+            messageDiv.classList.add('message', sender === 'user' ? 'sent' : 'received');
             messageDiv.textContent = text;
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
+
+        const showChatButton = document.getElementById('show-chat-button');
+        const chatContainer = document.getElementById('chat-container');
+        const toggleChatButton = document.getElementById('toggle-chat-button');
+        const sendButton = document.getElementById('send-button');
+        const messageInput = document.getElementById('message-input');
+        const messagesContainer = document.getElementById('messages');
+
+        // Mostrar o chatbox ao clicar no botão
+        showChatButton.addEventListener('click', function() {
+            chatContainer.style.display = 'flex';
+            showChatButton.style.display = 'none';
+        });
+
+        // Esconder o chatbox ao clicar no botão X
+        toggleChatButton.addEventListener('click', function() {
+            chatContainer.style.display = 'none';
+            showChatButton.style.display = 'block';
+        });
+
+        // Enviar mensagem ao clicar no botão "Enviar"
+        sendButton.addEventListener('click', function() {
+            const messageText = messageInput.value;
+            if (messageText.trim() !== "") {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', 'sent');
+                messageElement.textContent = messageText;
+
+                messagesContainer.appendChild(messageElement);
+                messageInput.value = "";
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        });
     </script>
     
 </body>
