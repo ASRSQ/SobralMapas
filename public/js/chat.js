@@ -1,96 +1,103 @@
-// Function to toggle the chat
-function toggleChat() {
-  var chat = document.getElementById('chat');
-  chat.classList.toggle('active');
+// chat.js
 
-  var chatBody = document.getElementById('chatBody');
-  chatBody.classList.toggle('active');
+// Função para mostrar a caixa de chat ao clicar no botão
+document.getElementById('show-chat-button').addEventListener('click', function() {
+    const chatContainer = document.getElementById('chat-container');
+    chatContainer.style.display = 'block';
+    this.style.display = 'none'; // Esconde o botão depois que o chat é mostrado
+});
 
-  var chatInput = document.getElementById('chat-input-container');
-  chatInput.style.display = chatBody.classList.contains('active') ? 'flex' : 'none';
-  var chatBtn = document.getElementById("open-chat-btn");
-  chatBtn.style.display = chatBody.classList.contains('active') ?  'none':'flex';
-  // // Toggle the icon up/down
-  // var icon = document.querySelector('.chat-header i');
-  // if (icon) {
-  //     icon.classList.toggle('fa-angle-up'); 
-  //     icon.classList.toggle('fa-angle-down');
-  // }
+// Função de envio de mensagens com AJAX
+document.getElementById('send-button').addEventListener('click', function() {
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value.trim();
+    if (message !== '') {
+        addMessageToChat('user', message);
+        messageInput.value = '';
+
+        // Envia a mensagem ao servidor usando AJAX
+        fetch(`${baseUrl}/send-message`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Dados recebidos do servidor:", data); // Verifica o que está sendo recebido
+            if (data && data.length > 0) {
+                data.forEach(msg => {
+                    // Verifica se a mensagem contém metadados no campo 'custom'
+                    if (msg.custom && msg.custom.map_type) {
+                        console.log("Metadado recebido:", msg.custom.map_type); // Log para verificação
+                        // Aciona a lógica de busca com base no tipo de mapa
+                        performSearch(msg.custom.map_type);
+                    } else if (msg.text) {
+                        // Caso seja texto normal, exibe a mensagem no chat
+                        addMessageToChat('bot', msg.text);
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            addMessageToChat('bot', 'Erro ao se comunicar com o servidor.');
+        });
+    }
+});
+
+// Enviar mensagem ao pressionar Enter
+document.getElementById('message-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('send-button').click();
+    }
+});
+
+// Função para adicionar mensagens ao chat
+function addMessageToChat(sender, text) {
+    const messagesDiv = document.getElementById('messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', sender === 'user' ? 'sent' : 'received');
+    messageDiv.textContent = text;
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-// Function to send message to chatbot
-async function sendMessage() {
-  const messageInput = document.getElementById('chat-input');
-  const message = messageInput.value.trim();
-  if (message === '') return; // Don't send empty messages
+// Inicialização do chat
+document.addEventListener('DOMContentLoaded', function() {
+    const showChatButton = document.getElementById('show-chat-button');
+    const chatContainer = document.getElementById('chat-container');
+    const toggleChatButton = document.getElementById('toggle-chat-button');
+    const sendButton = document.getElementById('send-button');
+    const messageInput = document.getElementById('message-input');
+    const messagesContainer = document.getElementById('messages');
 
-  // Add the user's message to the list of messages
-  const messages = document.getElementById('chat-messages');
-  const userMessage = document.createElement('div');
-  userMessage.className = 'chat-message chat-message-user';
-  userMessage.textContent = message;
+    // Mostrar o chatbox ao clicar no botão
+    showChatButton.addEventListener('click', function() {
+        chatContainer.style.display = 'flex';
+        showChatButton.style.display = 'none';
+    });
 
-  const messagesInner = document.querySelector('.chat-messages-inner');
-  messagesInner.appendChild(userMessage);
+    // Esconder o chatbox ao clicar no botão X
+    toggleChatButton.addEventListener('click', function() {
+        chatContainer.style.display = 'none';
+        showChatButton.style.display = 'block';
+    });
 
-  messageInput.value = ''; // Clear the input field
+    // Enviar mensagem ao clicar no botão "Enviar"
+    sendButton.addEventListener('click', function() {
+        const messageText = messageInput.value;
+        if (messageText.trim() !== "") {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'sent');
+            messageElement.textContent = messageText;
 
-  // Send the message to the chatbot (replace with the correct endpoint)
-  const response = await fetch('http://localhost:5000/chatbot', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: message }),
-  });
-  const data = await response.json();
-
-  // Add the chatbot's response to the list of messages
-  const botMessage = document.createElement('div');
-  botMessage.className = 'chat-message chat-message-bot';
-  botMessage.textContent = data.response;
-
-  messagesInner.appendChild(botMessage);
-
-  // Scroll down to the latest message
-  messages.scrollTop = messages.scrollHeight;
-}
-
-// Add this function to be called when the page is ready:
-document.addEventListener('DOMContentLoaded', () => {
-  // Find the chat send button
-  const chatSendButton = document.getElementById('chat-send');
-  if (chatSendButton) {
-      chatSendButton.addEventListener('click', sendMessage); 
-  } else {
-      console.error("Chat send button not found.");
-  }
-
-  // Find the chat header and add the click event
-  const chatHeader = document.querySelector('.chat-header');
-  if (chatHeader) {
-      chatHeader.addEventListener('click', toggleChat);
-  } else {
-      console.error("Chat header not found.");
-  }
-
-  // Find the chat input field and add the enter key event
-  const chatInput = document.getElementById('chat-input');
-  if (chatInput) {
-      chatInput.addEventListener('keyup', (event) => {
-          if (event.key === 'Enter') {
-              sendMessage();
-          }
-      });
-  } else {
-      console.error("Chat input field not found.");
-  }
-
-  // Add event listener to chat button to toggle chat
-  const chatButton = document.querySelector('.uiButton.helpButtonEnabled');
-  if (chatButton) {
-      chatButton.addEventListener('click', toggleChat);
-  } else {
-      console.error("Chat button not found.");
-  }
+            messagesContainer.appendChild(messageElement);
+            messageInput.value = "";
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    });
 });

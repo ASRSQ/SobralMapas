@@ -11,6 +11,9 @@
     <link href="{{ asset('css/chat.css') }}" rel="stylesheet">
     <meta http-equiv="Content-Security-Policy">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
 
 
 
@@ -143,99 +146,11 @@
     var baseUrl = "{{ url('/') }}";
     </script>
 
-    <script type="module" src="{{ asset('js/home.js') }}"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script>
-        // Função para mostrar a caixa de chat ao clicar no botão
-        document.getElementById('show-chat-button').addEventListener('click', function() {
-            var chatContainer = document.getElementById('chat-container');
-            chatContainer.style.display = 'block';
-            this.style.display = 'none'; // Esconde o botão depois que o chat é mostrado
-        });
-
-        // Função de envio de mensagens com AJAX
-        document.getElementById('send-button').addEventListener('click', function() {
-            const messageInput = document.getElementById('message-input');
-            const message = messageInput.value.trim();
-            if (message !== '') {
-                addMessageToChat('user', message);
-                messageInput.value = '';
-
-                // Envia a mensagem ao servidor usando AJAX
-                fetch('http://localhost/sobralmapas/public/send-message', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({ message: message })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.length > 0) {
-                        data.forEach(msg => {
-                            addMessageToChat('bot', msg.text);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    addMessageToChat('bot', 'Erro ao se comunicar com o servidor.');
-                });
-            }
-        });
-
-        // Enviar mensagem ao pressionar Enter
-        document.getElementById('message-input').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                document.getElementById('send-button').click();
-            }
-        });
-
-        // Função para adicionar mensagens ao chat
-        function addMessageToChat(sender, text) {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender === 'user' ? 'sent' : 'received');
-            messageDiv.textContent = text;
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        const showChatButton = document.getElementById('show-chat-button');
-        const chatContainer = document.getElementById('chat-container');
-        const toggleChatButton = document.getElementById('toggle-chat-button');
-        const sendButton = document.getElementById('send-button');
-        const messageInput = document.getElementById('message-input');
-        const messagesContainer = document.getElementById('messages');
-
-        // Mostrar o chatbox ao clicar no botão
-        showChatButton.addEventListener('click', function() {
-            chatContainer.style.display = 'flex';
-            showChatButton.style.display = 'none';
-        });
-
-        // Esconder o chatbox ao clicar no botão X
-        toggleChatButton.addEventListener('click', function() {
-            chatContainer.style.display = 'none';
-            showChatButton.style.display = 'block';
-        });
-
-        // Enviar mensagem ao clicar no botão "Enviar"
-        sendButton.addEventListener('click', function() {
-            const messageText = messageInput.value;
-            if (messageText.trim() !== "") {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message', 'sent');
-                messageElement.textContent = messageText;
-
-                messagesContainer.appendChild(messageElement);
-                messageInput.value = "";
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-        });
-    </script>
+    <script type="module" src="{{ asset('js/home.js') }}"></script>
+   
+  
     
 </body>
 </html>
