@@ -258,16 +258,3 @@ let config = {
     });
 
     
-    function toggleLegend() {
-      var legendBody = document.getElementById('legend_body');
-      var collapseIcon = document.querySelector('.collapse-legend i');
-      if (legendBody.style.display === 'none') {
-          legendBody.style.display = 'block';
-          collapseIcon.classList.remove('fa-chevron-down');
-          collapseIcon.classList.add('fa-chevron-up');
-      } else {
-          legendBody.style.display = 'none';
-          collapseIcon.classList.remove('fa-chevron-up');
-          collapseIcon.classList.add('fa-chevron-down');
-      }
-  }

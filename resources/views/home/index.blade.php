@@ -86,7 +86,6 @@
                 <div id="map" class="map"></div>
                 </div>
             </div>
-            
         </div>
     </div>
 
@@ -101,17 +100,23 @@
             </button>
         </div>
         <div id="legend_body" class="card-body collapse">
-            <!-- Conteúdo da legenda alocado dinamicamente -->
+            <div class="legend-content-wrapper">
+                <!-- Conteúdo da legenda alocado dinamicamente -->
+            </div>
         </div>
     </div>
+
     
    <!-- Botão para mostrar o chat -->
    <button id="show-chat-button"><i class="fas fa-comment"></i>  Chat - SobralMapas </button>
 
     <!-- Contêiner do chat -->
     <div id="chat-container">
-        <div class="header">
-            Chat - SobralMapas
+        <div class="chat-header">
+            <div class="chat-title">
+                <i class="fas fa-comment"></i>
+                Chat - SobralMapas
+            </div>
             <button id="toggle-chat-button">
                 <i class="fas fa-times" id="toggle-icon"></i>
             </button>
@@ -143,6 +148,7 @@
     <script type="module" src="{{ asset('js/home.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script>
+
         // Função para mostrar a caixa de chat ao clicar no botão
         document.getElementById('show-chat-button').addEventListener('click', function() {
             var chatContainer = document.getElementById('chat-container');
@@ -232,6 +238,14 @@
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
         });
+
+        // Seletor para a primeira mensagem vazia
+        const firstEmptyMessage = document.querySelector('.message.received');
+
+        // Verifique se o elemento existe antes de tentar removê-lo
+        if (firstEmptyMessage) {
+            firstEmptyMessage.remove();
+        }
     </script>
     
 </body>

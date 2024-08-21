@@ -298,7 +298,7 @@ details[open] summary {
     border: 1px solid #ddd;
     border-radius: 8px; /* Aumente o arredondamento para um visual mais moderno */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Aumente a sombra para destaque */
-    width: 300px;
+    width: 350px;
     transition: all 0.3s ease; /* Transição suave para todos os elementos */
 }
 
@@ -309,9 +309,8 @@ details[open] summary {
 #legend_heading {
     background-color: #f8f9fa; /* Leve mudança de cor para o cabeçalho */
     border-bottom: 1px solid #ddd;
-    padding: 12px; /* Aumente um pouco o padding */
     cursor: pointer;
-    transition: background-color 0.3s ease; 
+    transition: all 0.3s ease; 
 }
 
 #legend_heading h4 {
@@ -319,16 +318,23 @@ details[open] summary {
     font-size: 1rem; /* Tamanho de fonte ligeiramente maior */
     margin: 0;
 }
+
 .fa-circle {
-    font-size: 15px !important; /* Força a aplicação do tamanho */
+    font-size: 12px !important; /* Força a aplicação do tamanho */
     margin-right: 4px;
+}
+
+.fa-caret-down {
+    margin-right: 6px;
 }
 
 #legend_body {
     padding: 10px;
     overflow: hidden;
+    height: 200px;
     background-color: #ffffff; /* Fundo branco para contraste */
-    transition: padding 0.3s ease; /* Animação suave */
+    transition: all 0.3s ease; /* Animação suave */
+    border-radius: 8px;
 }
 
 .collapse-legend {
@@ -346,15 +352,15 @@ details[open] summary {
 .collapse-legend .fas {
     font-size: 1.2rem;
     margin-left: 10px;
-    transition: transform 0.2s; /* Animação de rotação do ícone */
+    transition: transform 0.3s; /* Animação de rotação do ícone */
 }
 
-.collapse-legend[aria-expanded="true"] .fas {
-    transform: rotate(0deg);
-}
-
-.collapse-legend[aria-expanded="false"] .fas {
+.fa-caret-down[aria-expanded="true"] .fas {
     transform: rotate(180deg);
+}
+
+.fa-caret-down[aria-expanded="false"] .fas {
+    transform: rotate(0deg);
 }
 
 /* Configurações do visual do chat */
@@ -369,7 +375,8 @@ details[open] summary {
     padding: 10px 20px;
     border-radius: 50px;
     cursor: pointer;
-    z-index: 1000;
+    z-index: 1001;
+    margin-left: 20px !important;
 }
 
 #show-chat-button:hover {
@@ -398,7 +405,7 @@ details[open] summary {
     z-index: 1000;
 }
 
-.header {
+.chat-header {
     background-color: #007bff;
     color: #fff;
     padding: 10px;
@@ -408,6 +415,24 @@ details[open] summary {
     font-weight: bold;
     flex-shrink: 0;
     position: relative;
+    height: 50px;
+}
+
+.chat-title {
+    font-size: 18px;
+    padding-top: 2px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.fa-times {
+    font-size: 20px; /* Força a aplicação do tamanho */
+    margin-right: 4px;
+}
+
+.fa-comment {
+    padding-top: 3px;
+    margin-right: 4px;
 }
 
 #messages {
@@ -431,6 +456,7 @@ details[open] summary {
     max-width: 80%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 
 /* Estilo para mensagens enviadas pelo usuário */
 .message.sent {
