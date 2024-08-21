@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mapa com OpenLayers e GeoServer</title>
+    <title>Sobral em Mapas - Mapa com OpenLayers e GeoServer</title>
     <!-- Incluir os arquivos do OpenLayers -->
     <link rel="stylesheet" href="https://openlayers.org/en/v6.13.0/css/ol.css" type="text/css">
     <script src="https://openlayers.org/en/v6.13.0/build/ol.js"></script>
@@ -204,14 +204,24 @@
             messageDiv.textContent = text;
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            removeEmptyMessages();
+        }
+
+        // Função para remover mensagens vazias
+        function removeEmptyMessages() {
+            const messages = document.querySelectorAll('.message.received');
+            messages.forEach(message => {
+                if (!message.textContent.trim()) {
+                    message.remove();
+                }
+            });
         }
 
         const showChatButton = document.getElementById('show-chat-button');
         const chatContainer = document.getElementById('chat-container');
         const toggleChatButton = document.getElementById('toggle-chat-button');
         const sendButton = document.getElementById('send-button');
-        const messageInput = document.getElementById('message-input');
-        const messagesContainer = document.getElementById('messages');
 
         // Mostrar o chatbox ao clicar no botão
         showChatButton.addEventListener('click', function() {
@@ -246,6 +256,7 @@
         if (firstEmptyMessage) {
             firstEmptyMessage.remove();
         }
+
     </script>
     
 </body>
