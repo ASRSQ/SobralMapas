@@ -318,7 +318,6 @@ document.getElementById('show-chat-button').addEventListener('click', function()
     chatContainer.style.display = 'block';
     this.style.display = 'none'; // Esconde o botão depois que o chat é mostrado
 });
-
 let latitude = '';
 let longitude = '';
 
@@ -353,11 +352,11 @@ document.getElementById('send-button').addEventListener('click', async function(
     const messageInput = document.getElementById('message-input');
     const message = messageInput.value.trim();
     if (message !== '') {
-        // Gera o ID único com base na latitude e longitude
-        const uniqueId = await generateUniqueId();
-
-        addMessageToChat('user', message); // Exibe a mensagem com o identificador personalizado
+        addMessageToChat('user', message);
         messageInput.value = '';
+
+        // Gera o sender_id único com base na latitude, longitude e outros fatores
+        const sender_id = await generateUniqueId();
 
         // Envia a mensagem ao servidor usando AJAX
         fetch(`${baseUrl}/send-message`, {
@@ -368,7 +367,7 @@ document.getElementById('send-button').addEventListener('click', async function(
             },
             body: JSON.stringify({ 
                 message: message,
-                sender_id: uniqueId // Envia o ID gerado no campo "sender_id"
+                sender_id: sender_id // Inclui o sender_id gerado
             })
         })
         .then(response => response.json())
