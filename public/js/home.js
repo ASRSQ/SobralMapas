@@ -319,12 +319,44 @@ document.getElementById('show-chat-button').addEventListener('click', function()
     this.style.display = 'none'; // Esconde o botão depois que o chat é mostrado
 });
 
+let latitude = '';
+let longitude = '';
+
+// Obter a localização do usuário
+navigator.geolocation.getCurrentPosition(
+    (position) => {
+        latitude = position.coords.latitude.toFixed(6); // Latitude com 6 casas decimais
+        longitude = position.coords.longitude.toFixed(6); // Longitude com 6 casas decimais
+        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+    },
+    (error) => {
+        console.error("Erro ao obter a localização:", error);
+    }
+);
+
+// Função para gerar um ID único
+function generateUniqueId() {
+    // Combina latitude, longitude e outros fatores para criar um hash único
+    const randomString = Math.random().toString(36).substring(2, 15); // Gerar uma string aleatória
+    const data = `${latitude}_${longitude}_${randomString}`; // Combina com sublinhados
+
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(data))
+        .then(hashBuffer => {
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return `${latitude}_${longitude}_${hashHex}`; // Retorna o ID combinado com sublinhados
+        });
+}
+
 // Função de envio de mensagens com AJAX
-document.getElementById('send-button').addEventListener('click', function() {
+document.getElementById('send-button').addEventListener('click', async function() {
     const messageInput = document.getElementById('message-input');
     const message = messageInput.value.trim();
     if (message !== '') {
-        addMessageToChat('user', message);
+        // Gera o ID único com base na latitude e longitude
+        const uniqueId = await generateUniqueId();
+
+        addMessageToChat('user', message); // Exibe a mensagem com o identificador personalizado
         messageInput.value = '';
 
         // Envia a mensagem ao servidor usando AJAX
@@ -334,7 +366,10 @@ document.getElementById('send-button').addEventListener('click', function() {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
-            body: JSON.stringify({ message: message })
+            body: JSON.stringify({ 
+                message: message,
+                sender_id: uniqueId // Envia o ID gerado no campo "sender_id"
+            })
         })
         .then(response => response.json())
         .then(data => {
@@ -359,6 +394,8 @@ document.getElementById('send-button').addEventListener('click', function() {
         });
     }
 });
+
+
 
 // Enviar mensagem ao pressionar Enter
 document.getElementById('message-input').addEventListener('keydown', function(e) {
@@ -396,6 +433,7 @@ toggleChatButton.addEventListener('click', function() {
     chatContainer.style.display = 'none';
     showChatButton.style.display = 'block';
 });
+
 
 // Enviar mensagem ao clicar no botão "Enviar"
 sendButton.addEventListener('click', function() {

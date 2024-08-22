@@ -121,7 +121,9 @@ class HomeController extends Controller
     {
         return view('home.coord');
     }
+    
 
+    
     public function sendMessage(Request $request)
     {
         // Log para verificar se o método está sendo chamado
@@ -132,13 +134,13 @@ class HomeController extends Controller
     
         try {
             $message = $request->input('message');
-    
+            $sender = $request->input('sender_id');
             // Log para ver se a requisição para o servidor do chatbot está sendo feita
             Log::info('Enviando mensagem para o chatbot.');
     
             $response = Http::post('http://localhost:5005/webhooks/rest/webhook', [
                 'message' => $message,
-                'sender' => 'user'
+                'sender' => $sender,
             ]);
     
             // Log para verificar a resposta recebida do chatbot
