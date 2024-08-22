@@ -39,12 +39,11 @@ map.addLayer(vectorLayer);
 // Função para adicionar/remover camadas do mapa
 function toggleLayer(layerName, addLayer) {
     if (addLayer) {
-        // Verifica se a camada já existe no mapa antes de adicioná-la novamente
         const existingLayer = map.getLayers().getArray().find(layer => layer.get('name') === layerName);
         if (!existingLayer) {
             const newLayer = new ol.layer.Tile({
                 source: new ol.source.TileWMS({
-                    url: wmsUrl,
+                    url: 'https://localhost/sobralmapas/public/proxy-wms', // URL do proxy
                     params: { 'LAYERS': layerName, 'TILED': true },
                     serverType: 'geoserver',
                     transition: 0
@@ -57,6 +56,7 @@ function toggleLayer(layerName, addLayer) {
         removeLayerByName(layerName);
     }
 }
+
 
 // Função para remover uma camada do mapa pelo nome
 function removeLayerByName(layerName) {

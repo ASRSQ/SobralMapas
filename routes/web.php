@@ -6,8 +6,10 @@ use App\Http\Controllers\DeployController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LayerController;
 use App\Http\Controllers\ChatbotController;
-
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\SubcategoryController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,3 +50,18 @@ Route::post('/chat', [ChatbotController::class, 'chat']);
 
 // Adicionando a rota sendMessage no HomeController
 Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('chat.sendMessage');
+
+Route::get('/proxy-wms', function (Request $request) {
+    // Captura todos os parâmetros recebidos na requisição original
+    $params = $request->all();
+
+    // Faz a requisição ao GeoServer passando os parâmetros
+    $response = Http::get('http://geoserver.sobral.ce.gov.br/geoserver/ows', $params);
+
+    // Verifica se a requisição foi bem-sucedida
+    if ($response->successful()) {
+        return response($response->body())->header('Content-Type', 'image/png');
+    } else {
+        return response('Erro ao carregar a camada WMS.', 500);
+    }
+});
