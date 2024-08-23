@@ -99,10 +99,8 @@
                 <span class="fas fa-caret-down"></span>
             </button>
         </div>
-        <div id="legend_body" class="card-body collapse">
-            <div class="legend-content-wrapper">
+        <div id="legend_body" class="collapse">
                 <!-- Conteúdo da legenda alocado dinamicamente -->
-            </div>
         </div>
     </div>
 
