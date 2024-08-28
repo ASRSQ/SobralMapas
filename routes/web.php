@@ -8,6 +8,7 @@ use App\Http\Controllers\LayerController;
 use App\Http\Controllers\ChatbotController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -47,6 +48,7 @@ Route::put('/subcategories/{subcategory}', [SubcategoryController::class, 'updat
 Route::delete('/subcategories/{subcategory}', [SubcategoryController::class, 'destroy'])->name('subcategories.destroy');
 Route::get('/bot', [ChatbotController::class, 'index']);
 Route::post('/chat', [ChatbotController::class, 'chat']);
+Route::get('/admin', [AdminController::class, 'index']);
 
 // Adicionando a rota sendMessage no HomeController
 Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('chat.sendMessage');
