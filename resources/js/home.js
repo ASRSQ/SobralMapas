@@ -4,9 +4,9 @@
  */
 
 // config map
-let config = {
-    minZoom: 1,
-    maxZoom: 20,
+    let config = {
+        minZoom: 1,
+        maxZoom: 20,
     };
     // magnification with which the map will start
     const zoom = 15;
@@ -255,6 +255,12 @@ let config = {
                 }
             });
         });
+      
     });
+
+
+
+
+    
 
     
