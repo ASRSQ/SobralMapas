@@ -43,7 +43,7 @@ function toggleLayer(layerName, addLayer) {
         if (!existingLayer) {
             const newLayer = new ol.layer.Tile({
                 source: new ol.source.TileWMS({
-                    url: 'https://localhost/sobralmapas/public/proxy-wms', // URL do proxy
+                    url: `${window.location.origin}/sobralmapas/public/proxy-wms`, // URL do proxy
                     params: { 'LAYERS': layerName, 'TILED': true },
                     serverType: 'geoserver',
                     transition: 0
@@ -427,7 +427,7 @@ document.getElementById('send-button').addEventListener('click', function() {
         messageInput.value = '';
 
         // Envia a mensagem ao servidor usando AJAX
-        fetch('http://localhost/sobralmapas/public/send-message', {
+        fetch(`${window.location.origin}/sobralmapas/public/send-message`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
