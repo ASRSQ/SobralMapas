@@ -1,6 +1,6 @@
 // URL do serviço WMS e GeoJSON
 const wmsUrl = 'http://geoserver.sobral.ce.gov.br/geoserver/ows';
-const geoJsonUrl = 'http://polygons.openstreetmap.fr/get_geojson.py?id=302610&params=0';
+const geoJsonUrl = 'https://polygons.openstreetmap.fr/get_geojson.py?id=302610&params=0';
 
 // Elemento da lista de checkboxes
 const layerCheckboxList = document.getElementById('layerCheckboxList');
