@@ -4,9 +4,9 @@
  */
 
 // config map
-let config = {
-    minZoom: 1,
-    maxZoom: 20,
+    let config = {
+        minZoom: 1,
+        maxZoom: 20,
     };
     // magnification with which the map will start
     const zoom = 15;
@@ -255,19 +255,12 @@ let config = {
                 }
             });
         });
+      
     });
 
+
+
+
     
-    function toggleLegend() {
-      var legendBody = document.getElementById('legend_body');
-      var collapseIcon = document.querySelector('.collapse-legend i');
-      if (legendBody.style.display === 'none') {
-          legendBody.style.display = 'block';
-          collapseIcon.classList.remove('fa-chevron-down');
-          collapseIcon.classList.add('fa-chevron-up');
-      } else {
-          legendBody.style.display = 'none';
-          collapseIcon.classList.remove('fa-chevron-up');
-          collapseIcon.classList.add('fa-chevron-down');
-      }
-  }
+
+    

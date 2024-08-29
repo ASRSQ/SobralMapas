@@ -16,8 +16,8 @@ html, body, #map {
 
 
 #layerCheckboxList {
-    height: 100vh; /* Ocupa toda a altura da tela */
-    overflow-y: auto; /* Adiciona rolagem vertical */
+    height: 100vh; 
+    overflow-y: auto; 
 }
 
 .layer-checkbox input[type="checkbox"] {
@@ -134,12 +134,12 @@ h3 {
     border-radius: 10px;
     color: white;
     height: 100%;
-    max-height: 600px; /* Define a altura máxima desejada */
+    max-height: 600px; 
     overflow-y: auto;
 }
 
 .map {
-    height: 100%; /* Ajuste conforme necessário */
+    height: 100%; 
     max-height: 700px;
     border: 1px solid black;
     border-radius: 10px;
@@ -284,6 +284,7 @@ details[open] summary {
 #collapseDragDropMaps .dropdown-menu {
     background-color: #fff;
     color: white;
+    border: 2px solid #7a7a7a;
     width: 100%;
     height: 100px;
 }
@@ -293,49 +294,81 @@ details[open] summary {
     position: fixed;
     z-index: 1000;
     background-color: #fff;
-    left: 450px; /* Ajuste para um valor mais dinâmico em telas menores */
+    left: 450px; 
     bottom: 20px;
     border: 1px solid #ddd;
-    border-radius: 8px; /* Aumente o arredondamento para um visual mais moderno */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Aumente a sombra para destaque */
-    width: 300px;
-    transition: all 0.3s ease; /* Transição suave para todos os elementos */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); 
+    width: 350px;
+    transition: all 0.3s ease; 
 }
 
 #legend:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Feedback visual no hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); 
 }
 
 #legend_heading {
-    background-color: #f8f9fa; /* Leve mudança de cor para o cabeçalho */
+    background-color: #f8f9fa; 
     border-bottom: 1px solid #ddd;
-    padding: 12px; /* Aumente um pouco o padding */
     cursor: pointer;
-    transition: background-color 0.3s ease; 
+    transition: all 0.3s ease; 
 }
 
 #legend_heading h4 {
-    color: black; /* Cor azul para destacar o título */
-    font-size: 1rem; /* Tamanho de fonte ligeiramente maior */
+    color: black; 
+    font-size: 1rem; 
     margin: 0;
 }
+
 .fa-circle {
-    font-size: 15px !important; /* Força a aplicação do tamanho */
+    font-size: 12px !important; /* Força a aplicação do tamanho */
     margin-right: 4px;
 }
 
+.fa-caret-down {
+    margin-right: 6px;
+}
+
 #legend_body {
-    padding: 10px;
-    overflow: hidden;
-    background-color: #ffffff; /* Fundo branco para contraste */
-    transition: padding 0.3s ease; /* Animação suave */
+    width: 100%; 
+    background-color: #f8f9fa;
+    padding: 10px 10px 10px 10px;
+    border: 1px solid #dee2e6; 
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
+    transition: height 0.3s ease, width 0.3s ease; 
+    height: 250px; 
+    overflow-y: auto; 
+}
+
+#legend_body .collapse.show {
+    display: block; 
+    height: 300px;
+    width: 100%; 
+}
+
+#legend_body .collapse {
+    max-height: 0; 
+}
+
+#legend_body button {
+    margin-bottom: 10px; 
+    width: 100%; 
+    background-color: #000;
+    color: #fff;
+}
+
+#legend_body button:last-child {
+    margin-bottom: 0;
+}
+
+#legend_body button:hover {
+    border-color: #fff; 
 }
 
 .collapse-legend {
     width: 100%;
     text-align: left;
     padding: 10px;
-    border: none;
     outline: none;
 }
 
@@ -346,15 +379,15 @@ details[open] summary {
 .collapse-legend .fas {
     font-size: 1.2rem;
     margin-left: 10px;
-    transition: transform 0.2s; /* Animação de rotação do ícone */
+    transition: transform 0.3s; 
 }
 
-.collapse-legend[aria-expanded="true"] .fas {
+.fa-caret-down[aria-expanded="false"] .fas {
     transform: rotate(0deg);
 }
 
-.collapse-legend[aria-expanded="false"] .fas {
-    transform: rotate(180deg);
+.fa-caret-down[aria-expanded="true"] .fas {
+    transform: rotate(0deg);
 }
 
 /* Configurações do visual do chat */
@@ -369,7 +402,8 @@ details[open] summary {
     padding: 10px 20px;
     border-radius: 50px;
     cursor: pointer;
-    z-index: 1000;
+    z-index: 1001;
+    margin-left: 20px !important;
 }
 
 #show-chat-button:hover {
@@ -388,7 +422,7 @@ details[open] summary {
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: none; /* Inicialmente escondido */
+    display: none; 
     flex-direction: column;
     background-color: #ccc;
     position: fixed;
@@ -398,7 +432,7 @@ details[open] summary {
     z-index: 1000;
 }
 
-.header {
+.chat-header {
     background-color: #007bff;
     color: #fff;
     padding: 10px;
@@ -408,6 +442,24 @@ details[open] summary {
     font-weight: bold;
     flex-shrink: 0;
     position: relative;
+    height: 50px;
+}
+
+.chat-title {
+    font-size: 18px;
+    padding-top: 2px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.fa-times {
+    font-size: 20px; 
+    margin-right: 4px;
+}
+
+.fa-comment {
+    padding-top: 3px;
+    margin-right: 4px;
 }
 
 #messages {
