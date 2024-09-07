@@ -390,6 +390,40 @@ details[open] summary {
     transform: rotate(0deg);
 }
 
+
+/* Estiliza a lista do menu suspenso */
+.dropdown-menu {
+    background-color: #f8f9fa;
+    border: 1px solid #000;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    width: 100%; 
+    max-height: 400px; /* Altura máxima para scroll */
+    overflow-y: auto; /* Adiciona scroll se necessário */
+    padding: 1rem;
+    margin: 0;
+    position: relative; 
+    display: none; /* Adiciona display none por padrão */
+}
+
+/* Estiliza itens da lista dentro do menu */
+.dropdown-menu li {
+    font-size: 1rem;
+    color: #212529;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease; /* Transição suave para a cor de fundo */
+}
+
+/* Quando a lista está visível, expande os itens */
+.dropdown-menu.show {
+    display: block; /* Mostra o menu quando necessário */
+}
+
+/* Quando o item está ativo */
+.dropdown-menu li.active {
+    background-color: #eaeaea; /* Destaque para item ativo */
+}
+
 /* Configurações do visual do chat */
 #show-chat-button {
     position: fixed;
