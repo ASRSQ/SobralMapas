@@ -57,12 +57,21 @@ Route::get('/proxy-wms', function (Request $request) {
     // Captura todos os parâmetros recebidos na requisição original
     $params = $request->all();
 
+    // Log dos parâmetros recebidos (para depuração)
+    Log::info('WMS Request Params:', $params);
+
     // Faz a requisição ao GeoServer passando os parâmetros
-    $response = Http::get('http://geoserver.sobral.ce.gov.br/geoserver/ows', $params);
+    $response = Http::withHeaders([
+        'Accept' => 'image/png'
+    ])->get('http://geoserver.sobral.ce.gov.br/geoserver/ows', $params);
+
+    // Log da resposta recebida (para depuração)
+    Log::info('GeoServer Response:', ['status' => $response->status()]);
 
     // Verifica se a requisição foi bem-sucedida
     if ($response->successful()) {
-        return response($response->body())->header('Content-Type', 'image/png');
+        return response($response->body(), 200)
+               ->header('Content-Type', 'image/png');
     } else {
         return response('Erro ao carregar a camada WMS.', 500);
     }
