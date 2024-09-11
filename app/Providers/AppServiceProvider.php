@@ -3,6 +3,12 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Application\Services\GeoServerService;
+use App\Infrastructure\Adapters\GeoServerClient;
+use App\Domain\Repositories\ICategoryRepository;
+use App\Domain\Repositories\ILayerRepository;
+use App\Infrastructure\Repositories\EloquentCategoryRepository;
+use App\Infrastructure\Repositories\EloquentLayerRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(ICategoryRepository::class, EloquentCategoryRepository::class);
+        $this->app->bind(ILayerRepository::class, EloquentLayerRepository::class);
+
+        $this->app->singleton(GeoServerService::class, function ($app) {
+            return new GeoServerService($app->make(GeoServerClient::class));
+        });
     }
 
     /**

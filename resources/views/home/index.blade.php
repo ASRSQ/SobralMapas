@@ -52,24 +52,20 @@
     <h3>Selecione um mapa para ter visualização:</h3>
     <div id="layerCheckboxList">
         @foreach($categories as $category)
-        <details class="category">
-            <summary>{{ $category->name }}</summary>
-            @foreach($subcategories as $subcategory)
-            @if($subcategory->category_id == $category->id)
-            <details class="subcategory">
-                <summary>{{ $subcategory->name }}</summary>
-                @foreach($layers as $layer)
-                @if($layer->subcategory_id == $subcategory->id)
-                <div class="layer-category">
-                    <input type="checkbox" id="{{ $layer->layer }}" name="{{ $layer->name }}">
-                    <label for="{{ $layer->layer }}">{{ $layer->name }}</label>
-                </div>
-                @endif
+            <details class="category">
+                <summary>{{ $category->getName() }}</summary>
+                @foreach($category->getSubcategories() as $subcategory)
+                    <details class="subcategory">
+                        <summary>{{ $subcategory->getName() }}</summary>
+                        @foreach($subcategory->getLayers() as $layer)
+                            <div class="layer-category">
+                                <input type="checkbox" id="{{ $layer->getLayer() }}" name="{{ $layer->getName() }}">
+                                <label for="{{ $layer->getLayer() }}">{{ $layer->getName() }}</label>
+                            </div>
+                        @endforeach
+                    </details>
                 @endforeach
             </details>
-            @endif
-            @endforeach
-        </details>
         @endforeach
 
         <div id="collapseDragDropMaps" class="drag-drop-body p-0 collapse show" style="">

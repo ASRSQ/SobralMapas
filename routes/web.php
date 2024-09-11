@@ -9,6 +9,7 @@ use App\Http\Controllers\ChatbotController;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GeoServerProxyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -22,17 +23,25 @@ use Illuminate\Support\Facades\Log;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+
 
 Route::get('/tiles', [HomeController::class, 'tile']);
 Route::get('/coord', [HomeController::class, 'coord']);
+
 // Definir rotas para categorias
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::get('/categories/create', [CategoryController::class, 'createPage'])->name('categories.createPage');
+Route::post('/categories', [CategoryController::class, 'create'])->name('categories.create');
+Route::get('/categories/{category}/edit', [CategoryController::class, 'editPage'])->name('categories.editPage');
 Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
-Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+Route::delete('/categories/{category}', [CategoryController::class, 'delete'])->name('categories.delete');
+
+
+
+
 Route::get('/layers', [LayerController::class, 'index'])->name('layers.index');
 Route::get('/layers/create', [LayerController::class, 'create'])->name('layers.create');
 Route::post('/layers', [LayerController::class, 'store'])->name('layers.store');
@@ -53,26 +62,26 @@ Route::get('/admin', [AdminController::class, 'index']);
 // Adicionando a rota sendMessage no HomeController
 Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('chat.sendMessage');
 
-Route::get('/proxy-wms', function (Request $request) {
-    // Captura todos os parâmetros recebidos na requisição original
-    $params = $request->all();
+// Route::get('/proxy-wms', function (Request $request) {
+//     // Captura todos os parâmetros recebidos na requisição original
+//     $params = $request->all();
 
-    // Log dos parâmetros recebidos (para depuração)
-    Log::info('WMS Request Params:', $params);
+//     // Log dos parâmetros recebidos (para depuração)
+//     Log::info('WMS Request Params:', $params);
 
-    // Faz a requisição ao GeoServer passando os parâmetros
-    $response = Http::withHeaders([
-        'Accept' => 'image/png'
-    ])->get('http://geoserver.sobral.ce.gov.br/geoserver/ows', $params);
+//     // Faz a requisição ao GeoServer passando os parâmetros
+//     $response = Http::withHeaders([
+//         'Accept' => 'image/png'
+//     ])->get('http://geoserver.sobral.ce.gov.br/geoserver/ows', $params);
 
-    // Log da resposta recebida (para depuração)
-    Log::info('GeoServer Response:', ['status' => $response->status()]);
+//     // Log da resposta recebida (para depuração)
+//     Log::info('GeoServer Response:', ['status' => $response->status()]);
 
-    // Verifica se a requisição foi bem-sucedida
-    if ($response->successful()) {
-        return response($response->body(), 200)
-               ->header('Content-Type', 'image/png');
-    } else {
-        return response('Erro ao carregar a camada WMS.', 500);
-    }
-});
+//     // Verifica se a requisição foi bem-sucedida
+//     if ($response->successful()) {
+//         return response($response->body(), 200)
+//                ->header('Content-Type', 'image/png');
+//     } else {
+//         return response('Erro ao carregar a camada WMS.', 500);
+//     }
+// });

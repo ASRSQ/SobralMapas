@@ -5,7 +5,7 @@
         <h1>Lista de Categorias</h1>
 
         <!-- Link para criar nova categoria -->
-        <a href="{{ route('categories.create') }}" class="btn btn-primary mb-3">Criar Nova Categoria</a>
+        <a href="{{ route('categories.createPage') }}" class="btn btn-primary mb-3">Criar Nova Categoria</a>
 
         <!-- Tabela de categorias -->
         <table class="table">
@@ -19,12 +19,12 @@
             <tbody>
                 @foreach ($categories as $category)
                     <tr>
-                        <td>{{ $category->id }}</td>
-                        <td>{{ $category->name }}</td>
+                        <td>{{ $category->getId() }}</td>
+                        <td>{{ $category->getName() }}</td>
                         <td>
                             <!-- Botões de editar e excluir -->
-                            <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-primary">Editar</a>
-                            <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline">
+                            <a href="{{ route('categories.editPage', $category->getId()) }}" class="btn btn-sm btn-primary">Editar</a>
+                            <form action="{{ route('categories.delete', $category->getId()) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta categoria?')">Excluir</button>
