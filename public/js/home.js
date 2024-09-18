@@ -1,13 +1,12 @@
 // URL do serviço WMS e GeoJSON
 const wmsUrl = "http://geoserver.sobral.ce.gov.br/geoserver/ows";
-const geoJsonUrl =
-    "https://polygons.openstreetmap.fr/get_geojson.py?id=302610&params=0";
+const geoJsonUrl ="https://polygons.openstreetmap.fr/get_geojson.py?id=302610&params=0";
 
 // Elemento da lista de checkboxes
 const layerCheckboxList = document.getElementById("layerCheckboxList");
 
 // Criar o mapa com camada base OpenStreetMap
-const map = new ol.Map({
+let map = new ol.Map({
     target: "map",
     layers: [
         new ol.layer.Tile({
@@ -47,7 +46,7 @@ function toggleLayer(layerName, addLayer) {
         if (!existingLayer) {
             const newLayer = new ol.layer.Tile({
                 source: new ol.source.TileWMS({
-                    url: `${window.location.origin}/api/proxy-wms`, // URL do proxy
+                    url: `${window.location.origin}/sobralmapas/public/api/proxy-wms`, // URL do proxy
                     params: { LAYERS: layerName, TILED: true },
                     serverType: "geoserver",
                     transition: 0,

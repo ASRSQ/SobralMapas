@@ -13,8 +13,25 @@ class GeoServerService
         $this->geoServerClient = $geoServerClient;
     }
 
-    public function getWmsLayer(array $params)
+    /**
+     * Obter as capabilities do WMS
+     *
+     * @return \Illuminate\Http\Client\Response
+     */
+    public function getCapabilities()
     {
-        return $this->geoServerClient->getWms($params);
+        return $this->geoServerClient->getCapabilities();
     }
+
+    /**
+     * Obter um mapa renderizado do WMS
+     *
+     * @param array $params
+     * @return \Illuminate\Http\Client\Response
+     */
+    public function getMap(array $params)
+    {
+        return $this->geoServerClient->getMap($params);
+    }
+
 }

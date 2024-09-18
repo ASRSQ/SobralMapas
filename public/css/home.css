@@ -558,3 +558,60 @@ details[open] summary {
     font-weight: bold;
     margin-bottom: 5px;
 }
+.tool-menu-dropdown {
+    position: absolute;
+    top: 200px; /* Ajuste conforme a altura do header */
+    right: 10px;
+    z-index: 1000;
+}
+
+.tool-menu-dropdown .dropdown-menu {
+    min-width: 150px;
+}
+.ol-tooltip-measure {
+    background-color: white; /* Mantém o fundo branco */
+    border: 1px solid #cccccc; /* Borda cinza clara */
+    padding: 5px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra leve no tooltip */
+    color: black;
+}
+
+.ol-tooltip-measure::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
+
+.ol-overlay-container.ol-selectable .ol-tooltip-static span {
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); /* Sombra cinza abaixo do texto */
+    background-color: rgba(255, 255, 255, 0.7); /* Fundo branco com 70% de opacidade */
+    display: inline-block; /* Garante que a borda funcione corretamente ao redor do conteúdo */
+}
+
+@media print {
+    @page {
+        size: landscape; /* Forçar o modo paisagem */
+        margin: 0;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    #map {
+        width: 100vw; /* Ocupa toda a tela de impressão */
+        height: 100vh;
+        object-fit: cover;
+    }
+}
+
+

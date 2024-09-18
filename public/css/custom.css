@@ -1,0 +1,8 @@
+.main-sidebar {
+    background-color: #0094EE !important;
+}
+.brand-image {
+    max-height: 50px; /* Ajuste conforme necessário */
+    width: auto; /* Manter a proporção */
+   
+}

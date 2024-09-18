@@ -1,6 +1,7 @@
 @extends('adminlte::page')
 
 @section('title', 'Dashboard')
+<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
 @section('content_header')
     <h1>Dashboard</h1>
