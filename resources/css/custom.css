@@ -11,7 +11,7 @@
 /* Estilos gerais para Topbar */
 .topbar {
     display: flex;
-    background-color: #343a40;
+    background-color: #691e00;
     height: 60px;
     transition: all 0.3s ease-in-out;
 }
