@@ -1,0 +1,8 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/js/map.js": "/js/map.js",
+    "/css/custom.css": "/css/custom.css",
+    "/js/app.min.js": "/js/app.min.js",
+    "/js/map.min.js": "/js/map.min.js",
+    "/css/custom.min.css": "/css/custom.min.css"
+}

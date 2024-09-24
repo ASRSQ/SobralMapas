@@ -1,0 +1,392 @@
+/* Ajustando a área do mapa */
+#map {
+    height: calc(100vh - 60px);
+}
+
+.col {
+    flex: 1;
+    padding: 0;
+}
+
+/* Estilos gerais para Topbar */
+.topbar {
+    display: flex;
+    background-color: #343a40;
+    height: 60px;
+    transition: all 0.3s ease-in-out;
+}
+
+.topbar .logo {
+    height: 50px;
+}
+
+.topbar h1 {
+    margin: 0;
+}
+
+.topbar a {
+    color: white;
+    text-decoration: none;
+}
+
+.topbar a:hover {
+    text-decoration: underline;
+}
+
+.topbar.hidden-topbar {
+    display: none;
+}
+
+.topbar-left {
+    margin-left: 20px;
+}
+
+/* Estilos gerais para sidebar */
+
+.sidebar {
+    position: absolute;
+    top: 10px;
+    left: 0px;
+    bottom: 0;
+    padding: 0;
+    width: 250px;
+    color: white;
+    display: flex;
+    transition: all 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.sidebar-content {
+    width: 100%;
+    padding: 5px;
+    height: 100%;
+    background: #000;
+}
+.sidebar-camadas {
+    overflow-y: scroll;
+    background-color: #232323;
+    height: 100%;
+    padding-left: 5px;
+    display: none;
+    border-radius: 0 0 8px 0;
+}
+
+.sidebar-mapas-ativos {
+    padding-left: 5px;
+    padding-right: 5px;
+    height: 100%;
+    background-color: #232323;
+    border-radius: 0 8px 0 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estiliza a barra de rolagem */
+
+.sidebar-camadas::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-camadas::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 8px;
+}
+
+.sidebar-camadas::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 10px;
+    border: none;
+}
+
+.sidebar-camadas::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+.sidebar.sidebar-collapsed .sidebar-content {
+    width: 0;
+    padding: 0;
+    display: none;
+}
+.sidebar-header {
+    border-bottom: 1px solid #333;
+}
+.sidebar-header span {
+    font-size: 20px;
+}
+
+.sidebar.sidebar-collapsed {
+    width: 0px;
+}
+
+/* Estilos gerais para a actionbar */
+
+.action-bar {
+    background-color: #333;
+    display: flex;
+    position: absolute;
+    top: 0;
+    right: -50px;
+    flex-direction: column;
+    align-items: start;
+    border-radius: 0px 0px 10px 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.action-bar .btn {
+    background-color: transparent;
+    color: white;
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
+}
+
+.action-bar .btn:hover {
+    background-color: #555;
+    cursor: pointer;
+}
+.search-container {
+    position: relative;
+}
+.input-search {
+    display: block;
+    position: absolute;
+    left: 50px;
+    background: #333;
+    width: 200px;
+    border-radius: 0px 5px 5px 0px;
+    height: 100%;
+    top: 0;
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
+    padding-left: 10px;
+}
+.input-search:focus {
+    background-color: #333;
+    color: wheat;
+}
+
+.input-search.hidden {
+    width: 0;
+    padding: 0;
+}
+
+/* Estilo geral do accordion para as categorias*/
+
+.accordion-item:first-of-type .accordion-button,
+.accordion-item:last-of-type .accordion-button.collapsed {
+    border-radius: 0;
+}
+.accordion-button.cat {
+    background-color: #24282c;
+    color: rgb(255, 171, 61);
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 2px;
+}
+.accordion-button.cat:hover {
+    background: #3b3b3b;
+}
+.accordion-button.cat:focus {
+    box-shadow: none;
+}
+.accordion-item.cat {
+    background-color: transparent;
+    border: none;
+    margin-bottom: 0.3rem;
+    margin-top: 0.3rem;
+}
+.accordion-body.cat {
+    background-color: #272727;
+    color: white;
+    font-size: 0.85rem;
+    border-radius: 0;
+    padding: 0;
+}
+.accordion-header.cat {
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilo geral do accordion para as subcategorias*/
+
+.accordion-button.sub {
+    background-color: #343a40;
+    color: white;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+}
+.accordion-button.sub::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: wheat;
+    width: 2px;
+    height: 100%;
+}
+.accordion-button.sub:not(.collapsed) {
+    background: #343a40;
+    color: white;
+}
+.accordion-button.sub:focus {
+    box-shadow: none;
+}
+.accordion-item.sub {
+    border: none;
+    margin-bottom: 0.3rem;
+}
+.accordion-body.sub {
+    background-color: #272727;
+    color: white;
+    font-size: 0.85rem;
+    padding: 5px;
+}
+.accordion-body ul {
+    margin: 0;
+    border-bottom: #343a40;
+}
+.accordion-body .label-layer-box {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.error-layer {
+    color: red;
+}
+.show-layer-alert {
+    display: block;
+    color: rgb(165, 66, 66);
+}
+.hide-layer-alert {
+    display: none;
+}
+/* Aplica estilo ao ícone <i> quando a label tiver a classe "error-layer" */
+/* .error-layer + i {
+    display: block;
+    color: rgb(
+        192,
+        63,
+        63
+    ); 
+    font-size: 15px;
+} */
+.accordion-body ul li {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.accordion-body ul li label {
+    flex-grow: 1;
+}
+
+input[type="checkbox"] {
+    accent-color: rgb(255, 171, 61); /* Cor vermelha */
+}
+
+/* Estilos gerais para as layers em Mapas Ativos */
+.box-legenda {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+.box-leg-item:hover {
+    border: 1px solid rgb(255, 171, 61);
+}
+.box-leg-item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #6c757d;
+    height: 40px;
+    margin-bottom: 3px;
+}
+.box-leg-item img {
+    height: 40px;
+    width: 40px;
+}
+.box-leg-body {
+    flex-grow: 1;
+    padding: 2px 2px 2px 4px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.box-leg-body p {
+    font-size: 10px;
+    margin: 0;
+}
+
+/* Estilos gerais para a mensagem de erro  */
+#error-message {
+    display: none;
+    position: absolute;
+    top: -10px; /* Ajuste a distância do topo conforme necessário */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background-color: rgb(177, 57, 57);
+    color: white;
+    font-weight: 300;
+    border-radius: 5px;
+    z-index: 9999; /* Para garantir que fique acima de outros elementos */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.5s ease-in-out;
+}
+
+/* Caixa de selecao para impressao*/
+/* Estilo da caixa de seleção */
+/* Estilo da caixa de seleção */
+#selection-box {
+    position: absolute;
+    /* width: 347; */
+    min-width: 347px;
+    min-height: 300px;
+    border: 4px solid #24282c;
+    pointer-events: none; /* Não captura cliques internamente */
+    z-index: 1000;
+    resize: both;
+    overflow: hidden;
+    left: calc(50% - 150px);
+    top: calc(50% - 150px);
+}
+
+/* Permite arrastar pelo cabeçalho */
+#drag-handle {
+    display: flex;
+    justify-content: space-between;
+    gap: 2px;
+    align-items: center;
+    color: aliceblue;
+    background-color: #333333;
+    padding: 5px;
+    cursor: move;
+    pointer-events: auto; /* O cabeçalho captura eventos de clique */
+}
+#drag-handle span:nth-child(1) {
+    color: wheat;
+    font-size: 12px;
+}
+#drag-handle span:nth-child(2) {
+    font-size: 14px;
+}
+#drag-handle span:nth-child(3) {
+    font-size: 12px;
+    color: wheat;
+}
+
+/* Estilo para permitir interações nas bordas de redimensionamento */
+#selection-box::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border: 1px solid #24282c;
+    width: 15px;
+    height: 15px;
+    background: rgb(255, 255, 255); /* Transparente, mas captura eventos */
+    cursor: se-resize; /* Mostra o ícone de redimensionamento */
+    pointer-events: auto; /* Permite interações nas bordas */
+    z-index: 1001;
+}
+

@@ -1,0 +1,117 @@
+.chat {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 15px 15px 0 0;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: height 0.3s;
+  z-index: 1000;
+  width: 350px; /* Width of the chat */
+}
+
+.chat-header {
+  padding: 10px 15px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border-bottom: 1px solid #007bff;
+  display: flex; /* Align icons and text */
+  justify-content: space-between; /* Space between icon and text */
+  align-items: center; /* Vertical alignment */
+}
+
+.chat-header i { /* Style the icon */
+  font-size: 1.2em;
+}
+
+.chat-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s;
+}
+
+.chat-body.active {
+  max-height: 300px; /* Maximum height of the chat */
+  overflow-y: auto;
+}
+
+.chat-content {
+  padding: 15px;
+}
+
+.chat-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  width: 90%; /* Width of the input field */
+  margin-bottom: 10px;
+  word-wrap: break-word; /* Wrap words at the end of the line */
+}
+
+.chat-input-container { 
+  display: none;
+  flex-direction: row;
+  align-items: center; 
+  padding: 10px; /* Add padding */
+  z-index: 1001;
+}
+
+#chat-send {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px; /* Space between input and button */
+}
+
+#chat-messages {
+  margin-bottom: 10px;
+  word-break: break-all; /* Allow breaking words at any point */
+}
+
+.chat-message {
+  margin-bottom: 5px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.chat-message-user {
+  background-color: #f2f2f2;
+  text-align: right;
+}
+
+.chat-message-bot {
+  background-color: #e0ffff;
+  text-align: left;
+  width: 80%; /* Width of the message */
+}
+
+.chat-messages-inner { 
+  width: 95%; 
+  word-break: break-all; 
+}
+
+.open-chat-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  z-index: 1000;
+}
+
+
