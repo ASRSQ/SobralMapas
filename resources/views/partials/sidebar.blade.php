@@ -2,7 +2,7 @@
     <!-- Parte interna da sidebar com camadas/categorias -->
     <div class="sidebar-content">
 
-        <div class="sidebar-camadas">
+        <div id="view-camadas" class="sidebar-camadas">
             <div class="sidebar-header d-flex justify-content-between">
                 <span>Camadas</span>
             </div>
@@ -147,50 +147,55 @@
             </div>  
         </div>
 
-        <div class="sidebar-mapas-ativos">
+        <div id="view-mapas-ativos" style="display: none" class="sidebar-mapas-ativos">
             <div class="sidebar-header mb-1 d-flex justify-content-between">
                 <span>Mapas Ativos</span>
             </div>
             <!-- Mapas Ativos como um conjunto de accordion  -->
-            <div class="box-legenda" >
-    
-                <!-- Camada 1 -->
-                <div class="box-leg-item">
-                    <img 
-                    src="api/layer/legend?layer=Ceara:transol_linha_1"
-                    loading="lazy" alt="Legenda Layer 1"/>
-                    <div class="box-leg-body">
-                        <p>Linha do metrô no sentido norte</p>
+            <div class="accordion" id="accordionMapasAtivos"> 
+                <!-- Accordion Item #1 (Categoria) -->
+                <div class="accordion-item ma">
+                    <div class="accordion-header ma">
+                        <button class="accordion-button ma" type="button" data-bs-toggle="collapse" data-bs-target="#ma1" aria-expanded="true" aria-controls="collapseOne">
+                            <img height="30px" src="api/layer/legend?layer=Ceara:transol_linha_3" alt="">
+                            <span>Transol Linha 3</span>
+                        </button>
+                    </div>
+                    <div id="ma1" class="accordion-collapse ma collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMapasAtivos">
+                        <div class="accordion-body ma">
+                            <h3>Legenda</h3>
+                            <div class="ma-img-box">
+                                <img src="api/layer/legend?layer=Ceara:transol_linha_3" alt="">
+                            </div>
+                            <div class="ma-leg-box">
+                                <p>Linha sul do transol que sai do bairro cohab 3 até arco do triunfo.</p>
+                            </div>            
+                        </div>
                     </div>
                 </div>
-                
-                <div class="box-leg-item">
-                    <img 
-                    src="api/layer/legend?layer=sde%3Abar_p"
-                    loading="lazy" alt="Legenda Layer 1"/>
-                    <div class="box-leg-body">
-                        <p>Linha do metrô no sentido norte</p>
+            
+                <!-- Accordion Item #2 -->
+                <div class="accordion-item ma">
+                    <div class="accordion-header ma">
+                        <button class="accordion-button ma collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ma2" aria-expanded="false" aria-controls="collapseTwo">
+                            <img height="30px" src="api/layer/legend?layer=Ceara:transol_linha_1" alt="">
+                            <span>Transol Linha 1</span>
+                        </button>
                     </div>
-                </div>
-
-                <div class="box-leg-item">
-                    <img 
-                    src="api/layer/legend?layer=Ceara:transol_linha_3"
-                    loading="lazy" alt="Legenda Layer 1"/>
-                    <div class="box-leg-body">
-                        <p>Linha do metrô no sentido norte</p>
-                    </div>
-                </div>
-
-                <div class="box-leg-item">
-                    <img 
-                    src="api/layer/legend?layer=Ceara:transol_linha_4"
-                    loading="lazy" alt="Legenda Layer 1"/>
-                    <div class="box-leg-body">
-                        <p>Linha do metrô no sentido norte</p>
+                    <div id="ma2" class="accordion-collapse ma collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionMapasAtivos">
+                        <div class="accordion-body ma">
+                            <h3>Legenda</h3>
+                            <div class="ma-img-box">
+                                <img src="api/layer/legend?layer=Ceara:transol_linha_1" alt="">
+                            </div>
+                            <div class="ma-leg-box">
+                                <p>Linha norte do transol que sai do bairro novo recanto até Campo dos Velhos.</p>
+                            </div>            
+                        </div>
                     </div>
                 </div>
             </div>
+            
         </div>
         
     </div>
@@ -207,8 +212,8 @@
             <button id="btn-search" class="btn" data-bs-toggle="tooltip" title="Pesquisar"><i class="fas fa-search"></i></button>
         </div>
         
-        <button class="btn" data-bs-toggle="tooltip" title="Camadas"><i class="fas fa-layer-group"></i></button>
-        <button class="btn" data-bs-toggle="tooltip" title="Legenda e Mapas Ativos"><i class="fas fa-info"></i></button>
+        <button class="btn active" id="btn-camadas" data-bs-toggle="tooltip" title="Camadas"><i class="fas fa-layer-group"></i></button>
+        <button class="btn" id="btn-mapas-ativos" data-bs-toggle="tooltip" title="Legenda e Mapas Ativos"><i class="fas fa-info"></i></button>
         <button class="btn" data-bs-toggle="tooltip" title="Limpar Mapa"><i class="fas fa-eraser"></i></button>
         <button class="btn" data-bs-toggle="tooltip" title="Imprimir"><i class="fas fa-print"></i></button>
         <button class="btn" id="btn-expand" data-bs-toggle="tooltip" title="Expandir Tela"><i class="fas fa-expand-arrows-alt"></i></button>

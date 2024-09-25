@@ -67,7 +67,6 @@
     background-color: #232323;
     height: 100%;
     padding-left: 5px;
-    display: none;
     border-radius: 0 0 8px 0;
 }
 
@@ -77,8 +76,6 @@
     height: 100%;
     background-color: #232323;
     border-radius: 0 8px 0 0;
-    display: flex;
-    flex-direction: column;
 }
 
 /* Estiliza a barra de rolagem */
@@ -133,13 +130,14 @@
 }
 
 .action-bar .btn {
-    background-color: transparent;
     color: white;
     font-size: 20px;
     width: 50px;
     height: 50px;
 }
-
+.active {
+    background: #555;
+}
 .action-bar .btn:hover {
     background-color: #555;
     cursor: pointer;
@@ -168,6 +166,15 @@
 .input-search.hidden {
     width: 0;
     padding: 0;
+}
+
+/* Estilo geral para o componente accordion */
+.accordion-button:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ff8a00'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>");
+}
+
+.accordion-button.collapsed::after {
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23FFFFFF'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>");
 }
 
 /* Estilo geral do accordion para as categorias*/
@@ -316,6 +323,57 @@ input[type="checkbox"] {
     margin: 0;
 }
 
+/* Estilos gerais para os accordion de Mapas Ativos e Legendas */
+
+.accordion-button.ma:not(.collapsed) img {
+    display: none;
+}
+.accordion-button.ma:not(.collapsed) {
+    border-left: 1px solid #fff;
+}
+
+.accordion-item.ma {
+    background-color: transparent;
+    box-shadow: rgb(69 39 12 / 25%) 0px 6px 12px -2px,
+        rgb(229 165 165 / 30%) 0px 3px 7px -3px;
+    margin-bottom: 8px;
+}
+.accordion-button.ma {
+    padding: 0;
+    height: 30px;
+    color: #fff;
+    background: #313131;
+}
+.accordion-button.ma span {
+    margin-left: 8px;
+}
+.accordion-collapse.ma {
+    border-left: 1px solid rgb(255, 255, 255);
+}
+.accordion-body.ma {
+    padding: 5px;
+}
+.accordion-body.ma h3 {
+    font-size: medium;
+}
+.ma-img-box {
+    height: 80px;
+    /* border: 1px dotted #4b4b4b; */
+}
+.ma-img-box img {
+    display: block;
+    max-height: 100%;
+    height: 100%;
+    width: auto;
+}
+.ma-leg-box {
+    margin: 5px 0 5px 0;
+}
+.ma-leg-box p {
+    font-size: small;
+    margin: 0;
+}
+
 /* Estilos gerais para a mensagem de erro  */
 #error-message {
     display: none;
@@ -388,5 +446,16 @@ input[type="checkbox"] {
     cursor: se-resize; /* Mostra o ícone de redimensionamento */
     pointer-events: auto; /* Permite interações nas bordas */
     z-index: 1001;
+}
+
+.accordion-item {
+    position: relative;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    touch-action: pan-y; /* Permitir deslizar apenas horizontalmente */
+}
+
+.accordion-item.deleting {
+    transform: translateX(-100%); /* Deslizar para fora da tela à esquerda */
+    opacity: 0;
 }
 

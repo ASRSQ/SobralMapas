@@ -146,6 +146,148 @@
         resizeObserver.observe(selectionBox);
     }
 
+    // Função para inicializar os botões da Action Bar que alterna entre seções dentro da sidebar
+    function initializeActionButtons() {
+        const btnCamadas = document.getElementById("btn-camadas");
+        const btnMapasAtivos = document.getElementById("btn-mapas-ativos");
+
+        btnCamadas.addEventListener("click", function () {
+            // Exibe a div de Camadas e oculta a div de Mapas Ativos
+            document.getElementById("view-camadas").style.display = "block";
+            document.getElementById("view-mapas-ativos").style.display = "none";
+            btnCamadas.classList.add("active");
+            btnMapasAtivos.classList.remove("active");
+        });
+
+        btnMapasAtivos.addEventListener("click", function () {
+            // Exibe a div de Mapas Ativos e oculta a div de Camadas
+            document.getElementById("view-camadas").style.display = "none";
+            document.getElementById("view-mapas-ativos").style.display =
+                "block";
+            btnMapasAtivos.classList.add("active");
+            btnCamadas.classList.remove("active");
+        });
+    }
+
+    function enableSwipeToDeleteAccordion(accordionId, onItemRemoved) {
+        const accordionItems = document.querySelectorAll(
+            `#${accordionId} .accordion-item`
+        );
+
+        accordionItems.forEach((item) => {
+            let startX = 0;
+            let currentX = 0;
+            let isDragging = false;
+            let hasMoved = false; // Flag para rastrear se o item foi deslizado ou não
+            let isRemoved = false; // Flag para garantir que o item seja removido apenas uma vez
+
+            // Iniciar o toque (touchstart) ou o mouse (mousedown)
+            item.addEventListener("touchstart", handleTouchStart, {
+                passive: true,
+            });
+            item.addEventListener("mousedown", handleMouseStart);
+
+            // Mover (touchmove) ou mover o mouse (mousemove)
+            item.addEventListener("touchmove", handleTouchMove, {
+                passive: true,
+            });
+            item.addEventListener("mousemove", handleMouseMove);
+
+            // Fim do toque (touchend) ou mouse (mouseup)
+            item.addEventListener("touchend", handleTouchEnd);
+            item.addEventListener("mouseup", handleMouseEnd);
+            item.addEventListener("mouseleave", handleMouseEnd); // Para quando o mouse sai da área enquanto está arrastando
+
+            function handleTouchStart(e) {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+                hasMoved = false; // Resetar a flag ao iniciar um novo arrasto
+                isRemoved = false; // Resetar a flag ao iniciar um novo arrasto
+                item.style.transition = "none"; // Remove a transição durante o arrasto
+            }
+
+            function handleMouseStart(e) {
+                startX = e.clientX;
+                isDragging = true;
+                hasMoved = false; // Resetar a flag ao iniciar um novo arrasto
+                isRemoved = false; // Resetar a flag ao iniciar um novo arrasto
+                item.style.transition = "none"; // Remove a transição durante o arrasto
+            }
+
+            function handleTouchMove(e) {
+                if (!isDragging || isRemoved) return;
+                currentX = e.touches[0].clientX;
+                const deltaX = currentX - startX;
+
+                if (deltaX < -5) {
+                    // Se o item começou a se mover, marcamos o hasMoved
+                    hasMoved = true;
+                }
+
+                if (deltaX < 0) {
+                    item.style.transform = `translateX(${deltaX}px)`; // Arrasta o item enquanto desliza
+                }
+            }
+
+            function handleMouseMove(e) {
+                if (!isDragging || isRemoved) return;
+                currentX = e.clientX;
+                const deltaX = currentX - startX;
+
+                if (deltaX < -5) {
+                    // Se o item começou a se mover, marcamos o hasMoved
+                    hasMoved = true;
+                }
+
+                if (deltaX < 0) {
+                    item.style.transform = `translateX(${deltaX}px)`; // Arrasta o item enquanto desliza
+                }
+            }
+
+            function handleTouchEnd() {
+                if (isRemoved || !hasMoved) return; // Apenas remove se o item foi deslizado
+                isDragging = false;
+                const deltaX = currentX - startX;
+
+                if (deltaX < -100) {
+                    // Se deslizou mais de 30px para a esquerda, removemos o item
+                    slideOutAndRemove(item);
+                } else {
+                    item.style.transition = "transform 0.3s ease";
+                    item.style.transform = "translateX(0)";
+                }
+            }
+
+            function handleMouseEnd() {
+                if (isRemoved || !hasMoved) return; // Apenas remove se o item foi deslizado
+                isDragging = false;
+                const deltaX = currentX - startX;
+
+                if (deltaX < -100) {
+                    // Se deslizou mais de 30px para a esquerda, removemos o item
+                    slideOutAndRemove(item);
+                } else {
+                    item.style.transition = "transform 0.3s ease";
+                    item.style.transform = "translateX(0)";
+                }
+            }
+
+            function slideOutAndRemove(element) {
+                isRemoved = true; // Marcar o item como removido
+                element.style.transition =
+                    "transform 0.3s ease, opacity 0.3s ease";
+                element.style.transform = "translateX(-100%)"; // Move para fora da tela à esquerda
+                element.style.opacity = "0"; // Adiciona efeito de desaparecimento
+                setTimeout(() => {
+                    element.remove(); // Remove o elemento após a animação
+                    if (typeof onItemRemoved === "function") {
+                        onItemRemoved(element); // Executa a função callback passando o elemento removido
+                    }
+                }, 300); // Espera 300ms (o tempo da animação)
+            }
+        });
+    }
+
     // Função principal que inicializa todas as funcionalidades
     async function initializeApp() {
         const map = window.mapModule.initializeMap(); // Inicializa o mapa chamando a função do `map.js`
@@ -157,6 +299,16 @@
         initializeSearch(); // Inicializa a funcionalidade da pesquisa
         initializeExpandButton(); // Inicializa a funcionalidade do Fullscreen
         initializeTooltip(); // Inicializa a funcionalidade dos tooltips das actions button na sidebar
+        initializeActionButtons();
+
+        enableSwipeToDeleteAccordion(
+            "accordionMapasAtivos",
+            function (removedElement) {
+                console.log("Elemento removido:", removedElement);
+                // Aqui você pode executar qualquer outra lógica, como uma notificação, por exemplo
+                alert("Um item foi removido!");
+            }
+        );
 
         initializeLayerToggles(map); // Inicializa os toggles de camadas
         window.mapModule.loadSobralBoundary(map); // Demarca o espaço geográfico de sobral chamando a funcao do map.js
