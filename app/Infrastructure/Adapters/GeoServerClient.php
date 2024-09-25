@@ -28,8 +28,6 @@ class GeoServerClient
             'service' => 'WMS',
             'request' => 'GetLegendGraphic',
             'format' => 'image/png',
-            'width' => '100',
-            'height' => '100',
             'layer' => $layer
         ]);
 
