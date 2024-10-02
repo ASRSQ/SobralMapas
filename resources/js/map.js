@@ -227,7 +227,10 @@ const { VERSION } = require("lodash");
             // Remove a camada se ela estiver presente
             removeWmsLayer(map, layerName);
         }
+
+
     }
+    
 
     // Exporta as funções para serem acessadas no `app.js`
     window.mapModule = {
