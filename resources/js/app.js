@@ -349,6 +349,7 @@
         const lineWidthPicker = document.getElementById('line-width-picker');
         const lineWidthValue = document.getElementById('line-width-value');
         const clearDrawingsButton = document.getElementById('clear-drawings');
+        const stopDrawingButton = document.getElementById('stop-drawing');
     
         const source = new ol.source.Vector({
             wrapX: false,
@@ -590,6 +591,15 @@
         clearDrawingsButton.addEventListener('click', function() {
             clearDrawings();
         });
+
+         // Adiciona um evento para o botão que para o desenho
+        stopDrawingButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (draw) {
+                window.map.removeInteraction(draw);
+                draw = null; // Limpa a variável draw para que não haja referências pendentes
+            }
+    });
     }
     
     

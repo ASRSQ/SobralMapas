@@ -325,6 +325,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     var lineWidthPicker = document.getElementById('line-width-picker');
     var lineWidthValue = document.getElementById('line-width-value');
     var clearDrawingsButton = document.getElementById('clear-drawings');
+    var stopDrawingButton = document.getElementById('stop-drawing');
     var source = new ol.source.Vector({
       wrapX: false
     });
@@ -544,6 +545,15 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     });
     clearDrawingsButton.addEventListener('click', function () {
       clearDrawings();
+    });
+
+    // Adiciona um evento para o botão que para o desenho
+    stopDrawingButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      if (draw) {
+        window.map.removeInteraction(draw);
+        draw = null; // Limpa a variável draw para que não haja referências pendentes
+      }
     });
   }
 
