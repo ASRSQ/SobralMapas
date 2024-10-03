@@ -177,6 +177,13 @@
     background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23FFFFFF'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>");
 }
 
+.accordion-button::after {
+    margin-right: 3px;
+}
+.accordion-button {
+    padding: 0.4rem 0.8rem;
+}
+
 /* Estilo geral do accordion para as categorias*/
 
 .accordion-item:first-of-type .accordion-button,
@@ -187,7 +194,6 @@
     background-color: #24282c;
     color: rgb(255, 171, 61);
     font-size: 0.9rem;
-    padding: 0.4rem 0.8rem;
     margin-bottom: 2px;
 }
 .accordion-button.cat:hover {
@@ -324,7 +330,22 @@ input[type="checkbox"] {
 }
 
 /* Estilos gerais para os accordion de Mapas Ativos e Legendas */
-
+.accordion {
+    overflow: hidden;
+}
+.accordion-item.ma.layer-deleting .accordion-button {
+    z-index: 3;
+    border-color: #fe8686;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(253, 13, 13, 0.25);
+}
+.accordion-item.ma.layer-deleting .accordion-button::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' stroke='%23ff0000' stroke-width='2' fill='none'%3E%3Cline x1='4' y1='4' x2='12' y2='12'/%3E%3Cline x1='4' y1='12' x2='12' y2='4'/%3E%3C/svg%3E");
+}
+.accordion-item.ma {
+    position: relative;
+    transition: transform 0.3s ease;
+}
 .accordion-button.ma:not(.collapsed) img {
     display: none;
 }
@@ -334,12 +355,11 @@ input[type="checkbox"] {
 
 .accordion-item.ma {
     background-color: transparent;
-    box-shadow: rgb(69 39 12 / 25%) 0px 6px 12px -2px,
-        rgb(229 165 165 / 30%) 0px 3px 7px -3px;
+    /* box-shadow: rgb(69 39 12 / 25%) 0px 6px 12px -2px,
+        rgb(229 165 165 / 30%) 0px 3px 7px -3px; */
     margin-bottom: 8px;
 }
 .accordion-button.ma {
-    padding: 0;
     height: 30px;
     color: #fff;
     background: #313131;
@@ -392,25 +412,29 @@ input[type="checkbox"] {
     transition: all 0.5s ease-in-out;
 }
 
-/* Caixa de selecao para impressao*/
-/* Estilo da caixa de seleção */
 /* Estilo da caixa de seleção */
 #selection-box {
     position: absolute;
-    /* width: 347; */
-    min-width: 347px;
-    min-height: 300px;
-    border: 4px solid #24282c;
     pointer-events: none; /* Não captura cliques internamente */
-    z-index: 1000;
-    resize: both;
-    overflow: hidden;
     left: calc(50% - 150px);
     top: calc(50% - 150px);
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
 }
 
-/* Permite arrastar pelo cabeçalho */
+#selection-area {
+    min-width: 347px;
+    min-height: 300px;
+    border: 4px solid rgb(0, 0, 0);
+    resize: both;
+    overflow: hidden;
+    position: relative;
+}
+
 #drag-handle {
+    /* Permite arrastar pelo cabeçalho */
     display: flex;
     justify-content: space-between;
     gap: 2px;
@@ -421,20 +445,39 @@ input[type="checkbox"] {
     cursor: move;
     pointer-events: auto; /* O cabeçalho captura eventos de clique */
 }
-#drag-handle span:nth-child(1) {
-    color: wheat;
+.selection-tools {
+    width: 150px;
+    pointer-events: auto;
+}
+.print-options {
+    background: #333333;
+    padding: 8px;
+    border-radius: 0px 5px 5px 0;
+    color: #fff;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.print-options select,
+.print-options input,
+.print-options span {
+    height: 28px;
     font-size: 12px;
 }
-#drag-handle span:nth-child(2) {
-    font-size: 14px;
+.print-options button {
+    width: 80px;
+    height: 30px;
+    padding: 0;
+    background: #ff8e31;
+    border: 1px solid #fff;
 }
-#drag-handle span:nth-child(3) {
-    font-size: 12px;
-    color: wheat;
+.print-options button:hover {
+    background-color: #d17224;
 }
 
-/* Estilo para permitir interações nas bordas de redimensionamento */
-#selection-box::after {
+#selection-area::after {
+    /* Estilo para permitir interações nas bordas de redimensionamento */
     content: "";
     position: absolute;
     bottom: 0;
@@ -447,16 +490,19 @@ input[type="checkbox"] {
     pointer-events: auto; /* Permite interações nas bordas */
     z-index: 1001;
 }
-
-.accordion-item {
-    position: relative;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    touch-action: pan-y; /* Permitir deslizar apenas horizontalmente */
+#drag-handle button {
+    color: #fff;
+}
+#drag-handle button:hover {
+    background: #434343;
 }
 
-.accordion-item.deleting {
-    transform: translateX(-100%); /* Deslizar para fora da tela à esquerda */
-    opacity: 0;
+.swipe-delete {
+    background-color: #f8d7da;
+}
+
+.accordion-body {
+    user-select: none;
 }
 
 #floating-button {
