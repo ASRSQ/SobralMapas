@@ -4,20 +4,6 @@
 
 @section('content')
 
-<div id="selection-box">
-
-    <div id="drag-handle">
-        <span>
-            Arraste
-        </span>
-        <span>
-            Imprimir Área
-        </span>
-        <span id="sel-box-dim">
-
-        </span>
-    </div>
-
-</div>
+<x-selection-box />
     <div id="map"></div>
 @endsection

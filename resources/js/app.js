@@ -92,15 +92,35 @@
     function initializeSelectionBox() {
         const selectionBox = document.getElementById("selection-box");
         const dragHandle = document.getElementById("drag-handle");
-
+        const selectionButton = document.getElementById("selection-button");
+        const selectionTools = document.querySelector(".selection-tools");
+        const resolution = document.getElementById("resolution");
+        const selectionArea = document.getElementById("selection-area");
         let isDragging = false;
         let startX, startY, offsetX, offsetY;
 
+        // Verifica se os elementos estão presentes
+        if (selectionButton && selectionTools) {
+            selectionButton.addEventListener("click", function () {
+                // Alterna a visibilidade da div "selection-tools"
+                if (
+                    selectionTools.style.display === "none" ||
+                    selectionTools.style.display === ""
+                ) {
+                    selectionButton.classList.add("active");
+                    selectionTools.style.display = "block"; // Exibe o selection-tools
+                } else {
+                    selectionTools.style.display = "none"; // Oculta o selection-tools
+                    selectionButton.classList.remove("active");
+                }
+            });
+        }
+
         // Função para atualizar as dimensões no cabeçalho
         function updateDimensions() {
-            const width = selectionBox.offsetWidth;
-            const height = selectionBox.offsetHeight;
-            dragHandle.innerHTML = `Arraste - ${width}px x ${height}px`;
+            const width = selectionArea.offsetWidth;
+            const height = selectionArea.offsetHeight;
+            resolution.innerHTML = `${width} x ${height}`;
         }
 
         // Iniciar o arraste ao clicar no cabeçalho
@@ -150,6 +170,22 @@
     function initializeActionButtons() {
         const btnCamadas = document.getElementById("btn-camadas");
         const btnMapasAtivos = document.getElementById("btn-mapas-ativos");
+        const btnImpressao = document.getElementById("btn-imprimir");
+        const selectionBox = document.getElementById("selection-box");
+
+        btnImpressao.addEventListener("click", function () {
+            // Alterna a visibilidade do componente
+            if (
+                selectionBox.style.display === "none" ||
+                selectionBox.style.display === ""
+            ) {
+                btnImpressao.classList.add("active");
+                selectionBox.style.display = "flex"; // Exibe o componente
+            } else {
+                btnImpressao.classList.remove("active");
+                selectionBox.style.display = "none"; // Oculta o componente
+            }
+        });
 
         btnCamadas.addEventListener("click", function () {
             // Exibe a div de Camadas e oculta a div de Mapas Ativos
@@ -169,122 +205,134 @@
         });
     }
 
-    function enableSwipeToDeleteAccordion(accordionId, onItemRemoved) {
-        const accordionItems = document.querySelectorAll(
+    function enableSwipeToDeleteAccordion(accordionId) {
+        const items = document.querySelectorAll(
             `#${accordionId} .accordion-item`
         );
 
-        accordionItems.forEach((item) => {
+        items.forEach((item) => {
             let startX = 0;
             let currentX = 0;
-            let isDragging = false;
-            let hasMoved = false; // Flag para rastrear se o item foi deslizado ou não
-            let isRemoved = false; // Flag para garantir que o item seja removido apenas uma vez
+            let threshold = 80; // Limiar para remover o item
+            let isSwiping = false;
+            let isMouseDown = false; // Flag para verificar se o mouse está pressionado
+            let isMoving = false; // Flag para verificar se está havendo movimento
+            let allowSwipe = false; // Flag para permitir o arraste
+            let holdTimeout = null; // Timeout para contar os 5 segundos
 
-            // Iniciar o toque (touchstart) ou o mouse (mousedown)
-            item.addEventListener("touchstart", handleTouchStart, {
-                passive: true,
-            });
-            item.addEventListener("mousedown", handleMouseStart);
-
-            // Mover (touchmove) ou mover o mouse (mousemove)
-            item.addEventListener("touchmove", handleTouchMove, {
-                passive: true,
-            });
-            item.addEventListener("mousemove", handleMouseMove);
-
-            // Fim do toque (touchend) ou mouse (mouseup)
-            item.addEventListener("touchend", handleTouchEnd);
-            item.addEventListener("mouseup", handleMouseEnd);
-            item.addEventListener("mouseleave", handleMouseEnd); // Para quando o mouse sai da área enquanto está arrastando
-
-            function handleTouchStart(e) {
-                startX = e.touches[0].clientX;
-                isDragging = true;
-                hasMoved = false; // Resetar a flag ao iniciar um novo arrasto
-                isRemoved = false; // Resetar a flag ao iniciar um novo arrasto
-                item.style.transition = "none"; // Remove a transição durante o arrasto
+            // Função para iniciar o arrasto
+            function startSwipe(x) {
+                startX = x;
+                isSwiping = true;
+                isMoving = false; // Resetar flag de movimento
             }
 
-            function handleMouseStart(e) {
-                startX = e.clientX;
-                isDragging = true;
-                hasMoved = false; // Resetar a flag ao iniciar um novo arrasto
-                isRemoved = false; // Resetar a flag ao iniciar um novo arrasto
-                item.style.transition = "none"; // Remove a transição durante o arrasto
-            }
+            // Função para processar o movimento
+            function moveSwipe(x) {
+                if (!isSwiping || !allowSwipe) return; // Só permitir o movimento se o arraste for autorizado
+                currentX = x;
+                let deltaX = currentX - startX;
 
-            function handleTouchMove(e) {
-                if (!isDragging || isRemoved) return;
-                currentX = e.touches[0].clientX;
-                const deltaX = currentX - startX;
-
-                if (deltaX < -5) {
-                    // Se o item começou a se mover, marcamos o hasMoved
-                    hasMoved = true;
+                if (Math.abs(deltaX) > 10) {
+                    // Se houver movimento significativo, ativar a flag de movimento
+                    isMoving = true;
+                }
+                if (Math.abs(deltaX) > threshold && allowSwipe) {
+                    item.classList.add("layer-deleting");
                 }
 
                 if (deltaX < 0) {
-                    item.style.transform = `translateX(${deltaX}px)`; // Arrasta o item enquanto desliza
+                    // Apenas seguir o arraste para a esquerda
+                    item.style.transform = `translateX(${deltaX}px)`;
                 }
             }
 
-            function handleMouseMove(e) {
-                if (!isDragging || isRemoved) return;
-                currentX = e.clientX;
-                const deltaX = currentX - startX;
+            // Função para finalizar o arrasto
+            function endSwipe() {
+                if (isMoving) {
+                    let deltaX = currentX - startX;
 
-                if (deltaX < -5) {
-                    // Se o item começou a se mover, marcamos o hasMoved
-                    hasMoved = true;
-                }
+                    if (Math.abs(deltaX) > threshold && allowSwipe) {
+                        // Se o arraste for maior que o limiar, remova o item
+                        item.style.transition = "transform 0.3s ease";
+                        item.style.transform = `translateX(-100%)`;
 
-                if (deltaX < 0) {
-                    item.style.transform = `translateX(${deltaX}px)`; // Arrasta o item enquanto desliza
-                }
-            }
-
-            function handleTouchEnd() {
-                if (isRemoved || !hasMoved) return; // Apenas remove se o item foi deslizado
-                isDragging = false;
-                const deltaX = currentX - startX;
-
-                if (deltaX < -100) {
-                    // Se deslizou mais de 30px para a esquerda, removemos o item
-                    slideOutAndRemove(item);
-                } else {
-                    item.style.transition = "transform 0.3s ease";
-                    item.style.transform = "translateX(0)";
-                }
-            }
-
-            function handleMouseEnd() {
-                if (isRemoved || !hasMoved) return; // Apenas remove se o item foi deslizado
-                isDragging = false;
-                const deltaX = currentX - startX;
-
-                if (deltaX < -100) {
-                    // Se deslizou mais de 30px para a esquerda, removemos o item
-                    slideOutAndRemove(item);
-                } else {
-                    item.style.transition = "transform 0.3s ease";
-                    item.style.transform = "translateX(0)";
-                }
-            }
-
-            function slideOutAndRemove(element) {
-                isRemoved = true; // Marcar o item como removido
-                element.style.transition =
-                    "transform 0.3s ease, opacity 0.3s ease";
-                element.style.transform = "translateX(-100%)"; // Move para fora da tela à esquerda
-                element.style.opacity = "0"; // Adiciona efeito de desaparecimento
-                setTimeout(() => {
-                    element.remove(); // Remove o elemento após a animação
-                    if (typeof onItemRemoved === "function") {
-                        onItemRemoved(element); // Executa a função callback passando o elemento removido
+                        setTimeout(() => {
+                            item.remove(); // Remove o item após a animação
+                        }, 300);
+                    } else {
+                        // Volta ao estado original se o arraste for muito pequeno ou se não foi autorizado
+                        item.style.transition = "transform 0.3s ease";
+                        item.style.transform = "translateX(0)";
+                        item.classList.remove("layer-deleting");
                     }
-                }, 300); // Espera 300ms (o tempo da animação)
+                }
+
+                isMoving = false;
+                isSwiping = false;
+                isMouseDown = false;
+                allowSwipe = false; // Reseta o estado para a próxima vez
             }
+
+            // Inicia o temporizador de 5 segundos ao pressionar o botão
+            function startHold() {
+                holdTimeout = setTimeout(() => {
+                    allowSwipe = true; // Permitir o arraste após 5 segundos
+                    //item.classList.add("layer-deleting");
+                }, 500); // Aguardar 5 segundos
+            }
+
+            // Cancela o temporizador se o mouse ou o dedo for solto antes dos 5 segundos
+            function cancelHold() {
+                clearTimeout(holdTimeout); // Cancela o timeout se o mouse for solto antes de 5 segundos
+            }
+
+            // Eventos para mobile
+            item.addEventListener("touchstart", (e) => {
+                startHold(); // Inicia o temporizador de 5 segundos
+                startSwipe(e.touches[0].clientX);
+            });
+
+            item.addEventListener("touchmove", (e) => {
+                moveSwipe(e.touches[0].clientX);
+            });
+
+            item.addEventListener("touchend", (e) => {
+                cancelHold(); // Cancela o temporizador se o arrasto for interrompido
+                if (isMoving) {
+                    endSwipe();
+                }
+            });
+
+            // Eventos para desktop (mouse)
+            item.addEventListener("mousedown", (e) => {
+                isMouseDown = true;
+                startHold(); // Inicia o temporizador de 5 segundos
+                startSwipe(e.clientX);
+            });
+
+            item.addEventListener("mousemove", (e) => {
+                if (!isMouseDown) return; // Apenas mover se o mouse estiver pressionado
+                moveSwipe(e.clientX);
+            });
+
+            item.addEventListener("mouseup", (e) => {
+                cancelHold(); // Cancela o temporizador se o arrasto for interrompido
+                if (isMoving) {
+                    endSwipe();
+                } else {
+                    isMouseDown = false;
+                    isSwiping = false;
+                    allowSwipe = false;
+                }
+            });
+
+            item.addEventListener("mouseleave", () => {
+                cancelHold(); // Cancela o temporizador se o mouse sair do item
+                if (isMouseDown && isMoving) {
+                    endSwipe();
+                }
+            });
         });
     }
 
@@ -301,14 +349,7 @@
         initializeTooltip(); // Inicializa a funcionalidade dos tooltips das actions button na sidebar
         initializeActionButtons();
 
-        enableSwipeToDeleteAccordion(
-            "accordionMapasAtivos",
-            function (removedElement) {
-                console.log("Elemento removido:", removedElement);
-                // Aqui você pode executar qualquer outra lógica, como uma notificação, por exemplo
-                alert("Um item foi removido!");
-            }
-        );
+        enableSwipeToDeleteAccordion("accordionMapasAtivos");
 
         initializeLayerToggles(map); // Inicializa os toggles de camadas
         window.mapModule.loadSobralBoundary(map); // Demarca o espaço geográfico de sobral chamando a funcao do map.js
