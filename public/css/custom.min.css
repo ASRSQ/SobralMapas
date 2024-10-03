@@ -507,3 +507,65 @@ input[type="checkbox"] {
             user-select: none;
 }
 
+#floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: move;
+}
+
+
+.btn-group {
+    display: inline-block; /* Garante que o botão não ocupe 100% de largura */
+}
+
+.btn {
+    /* Verifique se não há nada causando redimensionamento inesperado */
+    padding: 10px 20px;
+    margin: 0;
+    border: none;
+    width: auto; /* Impede que o botão se expanda para preencher o container */
+}
+
+
+
+.ol-tooltip {
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    color: white;
+    padding: 4px 8px;
+    opacity: 0.7;
+    white-space: nowrap;
+    font-size: 12px;
+    cursor: default;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+            user-select: none;
+  }
+  .ol-tooltip-measure {
+    opacity: 1;
+    font-weight: bold;
+  }
+  .ol-tooltip-static {
+    background-color: #000000;
+    color: white;
+    border: 1px solid white;
+  }
+  .ol-tooltip-measure:before,
+  .ol-tooltip-static:before {
+    border-top: 6px solid rgba(0, 0, 0, 0.5);
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    margin-left: -7px;
+    left: 50%;
+  }
+  .ol-tooltip-static:before {
+    border-top-color: #0a0a0a;
+  }
+
+
+

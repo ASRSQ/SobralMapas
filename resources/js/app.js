@@ -336,6 +336,323 @@
         });
     }
 
+    function initializeFloatingButton() {
+        const floatingButton = document.getElementById("floating-button");
+    
+        function dragElement(el) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        
+            el.onmousedown = function (e) {
+                // Verifica se o alvo do clique é um dropdown ou select
+                if (e.target.closest('.dropdown-menu') || e.target.closest('select')) {
+                    return; // Não permite arrastar
+                }
+                
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+        
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            };
+        
+            function elementDrag(e) {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+        
+                el.style.top = (el.offsetTop - pos2) + "px";
+                el.style.left = (el.offsetLeft - pos1) + "px";
+            }
+        
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+        
+    
+        // Ativando a funcionalidade de arraste no botão flutuante
+        if (floatingButton) {
+            dragElement(floatingButton);
+        }
+        
+    }
+    function initializeMeasure() {
+        let draw;
+        let sketch;
+        let helpTooltipElement;
+        let measureTooltipElement;
+        let measureTooltip;
+        let helpTooltip;
+        let selectedLineColor = '#ffcc33'; // Cor padrão da linha e bolinha
+        let selectedLineWidth = 2; // Largura padrão
+    
+        // Elementos HTML
+        const measureLineButton = document.getElementById('measure-line');
+        const measureAreaButton = document.getElementById('measure-area');
+        const lineColorPicker = document.getElementById('line-color-picker');
+        const lineWidthPicker = document.getElementById('line-width-picker');
+        const lineWidthValue = document.getElementById('line-width-value');
+        const clearDrawingsButton = document.getElementById('clear-drawings');
+        const stopDrawingButton = document.getElementById('stop-drawing');
+    
+        const source = new ol.source.Vector({
+            wrapX: false,
+        });
+    
+        // Camada de vetor para as geometrias
+        const vectorLayer = new ol.layer.Vector({
+            source: source,
+            style: function (feature) {
+                return new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: selectedLineColor,
+                        width: 2,
+                    }),
+                    fill: new ol.style.Fill({
+                        color: hexToRGBA(selectedLineColor, 0.4), // Cor preenchida semi-transparente
+                    }),
+                    image: new ol.style.Circle({
+                        radius: 5,
+                        fill: new ol.style.Fill({
+                            color: selectedLineColor, // Cor da bolinha
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: '#000000',
+                            width: 1,
+                        }),
+                    }),
+                });
+            }
+        });
+    
+        window.map.addLayer(vectorLayer);
+    
+        // Converte hexadecimal para RGBA
+        function hexToRGBA(hex, alpha) {
+            let r = parseInt(hex.slice(1, 3), 16);
+            let g = parseInt(hex.slice(3, 5), 16);
+            let b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+    
+        // Atualiza a cor da linha e do polígono com base no seletor de cor
+        function updateLineColor(color) {
+            selectedLineColor = color;
+            vectorLayer.setStyle(function (feature) {
+                return new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: selectedLineColor,
+                        width: 2,
+                    }),
+                    fill: new ol.style.Fill({
+                        color: hexToRGBA(selectedLineColor, 0.4), // Preenchimento semi-transparente
+                    }),
+                    image: new ol.style.Circle({
+                        radius: 5,
+                        fill: new ol.style.Fill({
+                            color: selectedLineColor, // Bolinha com a cor atual
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: '#000000',
+                            width: 1,
+                        }),
+                    }),
+                });
+            });
+        }
+       
+        
+
+
+    
+        // Define o tipo de desenho (linha ou polígono)
+        function setDrawType(type) {
+            if (draw) {
+                window.map.removeInteraction(draw);
+            }
+    
+            draw = new ol.interaction.Draw({
+                source: source,
+                type: type,
+                style: function (feature) {
+                    return new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: selectedLineColor,
+                            width: 2,
+                            lineDash: [10, 10],
+                        }),
+                        fill: new ol.style.Fill({
+                            color: hexToRGBA(selectedLineColor, 0.4), // Preenchimento semi-transparente durante o desenho
+                        }),
+                        image: new ol.style.Circle({
+                            radius: 5,
+                            fill: new ol.style.Fill({
+                                color: selectedLineColor, // Cor da bolinha
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: '#000000',
+                                width: 1,
+                            }),
+                        }),
+                    });
+                },
+            });
+    
+            window.map.addInteraction(draw);
+            createMeasureTooltip();
+            createHelpTooltip();
+    
+            draw.on('drawstart', function (evt) {
+                sketch = evt.feature;
+                let tooltipCoord = evt.coordinate;
+    
+                sketch.getGeometry().on('change', function (evt) {
+                    const geom = evt.target;
+                    let output;
+                    if (geom instanceof ol.geom.Polygon) {
+                        output = `<span>${formatArea(geom)}</span>`;
+                        tooltipCoord = geom.getInteriorPoint().getCoordinates();
+                    } else if (geom instanceof ol.geom.LineString) {
+                        output = `<span>${formatLength(geom)}</span>`;
+                        tooltipCoord = geom.getLastCoordinate();
+                    }
+                    measureTooltipElement.innerHTML = output;
+                    measureTooltip.setPosition(tooltipCoord);
+                });
+            });
+    
+            draw.on('drawend', function () {
+                sketch.setStyle(new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: selectedLineColor,
+                        width: 2,
+                        lineDash: null,
+                    }),
+                    fill: new ol.style.Fill({
+                        color: hexToRGBA(selectedLineColor, 0.4), // Preenchimento após o desenho
+                    }),
+                    image: new ol.style.Circle({
+                        radius: 5,
+                        fill: new ol.style.Fill({
+                            color: selectedLineColor,
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: '#000000',
+                            width: 1,
+                        }),
+                    }),
+                }));
+                measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
+                measureTooltip.setOffset([0, -7]);
+                sketch = null;
+                measureTooltipElement = null;
+                createMeasureTooltip();
+            });
+        }
+    
+        // Criação dos tooltips de ajuda e medição
+        function createHelpTooltip() {
+            if (helpTooltipElement) {
+                helpTooltipElement.remove();
+            }
+            helpTooltipElement = document.createElement('div');
+            helpTooltipElement.className = 'ol-tooltip hidden';
+            helpTooltip = new ol.Overlay({
+                element: helpTooltipElement,
+                offset: [15, 0],
+                positioning: 'center-left',
+            });
+            window.map.addOverlay(helpTooltip);
+        }
+    
+        function createMeasureTooltip() {
+            if (measureTooltipElement) {
+                measureTooltipElement.remove();
+            }
+            measureTooltipElement = document.createElement('div');
+            measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
+            measureTooltip = new ol.Overlay({
+                element: measureTooltipElement,
+                offset: [0, -15],
+                positioning: 'bottom-center',
+                stopEvent: false,
+                insertFirst: false,
+            });
+            window.map.addOverlay(measureTooltip);
+        }
+    
+        // Formata área e comprimento
+        function formatArea(polygon) {
+            const area = ol.sphere.getArea(polygon);
+            return (area > 10000)
+                ? `${Math.round((area / 1000000) * 100) / 100} km²`
+                : `${Math.round(area * 100) / 100} m²`;
+        }
+    
+        function formatLength(line) {
+            const length = ol.sphere.getLength(line);
+            return (length > 100)
+                ? `${Math.round((length / 1000) * 100) / 100} km`
+                : `${Math.round(length * 100) / 100} m`;
+        }
+    
+        // Limpa todas as geometrias desenhadas e tooltips
+        function clearDrawings() {
+            source.clear();
+            window.map.getOverlays().getArray().slice().forEach(function (overlay) {
+                if (overlay.getElement().classList.contains('ol-tooltip')) {
+                    window.map.removeOverlay(overlay);
+                }
+            });
+            if (measureTooltipElement) {
+                measureTooltipElement.innerHTML = '';
+            }
+            if (helpTooltipElement) {
+                helpTooltipElement.classList.add('hidden');
+            }
+            createMeasureTooltip();
+            createHelpTooltip();
+        }
+    
+        // Eventos para definir o tipo de medição
+        measureLineButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            setDrawType('LineString');
+        });
+    
+        measureAreaButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            setDrawType('Polygon');
+        });
+    
+        // Atualiza a cor conforme a escolha do usuário
+        lineColorPicker.addEventListener('input', function() {
+            updateLineColor(this.value);
+        });
+
+   
+
+        clearDrawingsButton.addEventListener('click', function() {
+            clearDrawings();
+        });
+
+         // Adiciona um evento para o botão que para o desenho
+        stopDrawingButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (draw) {
+                window.map.removeInteraction(draw);
+                draw = null; // Limpa a variável draw para que não haja referências pendentes
+            }
+    });
+    }
+    
+    
+
+
     // Função principal que inicializa todas as funcionalidades
     async function initializeApp() {
         const map = window.mapModule.initializeMap(); // Inicializa o mapa chamando a função do `map.js`
@@ -348,6 +665,8 @@
         initializeExpandButton(); // Inicializa a funcionalidade do Fullscreen
         initializeTooltip(); // Inicializa a funcionalidade dos tooltips das actions button na sidebar
         initializeActionButtons();
+        initializeFloatingButton() ;
+        initializeMeasure();
 
         enableSwipeToDeleteAccordion("accordionMapasAtivos");
 
@@ -355,8 +674,16 @@
         window.mapModule.loadSobralBoundary(map); // Demarca o espaço geográfico de sobral chamando a funcao do map.js
     }
 
+   
+    
+ 
+ 
+
+
     // Executa a função principal quando o DOM estiver pronto
     document.addEventListener("DOMContentLoaded", () => {
         initializeApp();
     });
+
+    
 })();
