@@ -4,7 +4,7 @@
         <div id="drag-handle">
             <!-- Conteúdo adicional se necessário -->
             <span>Selecione a Área de Impressão</span>
-            <button class="btn" id="selection-button" data-bs-toggle="tooltip" title="Opções de impressão"><i class="fas fa-bars"></i></button>
+            <button class="btn selection-button" id="selection-button" data-bs-toggle="tooltip" title="Opções de impressão"><i class="fas fa-bars"></i></button>
         </div>
     </div>
     

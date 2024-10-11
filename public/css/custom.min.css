@@ -1,3 +1,28 @@
+:root {
+    /* Cores Principais */
+    --primary-color: #0086DE;       /* Azul Claro */
+    --background-color: #ffffff;    /* Branco */
+
+    /* Cores de Texto */
+    --text-white-color: #ffffff;    /* Branco */
+    --text-dark-color: #333333;     /* Cinza Escuro */
+    --text-secondary-color: #666666;/* Cinza Médio */
+    --text-gray-color: #ccc;     /* Cinza */
+
+    /* Cores Secundárias */
+    --background-secondary-color: #f0f0f0; /* Cinza Claro */
+    --secondary-color-orange: #ffa500;     /* Laranja */
+    --secondary-color-red: #ff0000;     /* Laranja */
+    --secondary-color-gray: #c5c5c5;     /* Cinza */
+    --secondary-color-white: #ffffff;     /* Branco */
+    --secondary-color-dark: #333333;     /* Preto */
+
+    /* Cores de Hover/Foco */
+    --primary-dark-color: #005bb5;  /* Azul Escuro */
+    --primary-gray-color: #ccc;     /* Cinza */
+
+}
+
 /* Ajustando a área do mapa */
 #map {
     height: calc(100vh - 60px);
@@ -11,7 +36,7 @@
 /* Estilos gerais para Topbar */
 .topbar {
     display: flex;
-    background-color: #343a40;
+    background-color: var(--primary-color);
     height: 60px;
     transition: all 0.3s ease-in-out;
 }
@@ -25,16 +50,33 @@
 }
 
 .topbar a {
-    color: white;
+    font-weight: bold;
+    color: var(--text-white-color);
     text-decoration: none;
+    transition: transform 0.3s ease;
+
 }
 
 .topbar a:hover {
-    text-decoration: underline;
+    color: var(--primary-gray-color) !important;
+    transform: scale(1.05);
 }
 
 .topbar.hidden-topbar {
     display: none;
+}
+
+.topbar-center {
+    color: var(--text-white-color);
+    transition: transform 0.3s ease;
+
+}
+.topbar-center:hover {
+    transform: scale(1.05);
+}
+
+.topbar-right {
+    color: var(--text-white-color);
 }
 
 .topbar-left {
@@ -50,7 +92,7 @@
     bottom: 0;
     padding: 0;
     width: 250px;
-    color: white;
+    color: var(--primary-color);
     display: flex;
     transition: all 0.3s ease-in-out;
     z-index: 1000;
@@ -60,21 +102,22 @@
     width: 100%;
     padding: 5px;
     height: 100%;
-    background: #000;
+    background: var(--primary-dark-color);
 }
 .sidebar-camadas {
     overflow-y: scroll;
-    background-color: #232323;
+    background-color: var(--background-color);
     height: 100%;
     padding-left: 5px;
-    border-radius: 0 0 8px 0;
+    padding-right: 5px;
+    border-radius: 0 8px 8px 0;
 }
 
 .sidebar-mapas-ativos {
     padding-left: 5px;
     padding-right: 5px;
     height: 100%;
-    background-color: #232323;
+    background-color: var(--background-color);
     border-radius: 0 8px 0 0;
 }
 
@@ -90,13 +133,13 @@
 }
 
 .sidebar-camadas::-webkit-scrollbar-thumb {
-    background-color: #555;
+    background-color: var(--text-gray-color);
     border-radius: 10px;
     border: none;
 }
 
 .sidebar-camadas::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
+    background-color: var(--text-gray-color);
 }
 
 .sidebar.sidebar-collapsed .sidebar-content {
@@ -105,7 +148,7 @@
     display: none;
 }
 .sidebar-header {
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--primary-dark-color);
 }
 .sidebar-header span {
     font-size: 20px;
@@ -118,7 +161,7 @@
 /* Estilos gerais para a actionbar */
 
 .action-bar {
-    background-color: #333;
+    background-color: var(--primary-color);
     display: flex;
     position: absolute;
     top: 0;
@@ -127,19 +170,21 @@
     align-items: start;
     border-radius: 0px 0px 10px 0;
     transition: all 0.3s ease-in-out;
+    opacity: 0.8;
 }
 
 .action-bar .btn {
-    color: white;
+    color: var(--text-white-color);
     font-size: 20px;
     width: 50px;
     height: 50px;
 }
 .active {
-    background: #555;
+    background: var(--primary-color);
 }
 .action-bar .btn:hover {
-    background-color: #555;
+    background-color: var(--primary-dark-color);
+    border-radius: none;
     cursor: pointer;
 }
 .search-container {
@@ -149,7 +194,7 @@
     display: block;
     position: absolute;
     left: 50px;
-    background: #333;
+    background: var(--background-color);
     width: 200px;
     border-radius: 0px 5px 5px 0px;
     height: 100%;
@@ -159,8 +204,8 @@
     padding-left: 10px;
 }
 .input-search:focus {
-    background-color: #333;
-    color: wheat;
+    background-color: var(--background-color);
+    color: var(--secondary-color);
 }
 
 .input-search.hidden {
@@ -188,16 +233,16 @@
 
 .accordion-item:first-of-type .accordion-button,
 .accordion-item:last-of-type .accordion-button.collapsed {
-    border-radius: 0;
+    border-radius: 2px;
 }
 .accordion-button.cat {
-    background-color: #24282c;
-    color: rgb(255, 171, 61);
+    background-color: var(--primary-dark-color);
+    color: var(--text-white-color);
     font-size: 0.9rem;
     margin-bottom: 2px;
 }
 .accordion-button.cat:hover {
-    background: #3b3b3b;
+    background: var(--primary-color);
 }
 .accordion-button.cat:focus {
     box-shadow: none;
@@ -209,11 +254,13 @@
     margin-top: 0.3rem;
 }
 .accordion-body.cat {
-    background-color: #272727;
+    background-color: var(--background-color);
     color: white;
+    border: 2px dotted var(--primary-color);
+    margin-top: -2px;
     font-size: 0.85rem;
     border-radius: 0;
-    padding: 0;
+    padding: 2px;
 }
 .accordion-header.cat {
     margin: 0;
@@ -223,23 +270,31 @@
 /* Estilo geral do accordion para as subcategorias*/
 
 .accordion-button.sub {
-    background-color: #343a40;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-white-color);
     font-size: 0.9rem;
     padding: 0.4rem 0.8rem;
 }
+
+.accordion-button.sub:hover {
+    background: var(--primary-dark-color);
+}
+
 .accordion-button.sub::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
-    background-color: wheat;
+    background-color:var(--primary-color);
+    border: 2px dotted var(--primary-color);
     width: 2px;
     height: 100%;
 }
 .accordion-button.sub:not(.collapsed) {
-    background: #343a40;
-    color: white;
+    background: var(--primary-color);
+    color: var(--text-white-color);
+    border: 2px dotted var(--primary-color);
+
 }
 .accordion-button.sub:focus {
     box-shadow: none;
@@ -249,14 +304,15 @@
     margin-bottom: 0.3rem;
 }
 .accordion-body.sub {
-    background-color: #272727;
-    color: white;
+    background-color: var(--background-secondary-color);
+    color: var(--text-dark-color);
+    border: 2px dotted var(--primary-color);
     font-size: 0.85rem;
-    padding: 5px;
+    padding-left: 5px;
 }
 .accordion-body ul {
     margin: 0;
-    border-bottom: #343a40;
+    border-bottom: var(--primary-dark-color);
 }
 .accordion-body .label-layer-box {
     width: 100%;
@@ -266,11 +322,11 @@
 }
 
 .error-layer {
-    color: red;
+    color: var(--secondary-color-red);
 }
 .show-layer-alert {
     display: block;
-    color: rgb(165, 66, 66);
+    color: var(--secondary-color-red);
 }
 .hide-layer-alert {
     display: none;
@@ -285,6 +341,7 @@
     ); 
     font-size: 15px;
 } */
+
 .accordion-body ul li {
     display: flex;
     align-items: center;
@@ -295,7 +352,8 @@
 }
 
 input[type="checkbox"] {
-    accent-color: rgb(255, 171, 61); /* Cor vermelha */
+    accent-color: var(--secondary-color-orange); /* Cor laranja */
+    color: var(--background-color);
 }
 
 /* Estilos gerais para as layers em Mapas Ativos */
@@ -304,12 +362,12 @@ input[type="checkbox"] {
     overflow-y: auto;
 }
 .box-leg-item:hover {
-    border: 1px solid rgb(255, 171, 61);
+    border: 1px solid var(--secondary-color-orange);
 }
 .box-leg-item {
     display: flex;
     align-items: center;
-    border: 1px solid #6c757d;
+    border: 1px solid var(--secondary-color-gray);
     height: 40px;
     margin-bottom: 3px;
 }
@@ -350,7 +408,7 @@ input[type="checkbox"] {
     display: none;
 }
 .accordion-button.ma:not(.collapsed) {
-    border-left: 1px solid #fff;
+    border: 2px dotted var(--primary-color);
 }
 
 .accordion-item.ma {
@@ -361,16 +419,17 @@ input[type="checkbox"] {
 }
 .accordion-button.ma {
     height: 30px;
-    color: #fff;
-    background: #313131;
+    color: var(--text-white-color);
+    background: var(--primary-dark-color);
 }
 .accordion-button.ma span {
     margin-left: 8px;
 }
 .accordion-collapse.ma {
-    border-left: 1px solid rgb(255, 255, 255);
+    border: 2px dotted var(--primary-color);
 }
 .accordion-body.ma {
+    background-color: var(--background-secondary-color);
     padding: 5px;
 }
 .accordion-body.ma h3 {
@@ -403,7 +462,7 @@ input[type="checkbox"] {
     transform: translateX(-50%);
     padding: 10px 20px;
     background-color: rgb(177, 57, 57);
-    color: white;
+    color: var(--text-white-color);
     font-weight: 300;
     border-radius: 5px;
     z-index: 9999; /* Para garantir que fique acima de outros elementos */
@@ -427,10 +486,14 @@ input[type="checkbox"] {
 #selection-area {
     min-width: 347px;
     min-height: 300px;
-    border: 4px solid rgb(0, 0, 0);
+    border: 2px dotted var(--primary-dark-color);
     resize: both;
     overflow: hidden;
     position: relative;
+}
+
+#selection-button:hover{
+    background-color: var(--primary-dark-color);
 }
 
 #drag-handle {
@@ -439,8 +502,8 @@ input[type="checkbox"] {
     justify-content: space-between;
     gap: 2px;
     align-items: center;
-    color: aliceblue;
-    background-color: #333333;
+    color: var(--text-white-color);
+    background-color: var(--primary-color);
     padding: 5px;
     cursor: move;
     pointer-events: auto; /* O cabeçalho captura eventos de clique */
@@ -450,10 +513,10 @@ input[type="checkbox"] {
     pointer-events: auto;
 }
 .print-options {
-    background: #333333;
+    background: var(--background-color);
     padding: 8px;
     border-radius: 0px 5px 5px 0;
-    color: #fff;
+    color: var(--text-dark-color);
     font-size: 12px;
     display: flex;
     flex-direction: column;
@@ -469,11 +532,11 @@ input[type="checkbox"] {
     width: 80px;
     height: 30px;
     padding: 0;
-    background: #ff8e31;
-    border: 1px solid #fff;
+    background: var(--primary-color);
+    border: 1px solid var(--secondary-color-white);
 }
 .print-options button:hover {
-    background-color: #d17224;
+    background-color: var(--primary-dark-color);
 }
 
 #selection-area::after {
@@ -482,19 +545,19 @@ input[type="checkbox"] {
     position: absolute;
     bottom: 0;
     right: 0;
-    border: 1px solid #24282c;
+    border: 1px solid var(--secondary-color-dark);
     width: 15px;
     height: 15px;
-    background: rgb(255, 255, 255); /* Transparente, mas captura eventos */
+    background: var(--background-color); /* Transparente, mas captura eventos */
     cursor: se-resize; /* Mostra o ícone de redimensionamento */
     pointer-events: auto; /* Permite interações nas bordas */
     z-index: 1001;
 }
 #drag-handle button {
-    color: #fff;
+    color: var(--text-white-color);
 }
 #drag-handle button:hover {
-    background: #434343;
+    background: var(--primary-dark-color);
 }
 
 .swipe-delete {
@@ -514,7 +577,6 @@ input[type="checkbox"] {
     cursor: move;
 }
 
-
 .btn-group {
     display: inline-block; /* Garante que o botão não ocupe 100% de largura */
 }
@@ -527,13 +589,15 @@ input[type="checkbox"] {
     width: auto; /* Impede que o botão se expanda para preencher o container */
 }
 
-
+.selection-button:hover {
+    background-color: var(--primary-dark-color);
+}
 
 .ol-tooltip {
     position: relative;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--secondary-color-dark);
     border-radius: 4px;
-    color: white;
+    color: var(--text-white-color);
     padding: 4px 8px;
     opacity: 0.7;
     white-space: nowrap;
@@ -548,13 +612,13 @@ input[type="checkbox"] {
     font-weight: bold;
   }
   .ol-tooltip-static {
-    background-color: #000000;
-    color: white;
-    border: 1px solid white;
+    background-color: var(--secondary-color-dark);
+    color: var(--text-white-color);
+    border: 1px solid var(--secondary-color-white);
   }
   .ol-tooltip-measure:before,
   .ol-tooltip-static:before {
-    border-top: 6px solid rgba(0, 0, 0, 0.5);
+    border-top: 6px solid var(--primary-dark-color);
     border-right: 6px solid transparent;
     border-left: 6px solid transparent;
     content: "";
@@ -564,7 +628,7 @@ input[type="checkbox"] {
     left: 50%;
   }
   .ol-tooltip-static:before {
-    border-top-color: #0a0a0a;
+    border-top-color: var(--primary-dark-color);
   }
 
 

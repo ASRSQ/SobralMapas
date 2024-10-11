@@ -4,7 +4,7 @@
 
         <div id="view-camadas" class="sidebar-camadas">
             <div class="sidebar-header d-flex justify-content-between">
-                <span>Camadas</span>
+                <span><i class="fas fa-layer-group me-2"></i>Camadas</span>
             </div>
             
             <div class="accordion" id="accordionExample">
@@ -149,7 +149,7 @@
 
         <div id="view-mapas-ativos" style="display: none" class="sidebar-mapas-ativos">
             <div class="sidebar-header mb-1 d-flex justify-content-between">
-                <span>Mapas Ativos</span>
+                <span><i class="fas fa-map-marker-alt"></i> Mapas Ativos</span>
             </div>
             <!-- Mapas Ativos como um conjunto de accordion  -->
             <div class="accordion" id="accordionMapasAtivos"> 
@@ -157,7 +157,7 @@
                 <div class="accordion-item ma">
                     <div class="accordion-header ma">
                         <button class="accordion-button ma" type="button" data-bs-toggle="collapse" data-bs-target="#ma1" aria-expanded="true" aria-controls="collapseOne">
-                            <img height="30px" src="api/layer/legend?layer=Ceara:transol_linha_3" alt="">
+                            <img height="25px" src="api/layer/legend?layer=Ceara:transol_linha_3" alt="">
                             <span>Transol Linha 3</span>
                         </button>
                     </div>
@@ -178,7 +178,7 @@
                 <div class="accordion-item ma">
                     <div class="accordion-header ma">
                         <button class="accordion-button ma collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ma2" aria-expanded="false" aria-controls="collapseTwo">
-                            <img height="30px" src="api/layer/legend?layer=Ceara:transol_linha_1" alt="">
+                            <img height="25px" src="api/layer/legend?layer=Ceara:transol_linha_1" alt="">
                             <span>Transol Linha 1</span>
                         </button>
                     </div>
