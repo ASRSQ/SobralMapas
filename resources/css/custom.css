@@ -1,26 +1,25 @@
 :root {
     /* Cores Principais */
-    --primary-color: #0086DE;       /* Azul Claro */
-    --background-color: #ffffff;    /* Branco */
+    --primary-color: #0086de; /* Azul Claro */
+    --background-color: #ffffff; /* Branco */
 
     /* Cores de Texto */
-    --text-white-color: #ffffff;    /* Branco */
-    --text-dark-color: #333333;     /* Cinza Escuro */
-    --text-secondary-color: #666666;/* Cinza Médio */
-    --text-gray-color: #ccc;     /* Cinza */
+    --text-white-color: #ffffff; /* Branco */
+    --text-dark-color: #333333; /* Cinza Escuro */
+    --text-secondary-color: #666666; /* Cinza Médio */
+    --text-gray-color: #ccc; /* Cinza */
 
     /* Cores Secundárias */
     --background-secondary-color: #f0f0f0; /* Cinza Claro */
-    --secondary-color-orange: #ffa500;     /* Laranja */
-    --secondary-color-red: #ff0000;     /* Laranja */
-    --secondary-color-gray: #c5c5c5;     /* Cinza */
-    --secondary-color-white: #ffffff;     /* Branco */
-    --secondary-color-dark: #333333;     /* Preto */
+    --secondary-color-orange: #ffa500; /* Laranja */
+    --secondary-color-red: #ff0000; /* Laranja */
+    --secondary-color-gray: #c5c5c5; /* Cinza */
+    --secondary-color-white: #ffffff; /* Branco */
+    --secondary-color-dark: #333333; /* Preto */
 
     /* Cores de Hover/Foco */
-    --primary-dark-color: #005bb5;  /* Azul Escuro */
-    --primary-gray-color: #ccc;     /* Cinza */
-
+    --primary-dark-color: #005bb5; /* Azul Escuro */
+    --primary-gray-color: #ccc; /* Cinza */
 }
 
 /* Ajustando a área do mapa */
@@ -54,7 +53,6 @@
     color: var(--text-white-color);
     text-decoration: none;
     transition: transform 0.3s ease;
-
 }
 
 .topbar a:hover {
@@ -69,7 +67,6 @@
 .topbar-center {
     color: var(--text-white-color);
     transition: transform 0.3s ease;
-
 }
 .topbar-center:hover {
     transform: scale(1.05);
@@ -92,7 +89,7 @@
     bottom: 0;
     padding: 0;
     width: 250px;
-    color: var(--primary-color);
+    /* color: var(--primary-color); */
     display: flex;
     transition: all 0.3s ease-in-out;
     z-index: 1000;
@@ -102,7 +99,7 @@
     width: 100%;
     padding: 5px;
     height: 100%;
-    background: var(--primary-dark-color);
+    background: #004181b8;
 }
 .sidebar-camadas {
     overflow-y: scroll;
@@ -152,6 +149,8 @@
 }
 .sidebar-header span {
     font-size: 20px;
+    font-weight: bold;
+    color: var(--primary-dark-color);
 }
 
 .sidebar.sidebar-collapsed {
@@ -161,7 +160,7 @@
 /* Estilos gerais para a actionbar */
 
 .action-bar {
-    background-color: var(--primary-color);
+    background-color: #005bb5cf;
     display: flex;
     position: absolute;
     top: 0;
@@ -170,7 +169,6 @@
     align-items: start;
     border-radius: 0px 0px 10px 0;
     transition: all 0.3s ease-in-out;
-    opacity: 0.8;
 }
 
 .action-bar .btn {
@@ -256,11 +254,11 @@
 .accordion-body.cat {
     background-color: var(--background-color);
     color: white;
-    border: 2px dotted var(--primary-color);
     margin-top: -2px;
     font-size: 0.85rem;
     border-radius: 0;
     padding: 2px;
+    border-left: 0.5px dotted #005bb5;
 }
 .accordion-header.cat {
     margin: 0;
@@ -285,7 +283,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    background-color:var(--primary-color);
+    background-color: var(--primary-color);
     border: 2px dotted var(--primary-color);
     width: 2px;
     height: 100%;
@@ -294,7 +292,6 @@
     background: var(--primary-color);
     color: var(--text-white-color);
     border: 2px dotted var(--primary-color);
-
 }
 .accordion-button.sub:focus {
     box-shadow: none;
@@ -304,11 +301,13 @@
     margin-bottom: 0.3rem;
 }
 .accordion-body.sub {
-    background-color: var(--background-secondary-color);
+    background-color: #f3f3f3;
     color: var(--text-dark-color);
-    border: 2px dotted var(--primary-color);
+    border-left: 0.5px dotted var(--primary-color);
     font-size: 0.85rem;
     padding-left: 5px;
+    border-right: 0.5px dotted var(--primary-color);
+    border-bottom: 0.5px dotted var(--primary-color);
 }
 .accordion-body ul {
     margin: 0;
@@ -408,7 +407,7 @@ input[type="checkbox"] {
     display: none;
 }
 .accordion-button.ma:not(.collapsed) {
-    border: 2px dotted var(--primary-color);
+    /* border: 2px dotted var(--primary-color); */
 }
 
 .accordion-item.ma {
@@ -426,7 +425,7 @@ input[type="checkbox"] {
     margin-left: 8px;
 }
 .accordion-collapse.ma {
-    border: 2px dotted var(--primary-color);
+    /* border: 2px dotted var(--primary-color); */
 }
 .accordion-body.ma {
     background-color: var(--background-secondary-color);
@@ -492,7 +491,7 @@ input[type="checkbox"] {
     position: relative;
 }
 
-#selection-button:hover{
+#selection-button:hover {
     background-color: var(--primary-dark-color);
 }
 
@@ -571,7 +570,7 @@ input[type="checkbox"] {
 #floating-button {
     position: fixed;
     top: 200px; /* Define a distância do topo */
-    right: 0;   /* Alinha à direita da página */
+    right: 0; /* Alinha à direita da página */
     cursor: move;
 }
 
@@ -591,7 +590,6 @@ input[type="checkbox"] {
     background-color: var(--primary-dark-color);
 }
 
-
 /*Marcações do mapa*/
 .ol-tooltip {
     position: relative;
@@ -604,18 +602,18 @@ input[type="checkbox"] {
     font-size: 12px;
     cursor: default;
     user-select: none;
-  }
-  .ol-tooltip-measure {
+}
+.ol-tooltip-measure {
     opacity: 1;
     font-weight: bold;
-  }
-  .ol-tooltip-static {
+}
+.ol-tooltip-static {
     background-color: var(--secondary-color-dark);
     color: var(--text-white-color);
     border: 1px solid var(--secondary-color-white);
-  }
-  .ol-tooltip-measure:before,
-  .ol-tooltip-static:before {
+}
+.ol-tooltip-measure:before,
+.ol-tooltip-static:before {
     border-top: 6px solid var(--primary-dark-color);
     border-right: 6px solid transparent;
     border-left: 6px solid transparent;
@@ -624,10 +622,10 @@ input[type="checkbox"] {
     bottom: -6px;
     margin-left: -7px;
     left: 50%;
-  }
-  .ol-tooltip-static:before {
+}
+.ol-tooltip-static:before {
     border-top-color: #0a0a0a;
-  }
+}
 
 /* Configurações do visual do chat */
 #show-chat-button {
@@ -646,12 +644,12 @@ input[type="checkbox"] {
 }
 
 #show-chat-button:hover {
-    background-color: #007bb5; 
+    background-color: #007bb5;
 }
 
 #show-chat-button:active {
-    background-color: #007bb5; 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+    background-color: #007bb5;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Contêiner principal do chat */
@@ -661,7 +659,7 @@ input[type="checkbox"] {
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: none; 
+    display: none;
     flex-direction: column;
     background-color: #ccc;
     position: fixed;
@@ -692,7 +690,7 @@ input[type="checkbox"] {
 }
 
 .fa-times {
-    font-size: 20px; 
+    font-size: 20px;
     margin-right: 4px;
 }
 
