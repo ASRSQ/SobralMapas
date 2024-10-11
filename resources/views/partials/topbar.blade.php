@@ -1,4 +1,4 @@
-<div class="topbar justify-content-between align-items-center bg-dark text-white">
+<div class="topbar justify-content-between align-items-center text-white">
     <div class="topbar-left">
         <img src="{{ asset('img/Logo_Sobral.png') }}" alt="Prefeitura de Sobral" class="logo">
     </div>
