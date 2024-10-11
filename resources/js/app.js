@@ -649,6 +649,93 @@
             }
     });
     }
+
+    function initializeChat() {
+        const showChatButton = document.getElementById('show-chat-button');
+        const chatContainer = document.getElementById('chat-container');
+        const toggleChatButton = document.getElementById('toggle-chat-button');
+        const sendButton = document.getElementById('send-button');
+        const messageInput = document.getElementById('message-input');
+        const messagesContainer = document.getElementById('messages');
+    
+        // Função para mostrar a caixa de chat ao clicar no botão
+        showChatButton.addEventListener('click', function() {
+            chatContainer.style.display = 'flex';
+            showChatButton.style.display = 'none'; // Esconde o botão depois que o chat é mostrado
+        });
+    
+        // Função para esconder o chat ao clicar no botão "X"
+        toggleChatButton.addEventListener('click', function() {
+            chatContainer.style.display = 'none';
+            showChatButton.style.display = 'block';
+        });
+    
+        // Função para envio de mensagens com AJAX
+        sendButton.addEventListener('click', function() {
+            const message = messageInput.value.trim();
+            if (message !== '') {
+                addMessageToChat('user', message);
+                messageInput.value = '';
+    
+                // Envia a mensagem ao servidor usando AJAX
+                fetch(`${window.location.origin}/sobralmapas/public/send-message`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        data.forEach(msg => {
+                            addMessageToChat('bot', msg.text);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    addMessageToChat('bot', 'Erro ao se comunicar com o servidor.');
+                });
+            }
+        });
+    
+        // Enviar mensagem ao pressionar Enter
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendButton.click();
+            }
+        });
+    
+        // Função para adicionar mensagens ao chat
+        function addMessageToChat(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender === 'user' ? 'sent' : 'received');
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+            removeEmptyMessages();
+        }
+    
+        // Função para remover mensagens vazias
+        function removeEmptyMessages() {
+            const messages = document.querySelectorAll('.message.received');
+            messages.forEach(message => {
+                if (!message.textContent.trim()) {
+                    message.remove();
+                }
+            });
+        }
+    
+        // Seletor para a primeira mensagem vazia
+        const firstEmptyMessage = document.querySelector('.message.received');
+        if (firstEmptyMessage) {
+            firstEmptyMessage.remove();
+        }
+    }
     
     
 
@@ -667,6 +754,7 @@
         initializeActionButtons();
         initializeFloatingButton() ;
         initializeMeasure();
+        initializeChat();
 
         enableSwipeToDeleteAccordion("accordionMapasAtivos");
 
