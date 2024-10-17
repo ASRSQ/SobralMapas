@@ -12,7 +12,7 @@ function initializeSidebar() {
 
 // Inicializa os tooltips do Bootstrap
 function initializeTooltip() {
-    const elements = document.querySelectorAll(selector);
+    const elements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     elements.forEach((el) => {
         new bootstrap.Tooltip(el);
     });
