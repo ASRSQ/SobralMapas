@@ -5,61 +5,12 @@
 @section('content')
 
 <x-selection-box />
-    <div id="map"></div>
-<!-- Botão flutuante com dropdown -->
-<div class="btn-group dropup" id="floating-button">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-        Medir
-    </button>
-    <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#" id="measure-line">Medir Linha</a></li>
-        <li><a class="dropdown-item" href="#" id="measure-area">Medir Área</a></li>
-        <li><a class="dropdown-item" href="#" id="stop-drawing">Parar desenho</a></li>
-        <li class="dropdown-divider"></li>
-        <li class="dropdown-item d-flex align-items-center justify-content-between">
-            <label for="line-color-picker" class="me-2">Escolher Cor:</label>
-            <input type="color" id="line-color-picker" value="#ffcc33">
-        </li>
-        <li class="dropdown-divider"></li>
-        <!-- Botão para apagar todas as geometrias -->
-        <li><button class="dropdown-item text-danger" id="clear-drawings">Apagar Tudo</button></li>
-    </ul>
-</div>
+<div id="map"></div>
 
- <!-- Botão para mostrar o chat -->
- <button id="show-chat-button"><i class="fas fa-comment"></i>  Chat - SobralMapas </button>
+{{-- Componente de ferramenta de medição --}}
+<x-ferramenta-medicao/>
 
-<!-- Contêiner do chat -->
-<div id="chat-container">
-    <div class="chat-header">
-        <div class="chat-title">
-            <i class="fas fa-comment"></i>
-            Chat - SobralMapas
-        </div>
-        <button id="toggle-chat-button">
-            <i class="fas fa-times" id="toggle-icon"></i>
-        </button>
-    </div>
-    <!-- Área onde as mensagens aparecerão -->
-    <div id="messages">
-        <!-- Mensagem de boas-vindas -->
-        <div class="welcome-message">
-            <p><strong>Bem-vindo ao SobralMapas!</strong></p>
-            <p>Resolva as suas dúvidas.</p>
-        </div>
-        <hr>
-        <div class="message received"></div>
-    </div>
-    <!-- Caixa de input e botão de envio -->
-    <div id="message-input-container">
-        <input type="text" id="message-input" placeholder="Digite sua mensagem...">
-        <button id="send-button">Enviar</button>
-    </div>
-</div>
-
-
-
-
-
+<!-- Componente do chat -->
+<x-chat/>
 
 @endsection
