@@ -550,11 +550,17 @@ input[type="checkbox"] {
 
 /* Estilos gerais para o Botão flutuante*/
 #floating-button {
+    display: none;
     position: fixed;
     top: 200px; /* Define a distância do topo */
     right: 0; /* Alinha à direita da página */
     cursor: move;
 }
+#floating-button .btn {
+    color: white !important; /* Texto branco */
+    background-color: var(--primary-color) !important; /* Fundo azul */
+}
+
 
 .btn-group {
     display: inline-block; /* Garante que o botão não ocupe 100% de largura */
@@ -809,5 +815,8 @@ input[type="checkbox"] {
 
     .topbar-right {
         margin-top: 10px;
+    }
+    #floating-button {
+        left: 200px;
     }
 }
