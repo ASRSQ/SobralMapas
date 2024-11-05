@@ -79,6 +79,22 @@ function initializeSelectionBox() {
 // botao flutuante de Medir
 function initializeFloatingButton() {
     const floatingButton = document.getElementById("floating-button");
+    const measureButton = document.getElementById("btn-measure");
+    floatingButton.style.display = "none";
+
+    // Função para alternar a visibilidade do botão flutuante
+    const toggleFloatingButtonVisibility = () => {
+        floatingButton.style.display = floatingButton.style.display === "none" ? "block" : "none";
+    };
+
+    // Adicionando eventos de clique para o botão "Medir"
+    measureButton.addEventListener("click", toggleFloatingButtonVisibility);
+    
+    // Adicionando evento de toque para dispositivos móveis
+    measureButton.addEventListener("touchend", (e) => {
+        e.preventDefault(); // Previne o comportamento padrão
+        toggleFloatingButtonVisibility();
+    });
 
     function dragElement(el) {
         let pos1 = 0,
@@ -86,38 +102,45 @@ function initializeFloatingButton() {
             pos3 = 0,
             pos4 = 0;
 
-        el.onmousedown = function (e) {
-            // Verifica se o alvo do clique é um dropdown ou select
-            if (
-                e.target.closest(".dropdown-menu") ||
-                e.target.closest("select")
-            ) {
-                return; // Não permite arrastar
+        const startDrag = (e) => {
+            // Previne arrastar quando é um clique em dropdown ou select
+            if (e.target.closest(".dropdown-menu") || e.target.closest("select")) {
+                return;
             }
 
-            e.preventDefault();
-            pos3 = e.clientX;
-            pos4 = e.clientY;
+            e.preventDefault(); // Previne o comportamento padrão
+            pos3 = e.type === "mousedown" ? e.clientX : e.touches[0].clientX;
+            pos4 = e.type === "mousedown" ? e.clientY : e.touches[0].clientY;
 
             document.onmouseup = closeDragElement;
             document.onmousemove = elementDrag;
+
+            // Para touch
+            document.ontouchend = closeDragElement;
+            document.ontouchmove = elementDrag;
         };
 
-        function elementDrag(e) {
-            e.preventDefault();
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
+        const elementDrag = (e) => {
+            e.preventDefault(); // Previne o comportamento padrão
+            pos1 = pos3 - (e.type === "mousemove" ? e.clientX : e.touches[0].clientX);
+            pos2 = pos4 - (e.type === "mousemove" ? e.clientY : e.touches[0].clientY);
+            pos3 = e.type === "mousemove" ? e.clientX : e.touches[0].clientX;
+            pos4 = e.type === "mousemove" ? e.clientY : e.touches[0].clientY;
 
             el.style.top = el.offsetTop - pos2 + "px";
             el.style.left = el.offsetLeft - pos1 + "px";
-        }
+        };
 
-        function closeDragElement() {
+        const closeDragElement = () => {
             document.onmouseup = null;
             document.onmousemove = null;
-        }
+            document.ontouchend = null;
+            document.ontouchmove = null;
+        };
+
+        // Adicionando os event listeners para mouse e toque
+        el.onmousedown = startDrag;
+        el.ontouchstart = startDrag; // Para dispositivos móveis
     }
 
     // Ativando a funcionalidade de arraste no botão flutuante
