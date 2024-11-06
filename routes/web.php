@@ -39,7 +39,7 @@ Route::get('/categories/{category}/edit', [CategoryController::class, 'editPage'
 Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
 Route::delete('/categories/{category}', [CategoryController::class, 'delete'])->name('categories.delete');
 
-
+Route::get('/admin', [AdminController::class, 'index']);
 
 /*
 Route::get('/layers', [LayerController::class, 'index'])->name('layers.index');
