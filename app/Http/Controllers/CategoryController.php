@@ -20,7 +20,7 @@ class CategoryController extends Controller
     // Método para listar, adicionar e editar categorias na mesma página
     public function index(Request $request)
     {
-        $categories = $this->categoryService->getAllWithRelations();
+        $categories = $this->categoryService->getAll();
         return view('admin.categories', compact('categories'));
     }
 

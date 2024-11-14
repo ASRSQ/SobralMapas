@@ -30,7 +30,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/tiles', [HomeController::class, 'tile']);
 Route::get('/coord', [HomeController::class, 'coord']);
-
+//admin
+Route::get('/admin', [AdminController::class, 'index']);
 // Definir rotas para categorias
 Route::prefix('admin/categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
@@ -38,8 +39,14 @@ Route::prefix('admin/categories')->group(function () {
     Route::put('/{id}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('{id}', [CategoryController::class, 'delete'])->name('categories.delete');
 });
+Route::prefix('admin/subcategories')->group(function () {
+    Route::get('/', [SubcategoryController::class, 'index'])->name('subcategories.index');
+    Route::post('/', [SubcategoryController::class, 'create'])->name('subcategories.create');
+    Route::put('/{id}', [SubcategoryController::class, 'update'])->name('subcategories.update');
+    Route::delete('{id}', [SubcategoryController::class, 'delete'])->name('subcategories.delete');
+});
 
-Route::get('/admin', [AdminController::class, 'index']);
+
 
 /*
 Route::get('/layers', [LayerController::class, 'index'])->name('layers.index');

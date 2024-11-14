@@ -11,14 +11,28 @@ class Layer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'layer', 'description', 'subcategory_id'];
+    // Defina a tabela (caso o nome da tabela não siga a convenção)
+    protected $table = 'layers';
 
-    public function category()
-    {
-        return $this->subcategory(Category::class);
-    }
+    // Defina os campos que podem ser preenchidos em massa
+    protected $fillable = [
+        'name',
+        'layer_name',
+        'crs',
+        'legend_url',
+        'type',
+        'description',
+        'order',
+        'subcategory_id', // Chave estrangeira para a subcategoria
+        'image_path',
+    ];
+
+    // Defina os campos que são datetimes
+    protected $dates = ['created_at', 'updated_at'];
+
+    // Relacionamento com Subcategory
     public function subcategory()
     {
-        return $this->belongsTo(Subcategory::class);
+        return $this->belongsTo(Subcategory::class, 'subcategory_id');
     }
 }
