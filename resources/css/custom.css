@@ -37,9 +37,12 @@
 /* Estilos gerais para Topbar */
 .topbar {
     display: flex;
+    justify-content: space-between;  /* Espaço entre os itens */
+    align-items: center;  /* Alinha os itens verticalmente no centro */
     background-color: var(--primary-color);
     height: 60px;
     transition: all 0.3s ease-in-out;
+    padding: 0 20px;  /* Espaçamento interno */
 }
 
 .topbar .logo {
@@ -48,6 +51,7 @@
 
 .topbar h1 {
     margin: 0;
+    color: var(--text-white-color);
 }
 
 .topbar a {
@@ -55,15 +59,19 @@
     color: var(--text-white-color);
     text-decoration: none;
 }
+
 .topbar a:hover {
     text-decoration: underline;
 }
+
 .topbar.hidden-topbar {
     display: none;
 }
 
 .topbar-center {
     color: var(--text-white-color);
+    flex-grow: 1;  /* Faz com que o título ocupe o espaço restante */
+    text-align: center;
 }
 
 .topbar-right {
@@ -73,6 +81,7 @@
 .topbar-left {
     margin-left: 20px;
 }
+
 
 /* Estilos gerais para sidebar */
 
