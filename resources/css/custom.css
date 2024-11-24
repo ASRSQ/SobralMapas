@@ -772,7 +772,12 @@ input[type="checkbox"] {
     font-weight: bold;
     margin-bottom: 5px;
 }
-
+.hamburger {
+    display: none; /* Hides the hamburger menu on larger screens */
+}
+.close-btn{
+    display: none; 
+}
 /* Estilos para telas menores */
 @media (max-width: 768px) {
     #show-chat-button {
@@ -793,30 +798,102 @@ input[type="checkbox"] {
         left: 5%;
         right: 5%;
     }
-    /*topbar responsiva*/
     .topbar {
-        flex-direction: column; /* Empilha os elementos verticalmente em telas menores */
-        height: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 10px;
+        color: white;
     }
-
-    .topbar h1 {
-        font-size: 1.2rem; /* Ajuste de tamanho do texto */
+    
+    .topbar-left .logo {
+        height: 40px;
+        text-align: center;
     }
+    
+    .topbar-center h1 {
+        display: none;
 
-    .topbar a {
-        font-size: 0.9rem; /* Reduz o tamanho dos links */
-        margin: 5px 0;
     }
-
-    .topbar-center {
-        margin: 10px 0;
-    }
-
+    
     .topbar-right {
-        margin-top: 10px;
+        margin-left: auto;
     }
-    #floating-button {
-        left: 200px;
+    
+    .hamburger {
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: block;
+        width: 30px;
+        height: 25px;
+        position: relative;
+        span {
+            display: block;
+            background-color: white;
+            height: 4px;
+            width: 100%;
+            position: absolute;
+            transition: 0.3s;
+        }
+        span:nth-child(1) {
+            top: 0;
+        }
+        span:nth-child(2) {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        span:nth-child(3) {
+            bottom: 0;
+        }
     }
+    
+    .menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: var( --primary-color-glass);
+        color: white;
+        display: none;
+        flex-direction: column;
+        padding-top: 50px;
+        z-index: 1500;
+        align-items: center;
+    }
+    
+    .menu a {
+        color: white;
+        padding: 15px;
+        text-decoration: none;
+    }
+    
+    .close-btn {
+        display: block;
+        font-size: 30px;
+        color: white;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        cursor: pointer;
+    }
+    
+    .menu.open {
+        display: flex;
+    }
+    
+    .menu.open .hamburger span:nth-child(1) {
+        transform: translateY(10px) rotate(45deg);
+    }
+    
+    .menu.open .hamburger span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .menu.open .hamburger span:nth-child(3) {
+        transform: translateY(-10px) rotate(-45deg);
+    }
+    
+    
 }

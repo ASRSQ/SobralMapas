@@ -548,11 +548,23 @@ function initializeChat() {
     firstEmptyMessage.remove();
   }
 }
+function mobileMenu() {
+  var hamburger = document.getElementById('hamburger-btn');
+  var menu = document.getElementById('menu');
+  var closeBtn = document.getElementById('close-btn');
+  hamburger.addEventListener('click', function () {
+    menu.classList.add('open');
+  });
+  closeBtn.addEventListener('click', function () {
+    menu.classList.remove('open');
+  });
+}
 function InitializeComponents() {
   initializeSelectionBox();
   initializeFloatingButton();
   initializeChat();
   initializeMeasure();
+  mobileMenu();
 }
 
 /***/ }),
