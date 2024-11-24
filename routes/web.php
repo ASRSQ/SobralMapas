@@ -67,7 +67,7 @@ Route::post('/chat', [ChatbotController::class, 'chat']);
 Route::get('/admin', [AdminController::class, 'index']);
 */
 // Adicionando a rota sendMessage no HomeController
-Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('chat.sendMessage');
+//Route::post('/send-message', [HomeController::class, 'sendMessage'])->name('chat.sendMessage');
 
 // Route::get('/proxy-wms', function (Request $request) {
 //     // Captura todos os parâmetros recebidos na requisição original

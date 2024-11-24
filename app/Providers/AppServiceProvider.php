@@ -11,6 +11,10 @@ use App\Infrastructure\Repositories\EloquentCategoryRepository;
 use App\Infrastructure\Repositories\EloquentLayerRepository;
 use App\Domain\Repositories\ISubcategoryRepository;
 use App\Infrastructure\Repositories\EloquentSubcategoryRepository;
+use App\Infrastructure\Adapters\ChatbotAdapter;
+use App\Application\Services\ChatbotService;
+
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ISubcategoryRepository::class, EloquentSubcategoryRepository::class);
         $this->app->singleton(GeoServerService::class, function ($app) {
             return new GeoServerService($app->make(GeoServerClient::class));
+        });
+        $this->app->singleton(ChatbotService::class, function ($app) {
+            return new ChatbotService($app->make(ChatbotAdapter::class));
         });
     }
 
