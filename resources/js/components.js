@@ -147,7 +147,9 @@ function initializeFloatingButton() {
     if (floatingButton) {
         dragElement(floatingButton);
     }
+
 }
+
 
 // Card com opcoes de medição
 function initializeMeasure() {
@@ -526,10 +528,26 @@ function initializeChat() {
         firstEmptyMessage.remove();
     }
 }
+function mobileMenu() {
+    const hamburger = document.getElementById('hamburger-btn');
+    const menu = document.getElementById('menu');
+    const closeBtn = document.getElementById('close-btn');
+    
+    hamburger.addEventListener('click', () => {
+        menu.classList.add('open');
+    });
+    
+    closeBtn.addEventListener('click', () => {
+        menu.classList.remove('open');
+    });
+    
+}
+
 
 export function InitializeComponents() {
     initializeSelectionBox();
     initializeFloatingButton();
     initializeChat();
     initializeMeasure();
+    mobileMenu();
 }
