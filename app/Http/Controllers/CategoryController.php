@@ -5,83 +5,106 @@ namespace App\Http\Controllers;
 use App\Application\Services\CategoryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
-class CategoryController
+class CategoryController extends Controller
 {
-
     private CategoryService $categoryService;
+
     public function __construct(CategoryService $categoryService)
     {
         $this->categoryService = $categoryService;
     }
 
-    //PAGES
-
-    public function index()
+    // Método para listar, adicionar e editar categorias na mesma página
+    public function index(Request $request)
     {
-        $categories = $this->categoryService->getAllWithRelations();
-
-
-        return $categories;
-    }
-
-    public function createPage()
-    {
-        return view('categories.create');
-    }
-
-    public function editPage($id)
-    {
-        $category = $this->categoryService->findCategoryById($id);
-        return view('categories.edit', compact('category'));
+        $categories = $this->categoryService->getAll();
+        return view('admin.categories', compact('categories'));
     }
 
     // CRUD
+
     public function create(Request $request): RedirectResponse
     {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
         try {
-            $data = $request->all();
-
-            // Chama o serviço, que por sua vez chama o Use Case para criar a categoria
             $this->categoryService->createCategory($data);
-
             return redirect()->route('categories.index')->with('success', 'Categoria criada com sucesso.');
         } catch (\InvalidArgumentException $e) {
-
-            // Redireciona de volta com os erros de validação
-            return redirect()->back()->withErrors($e->getMessage())->withInput();
-        } catch (\Exception $e) {
-
-            // Redireciona de volta com outros erros
-            return redirect()->back()->withErrors($e->getMessage())->withInput();
-        }
-    }
-
-    public function update(Request $request, int $id): RedirectResponse
-    {
-        try {
-            $data = $request->all();
-
-            // Chama o serviço, que por sua vez chama o Use Case para atualizar a categoria
-            $this->categoryService->updateCategory($id, $data);
-
-            return redirect()->route('categories.index')
-                ->with('success', 'Categoria atualizada com sucesso.');
-        } catch (\InvalidArgumentException $e) {
-            // Redireciona de volta com os erros de validação
+            Log::error("Erro de argumento inválido: " . $e->getMessage());
             return redirect()->back()->withErrors($e->getMessage())->withInput();
         } catch (Exception $e) {
-            // Redireciona de volta com outros erros
-            return redirect()->back()->withErrors($e->getMessage())->withInput();
+            Log::error("Erro inesperado: " . $e->getMessage());
+            return redirect()->back()->withErrors('Erro ao criar categoria: ' . $e->getMessage())->withInput();
         }
     }
+
+    public function update(Request $request, int $id)
+    {
+        Log::info("Atualizando categoria com ID: {$id}");
+    
+        // Validação dos dados de entrada
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+    
+        try {
+            // Tentativa de atualizar a categoria através do serviço
+            $updatedCategory = $this->categoryService->updateCategory($id, $data);
+    
+            // Resposta de sucesso
+            return response()->json([
+                'success' => true,
+                'message' => 'Categoria atualizada com sucesso.',
+                'name' => $data['name'],
+            ]);
+        } catch (\InvalidArgumentException $e) {
+            // Tratamento para dados inválidos
+            Log::error("Erro de validação: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
+        } catch (\Exception $e) {
+            // Tratamento para outros erros
+            if ($e->getMessage() === 'Categoria não encontrada.') {
+                Log::error("Erro: " . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Categoria não encontrada.',
+                ], 404);
+            } elseif ($e->getMessage() === 'Uma categoria com esse nome já existe.') {
+                Log::error("Erro: " . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Uma categoria com esse nome já existe.',
+                ], 409); // Código HTTP 409 para conflito
+            } else {
+                Log::error("Erro inesperado: " . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro inesperado ao atualizar a categoria.',
+                ], 500);
+            }
+        }
+    }
+    
+
+
 
     public function delete($id)
     {
-        $this->categoryService->deleteCategory($id);
-
-        return redirect()->route('categories.index')
-            ->with('success', 'Categoria excluída com sucesso.');
+        try {
+            $this->categoryService->deleteCategory($id);
+            return redirect()->route('admin.categories')->with('success', 'Categoria excluída com sucesso.');
+        } catch (Exception $e) {
+            Log::error("Erro ao excluir categoria com ID {$id}: " . $e->getMessage());
+            return redirect()->route('admin.categories')->withErrors('Erro ao excluir categoria: ' . $e->getMessage());
+        }
     }
 }

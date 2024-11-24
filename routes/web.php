@@ -30,14 +30,21 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/tiles', [HomeController::class, 'tile']);
 Route::get('/coord', [HomeController::class, 'coord']);
-
+//admin
+Route::get('/admin', [AdminController::class, 'index']);
 // Definir rotas para categorias
-Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-Route::get('/categories/create', [CategoryController::class, 'createPage'])->name('categories.createPage');
-Route::post('/categories', [CategoryController::class, 'create'])->name('categories.create');
-Route::get('/categories/{category}/edit', [CategoryController::class, 'editPage'])->name('categories.editPage');
-Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
-Route::delete('/categories/{category}', [CategoryController::class, 'delete'])->name('categories.delete');
+Route::prefix('admin/categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
+    Route::post('/', [CategoryController::class, 'create'])->name('categories.create');
+    Route::put('/{id}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('{id}', [CategoryController::class, 'delete'])->name('categories.delete');
+});
+Route::prefix('admin/subcategories')->group(function () {
+    Route::get('/', [SubcategoryController::class, 'index'])->name('subcategories.index');
+    Route::post('/', [SubcategoryController::class, 'create'])->name('subcategories.create');
+    Route::put('/{id}', [SubcategoryController::class, 'update'])->name('subcategories.update');
+    Route::delete('{id}', [SubcategoryController::class, 'delete'])->name('subcategories.delete');
+});
 
 
 

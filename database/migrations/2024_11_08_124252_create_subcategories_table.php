@@ -6,17 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateSubcategoriesTable extends Migration
 {
-     /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('subcategories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->id(); // Coluna ID
+            $table->string('name'); // Coluna name
+            $table->unsignedBigInteger('category_id'); // Chave estrangeira para category
+
+            // Define a chave estrangeira que se refere à tabela categories
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
