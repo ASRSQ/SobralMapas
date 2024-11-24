@@ -447,33 +447,46 @@ function initializeChat() {
         if (message !== "") {
             addMessageToChat("user", message);
             messageInput.value = "";
-
-            // Envia a mensagem ao servidor usando AJAX
-            fetch(`${window.location.origin}/sobralmapas/public/send-message`, {
+    
+            // Send the message to the server using AJAX
+            fetch(`${window.location.origin}/sobralmapas/public/api/send-message`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 },
-                body: JSON.stringify({ message: message }),
+                body: JSON.stringify({
+                    sender: "user",  // Include a sender field as Rasa expects
+                    message: message
+                }),
             })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data && data.length > 0) {
-                        data.forEach((msg) => {
-                            addMessageToChat("bot", msg.text);
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error("Erro:", error);
-                    addMessageToChat(
-                        "bot",
-                        "Erro ao se comunicar com o servidor."
-                    );
-                });
+            .then(response => {
+                console.log('Resposta do servidor:', response);
+    
+                if (!response.ok) {
+                    throw new Error("Erro ao comunicar com o servidor");
+                }
+                return response.json();  // Convert response to JSON
+            })
+            .then((data) => {
+                console.log('Dados recebidos do servidor:', data);
+    
+                if (data && data.length > 0) {
+                    data.forEach((msg) => {
+                        addMessageToChat("bot", msg.text);
+                    });
+                } else {
+                    addMessageToChat("bot", "Nenhuma resposta encontrada.");
+                }
+            })
+            .catch((error) => {
+                console.error("Erro:", error);
+                addMessageToChat("bot", "Erro ao se comunicar com o servidor.");
+            });
         }
     });
+    
+    
 
     // Enviar mensagem ao pressionar Enter
     messageInput.addEventListener("keydown", function (e) {

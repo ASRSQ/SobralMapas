@@ -480,23 +480,32 @@ function initializeChat() {
       addMessageToChat("user", message);
       messageInput.value = "";
 
-      // Envia a mensagem ao servidor usando AJAX
-      fetch("".concat(window.location.origin, "/sobralmapas/public/send-message"), {
+      // Send the message to the server using AJAX
+      fetch("".concat(window.location.origin, "/sobralmapas/public/api/send-message"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": "{{ csrf_token() }}"
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         },
         body: JSON.stringify({
+          sender: "user",
+          // Include a sender field as Rasa expects
           message: message
         })
       }).then(function (response) {
-        return response.json();
+        console.log('Resposta do servidor:', response);
+        if (!response.ok) {
+          throw new Error("Erro ao comunicar com o servidor");
+        }
+        return response.json(); // Convert response to JSON
       }).then(function (data) {
+        console.log('Dados recebidos do servidor:', data);
         if (data && data.length > 0) {
           data.forEach(function (msg) {
             addMessageToChat("bot", msg.text);
           });
+        } else {
+          addMessageToChat("bot", "Nenhuma resposta encontrada.");
         }
       })["catch"](function (error) {
         console.error("Erro:", error);
