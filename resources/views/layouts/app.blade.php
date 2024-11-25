@@ -12,6 +12,7 @@
 
     <!-- Adiciona o CSS correto do OpenLayers (versão 6.13.0) -->
     <link rel="stylesheet" href="https://openlayers.org/en/v6.13.0/css/ol.css" />
+    <meta name="theme-color" content="#ee1849">
 </head>
 <body>
     @include('partials.topbar')

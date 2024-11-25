@@ -841,6 +841,7 @@ input[type="checkbox"] {
         width: 30px;
         height: 25px;
         position: relative;
+        margin-right: 30px;
         span {
             display: block;
             background-color: white;
