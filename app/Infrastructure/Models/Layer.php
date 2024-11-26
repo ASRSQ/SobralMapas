@@ -4,7 +4,6 @@ namespace App\Infrastructure\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Infrastructure\Models\Category;
 use App\Infrastructure\Models\subcategory;
 
 class Layer extends Model
@@ -23,8 +22,10 @@ class Layer extends Model
         'type',
         'description',
         'order',
-        'subcategory_id', // Chave estrangeira para a subcategoria
+        'subcategory', // Chave estrangeira para a subcategoria
         'image_path',
+        'max_scale',
+        'symbol'
     ];
 
     // Defina os campos que são datetimes
@@ -33,6 +34,6 @@ class Layer extends Model
     // Relacionamento com Subcategory
     public function subcategory()
     {
-        return $this->belongsTo(Subcategory::class, 'subcategory_id');
+        return $this->belongsTo(Subcategory::class, 'subcategory');
     }
 }

@@ -46,6 +46,14 @@ Route::prefix('admin/subcategories')->group(function () {
     Route::delete('{id}', [SubcategoryController::class, 'delete'])->name('subcategories.delete');
 });
 
+Route::prefix('admin/layers')->group(function () {
+    Route::get('/', [LayerController::class, 'index'])->name('admin.layers.index');  // Listar layers
+    Route::post('/', [LayerController::class, 'store'])->name('admin.layers.store');  // Criar layer
+    Route::get('{id}/edit', [LayerController::class, 'edit'])->name('admin.layers.edit');  // Editar layer
+    Route::put('{id}', [LayerController::class, 'update'])->name('admin.layers.update');  // Atualizar layer
+    Route::delete('{id}', [LayerController::class, 'destroy'])->name('admin.layers.destroy');  // Deletar layer
+});
+
 
 
 /*

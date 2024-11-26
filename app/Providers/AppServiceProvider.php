@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ICategoryRepository::class, EloquentCategoryRepository::class);
         $this->app->bind(ILayerRepository::class, EloquentLayerRepository::class);
         $this->app->bind(ISubcategoryRepository::class, EloquentSubcategoryRepository::class);
+        $this->app->bind(ILayerRepository::class, EloquentLayerRepository::class);
         $this->app->singleton(GeoServerService::class, function ($app) {
             return new GeoServerService($app->make(GeoServerClient::class));
         });
