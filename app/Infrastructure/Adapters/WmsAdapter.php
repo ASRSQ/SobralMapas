@@ -1,42 +1,70 @@
 <?php
 
 namespace App\Infrastructure\Adapters;
-use App\Infrastructure\Models\WmsLink;
-use App\Infrastructure\Models;
-use Illuminate\Support\Facades\Http;
 
-class WmsService
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class WmsAdapter
 {
-    public function fetchAndStoreWmsData($url)
+    public function fetchWmsData(string $url): array
     {
-        // Buscar o XML de Capabilities do WMS
-        $response = Http::get($url . '?service=wms&version=1.3.0&request=GetCapabilities');
-        
+        Log::info('Iniciando a requisição para o WMS', ['url' => $url]);
+
+        // Log da URL fornecida pelo usuário
+        Log::info('URL recebida para o serviço WMS', ['url' => $url]);
+
+        $response = Http::get($url);
+
         if ($response->failed()) {
+            Log::error('Falha ao acessar o serviço WMS', ['url' => $url, 'status' => $response->status()]);
             throw new \Exception("Falha ao acessar o serviço WMS.");
         }
 
+        Log::info('Resposta recebida do serviço WMS', ['status' => $response->status()]);
+
         $xml = simplexml_load_string($response->body());
-        $namespaces = $xml->getNamespaces(true);
-        $capabilities = $xml->children($namespaces['wms']);
-
-        // Salvar o link WMS
-        $wmsLink = WmsLink::create([
-            'name' => (string) $xml->Service->Title,
-            'url'  => $url
-        ]);
-
-        // Salvar camadas associadas ao link WMS
-        foreach ($capabilities->Capability->Layer->Layer as $layer) {
-            WmsLayer::create([
-                'wms_link_id' => $wmsLink->id,
-                'layer_name'  => (string) $layer->Title,
-                'crs'         => (string) $layer->CRS,
-                'formats'     => implode(", ", iterator_to_array($layer->Format)),
-                'description' => $layer->Abstract ?? null
-            ]);
+        if (!$xml) {
+            Log::error('Falha ao interpretar o XML do serviço WMS', ['response_body' => $response->body()]);
+            throw new \Exception("Falha ao interpretar o XML do serviço WMS.");
         }
 
-        return $wmsLink;
+        Log::info('XML do serviço WMS interpretado com sucesso', ['xml' => (string)$response->body()]);
+
+        $namespaces = $xml->getNamespaces(true);
+        $capabilities = $xml->children($namespaces['wms'] ?? null);
+
+        Log::info('Extraindo dados do XML', ['capabilities' => $capabilities]);
+
+        $data = $this->extractWmsData($capabilities);
+
+        Log::info('Dados extraídos do WMS', ['data' => $data]);
+
+        return $data;
+    }
+
+    private function extractWmsData($capabilities): array
+    {
+        $data = [
+            'service' => [
+                'title' => (string) $capabilities->Service->Title ?? 'Unknown',
+            ],
+            'layers' => [],
+        ];
+
+        if (isset($capabilities->Capability->Layer->Layer)) {
+            foreach ($capabilities->Capability->Layer->Layer as $layer) {
+                $data['layers'][] = [
+                    'layer_name'  => (string) $layer->Title,
+                    'crs'         => isset($layer->CRS) ? (string) $layer->CRS : null,
+                    'formats'     => isset($layer->Format) ? implode(", ", iterator_to_array($layer->Format)) : null,
+                    'description' => isset($layer->Abstract) ? (string) $layer->Abstract : null,
+                ];
+            }
+        }
+
+        Log::info('Dados das camadas extraídos', ['layers' => $data['layers']]);
+
+        return $data;
     }
 }

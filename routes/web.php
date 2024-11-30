@@ -12,6 +12,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\GeoServerProxyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\WmsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +54,14 @@ Route::prefix('admin/layers')->group(function () {
     Route::put('{id}', [LayerController::class, 'update'])->name('admin.layers.update');  // Atualizar layer
     Route::delete('{id}', [LayerController::class, 'destroy'])->name('admin.layers.destroy');  // Deletar layer
 });
-
+Route::prefix('admin/wms')->group(function () {
+    // Exibir o formulário de criação e a lista de links WMS
+    Route::get('/', [WmsController::class, 'index'])->name('admin.wms.index');  // Listar WMS links
+    Route::post('/', [WmsController::class, 'store'])->name('admin.wms.store');  // Criar WMS link
+    Route::get('{id}/edit', [WmsController::class, 'edit'])->name('admin.wms.edit');  // Editar WMS link
+    Route::put('{id}', [WmsController::class, 'update'])->name('admin.wms.update');  // Atualizar WMS link
+    Route::delete('{id}', [WmsController::class, 'destroy'])->name('admin.wms.destroy');  // Deletar WMS link
+});
 
 
 /*

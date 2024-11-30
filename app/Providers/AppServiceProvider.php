@@ -13,6 +13,8 @@ use App\Domain\Repositories\ISubcategoryRepository;
 use App\Infrastructure\Repositories\EloquentSubcategoryRepository;
 use App\Infrastructure\Adapters\ChatbotAdapter;
 use App\Application\Services\ChatbotService;
+use App\Infrastructure\Adapters\WmsAdapter;
+use App\Application\Services\WmsService;
 
 
 
@@ -34,6 +36,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton(ChatbotService::class, function ($app) {
             return new ChatbotService($app->make(ChatbotAdapter::class));
+        });
+        $this->app->singleton(WmsService::class, function ($app) {
+            return new WmsService($app->make(WmsAdapter::class));
         });
     }
 
