@@ -22,19 +22,65 @@
                 </div>
                 <div class="card-body">
                     <!-- Formulário para criar camada -->
-                    <form id="layer-form" action="{{ route('admin.layers.store') }}" method="POST">
+                    <form id="layer-form" action="{{ route('admin.layers.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        
                         <div class="form-group">
                             <label for="name">Nome da Camada</label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="layer_name">Nome da Camada (Layer)</label>
-                            <input type="text" class="form-control" id="layer_name" name="layer_name" required>
+                            <label for="subcategory">Subcategoria</label>
+                            <select class="form-control" id="subcategory" name="subcategory" required>
+                                <option value="">Selecione uma Subcategoria</option>
+                                @foreach($subcategories as $subcategory)
+                                    <option value="{{ $subcategory->getId() }}">{{ $subcategory->getName() }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
-                       
+                        <div class="form-group">
+                            <label for="wms_link_id">Selecione o Link WMS</label>
+                            <select class="form-control" id="wms_link_id" name="wms_link_id" required>
+                                <option value="">Selecione um Link WMS</option>
+                                @foreach($wmsLinks as $link)
+                                    <option value="{{ $link->id }}">{{ $link->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="layers-select">Camada</label>
+                            <select id="layers-select" class="form-control">
+                                <option value="">Selecione um geoserver primeiro</option>
+                            </select>
+                        </div>
+                        <input type="hidden" id="layer_name" name="layer_name">
+
+
+                        <div class="form-group">
+                            <label for="crs">CRS:</label>
+                            <input type="text" class="form-control" id="crs" name="crs" placeholder="CRS da Camada" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="formats">Formats:</label>
+                            <input type="text" class="form-control" id="formats" name="formats" placeholder="Formats disponíveis" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="legend_url">Legend URL:</label>
+                            <input type="text" class="form-control" id="legend_url" name="legend_url" placeholder="URL da Legenda">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="use_legend">Usar Legend URL?</label>
+                            <select class="form-control" id="use_legend" name="use_legend">
+                                <option value="yes">Sim</option>
+                                <option value="no">Não</option>
+                            </select>
+                        </div>
 
                         <div class="form-group">
                             <label for="description">Descrição</label>
@@ -42,8 +88,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="image_path">Caminho da Imagem</label>
-                            <input type="text" class="form-control" id="image_path" name="image_path">
+                            <label for="image">Imagem</label>
+                            <input type="file" class="form-control" id="image" name="image">
                         </div>
 
                         <div class="form-group">
@@ -70,22 +116,22 @@
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
-                    @foreach($layers as $layer)
-                    <li class="list-group-item d-flex justify-content-between align-items-center" id="layer-{{ $layer->id }}">
-                        <span class="layer-name" data-id="{{ $layer->id }}" data-name="{{ $layer->name }}" data-subcategory-id="{{ $layer->subcategory_id }}">
-                            {{ $layer->name }} ({{ $layer->subcategory->name }}) <!-- Use o método getSubcategory() -->
-                        </span>
-                        <div>
-                            <a href="{{ route('admin.layers.edit', $layer->id) }}" class="btn btn-warning btn-sm mx-1">Editar</a>
-                            <!-- Formulário de exclusão -->
-                            <form action="{{ route('admin.layers.destroy', $layer->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-                            </form>
-                        </div>
-                    </li>
-                    @endforeach
+                        @foreach($layers as $layer)
+                        <li class="list-group-item d-flex justify-content-between align-items-center" id="layer-{{ $layer->getId() }}">
+                            <span class="layer-name" data-id="{{ $layer->getId() }}" data-name="{{ $layer->getName() }}" data-subcategory-id="{{ $layer->getSubcategory()}}">
+                                {{ $layer->getName() }} ({{ $layer->getSubcategory() }})
+                            </span>
+                            <div>
+                                <a href="{{ route('admin.layers.edit', $layer->getid()) }}" class="btn btn-warning btn-sm mx-1">Editar</a>
+                                <!-- Formulário de exclusão -->
+                                <form action="{{ route('admin.layers.destroy', $layer->getId()) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                </form>
+                            </div>
+                        </li>
+                        @endforeach
                     </ul>
                 </div>
             </div>
@@ -93,62 +139,94 @@
     </div>
 </div>
 
-<!-- Modal para edição -->
-<div class="modal fade" id="editLayerModal" tabindex="-1" role="dialog" aria-labelledby="editLayerModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editLayerModalLabel">Editar Camada</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Alerta para exibir mensagens de erro -->
-                <div id="error-alert" class="alert alert-danger d-none"></div>
-                <div id="success-alert" class="alert alert-success d-none"></div>
+<script>
+    document.getElementById('wms_link_id').addEventListener('change', function () {
+    const wmsLinkId = this.value;
+    const layersSelect = document.getElementById('layers-select');
 
-                <!-- Formulário de edição de camada -->
-                <form id="edit-layer-form" method="POST" action="{{ route('admin.layers.update', ':id') }}">
-                    @csrf
-                    @method('PUT')
-                    <div class="form-group">
-                        <label for="edit-name">Nome da Camada</label>
-                        <input type="text" class="form-control" id="edit-name" name="name" required>
-                    </div>
+    // Limpa as opções do select de camadas
+    layersSelect.innerHTML = '<option value="">Carregando...</option>';
 
-                    <div class="form-group">
-                        <label for="edit-layer_name">Nome da Camada (Layer)</label>
-                        <input type="text" class="form-control" id="edit-layer_name" name="layer_name" required>
-                    </div>
+    if (wmsLinkId) {
+        fetch(`/sobralmapas/public/admin/wms/${wmsLinkId}/layers`)
+            .then(response => response.json())
+            .then(data => {
+                layersSelect.innerHTML = '<option value="">Selecione uma camada</option>';
 
-                    
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
 
-                    <div class="form-group">
-                        <label for="edit-description">Descrição</label>
-                        <textarea class="form-control" id="edit-description" name="description"></textarea>
-                    </div>
+                data.forEach(layer => {
+                    const option = document.createElement('option');
+                    option.value = layer.id;
+                    option.textContent = layer.layer_name; // Nome da camada visível
+                    option.dataset.crs = layer.crs || ''; // Atributo CRS
+                    option.dataset.formats = layer.formats || ''; // Atributo Formats
+                    option.dataset.description = layer.description || ''; // Atributo Description
+                    layersSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                layersSelect.innerHTML = '<option value="">Erro ao carregar camadas</option>';
+                console.error('Erro:', error);
+            });
+    } else {
+        layersSelect.innerHTML = '<option value="">Selecione um WMS Link primeiro</option>';
+    }
+});
 
-                    <div class="form-group">
-                        <label for="edit-image_path">Caminho da Imagem</label>
-                        <input type="text" class="form-control" id="edit-image_path" name="image_path">
-                    </div>
+// Evento acionado ao selecionar uma camada
+document.getElementById('layers-select').addEventListener('change', function () {
+        const selectedLayer = this.options[this.selectedIndex]; // Get the selected layer
 
-                    <div class="form-group">
-                        <label for="edit-max_scale">Escala Máxima</label>
-                        <input type="number" class="form-control" id="edit-max_scale" name="max_scale">
-                    </div>
+        // Get the layer_name and update the hidden input field
+        const layerNameField = document.getElementById('layer_name');
+        if (selectedLayer) {
+            // Set the layer_name value
+            layerNameField.value = selectedLayer.textContent;
 
-                    <div class="form-group">
-                        <label for="edit-symbol">Símbolo</label>
-                        <input type="text" class="form-control" id="edit-symbol" name="symbol">
-                    </div>
+            // Fill in the other fields with data from the selected layer
+            document.getElementById('crs').value = selectedLayer.dataset.crs || '';
+            document.getElementById('formats').value = selectedLayer.dataset.formats || '';
+            document.getElementById('legend_url').value = selectedLayer.dataset.description || '';
+        } else {
+            // Clear the fields if no layer is selected
+            layerNameField.value = ''; // Clear layer_name
+            document.getElementById('crs').value = '';
+            document.getElementById('formats').value = '';
+            document.getElementById('legend_url').value = '';
+        }
+    });
 
-                    <input type="hidden" id="edit-layer-id" name="layer_id">
-                    <button type="submit" class="btn btn-primary mt-3">Atualizar Camada</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+// Controle do campo legend_url via select box
+document.getElementById('use_legend').addEventListener('change', function () {
+    const legendUrlField = document.getElementById('legend_url');
+
+    if (this.value === 'yes') {
+        // Habilitar legend_url e preencher com a descrição atual
+        legendUrlField.disabled = false;
+    } else {
+        // Desabilitar legend_url e limpar o campo
+        legendUrlField.disabled = true;
+        legendUrlField.value = '';
+    }
+});
+document.getElementById('layer-form').addEventListener('submit', function (e) {
+    // Remove wms_link_id before submitting the form
+    const wmsLinkField = document.getElementById('wms_link_id');
+    if (wmsLinkField) {
+        wmsLinkField.remove(); // Remove the WMS link field
+    }
+
+    // Remove use_legend field before submitting the form
+    const useLegendField = document.getElementById('use_legend');
+    if (useLegendField) {
+        useLegendField.remove(); // Remove the 'use_legend' field
+    }
+});
+
+
+</script>
 @endsection

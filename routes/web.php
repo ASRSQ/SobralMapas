@@ -61,6 +61,7 @@ Route::prefix('admin/wms')->group(function () {
     Route::get('{id}/edit', [WmsController::class, 'edit'])->name('admin.wms.edit');  // Editar WMS link
     Route::put('{id}', [WmsController::class, 'update'])->name('admin.wms.update');  // Atualizar WMS link
     Route::delete('{id}', [WmsController::class, 'destroy'])->name('admin.wms.destroy');  // Deletar WMS link
+    Route::get('/{id}/layers',[WmsController::class, 'getWmsLayersByLink']);
 });
 
 

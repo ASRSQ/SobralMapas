@@ -19,7 +19,7 @@ class CreateLayersTable extends Migration
             $table->string('layer_name');       // Nome único do layer no Geoserver (layerName)
             $table->string('crs');              // Sistema de Referência de Coordenadas (CRS)
             $table->string('legend_url')->nullable();  // URL da legenda (Legend URL)
-            $table->enum('type', ['WMS', 'WFS']);  // Tipo de serviço (WMS/WFS)
+            $table->enum('type', ['WMS', 'WFS'])->nullable();  // Tipo de serviço (WMS/WFS)
             $table->text('description')->nullable(); // Descrição da camada (Descricao)
             $table->integer('order')->default(0);  // Ordem para exibição
             $table->unsignedBigInteger('subcategory'); // Chave estrangeira para a tabela `subcategories`

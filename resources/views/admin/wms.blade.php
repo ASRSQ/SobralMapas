@@ -33,6 +33,15 @@
                             <label for="url">URL do WMS</label>
                             <input type="text" class="form-control" id="url" name="url" required>
                         </div>
+                        <div class="form-group">
+                            <label for="edit-version">Versão</label>
+                            <select class="form-control" id="edit-version" name="version" required>
+                                <option value="1.0.0">1.0.0</option>
+                                <option value="1.1.0">1.1.0</option>
+                                <option value="1.3.0">1.3.0</option>
+                            </select>
+                        </div>
+
 
                         <button type="submit" class="btn btn-primary mt-3">Criar Camada</button>
                     </form>

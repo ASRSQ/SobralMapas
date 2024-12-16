@@ -10,7 +10,7 @@ class WmsLink extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'url'];
+    protected $fillable = ['name', 'url','version'];
 
     public function layers()
     {

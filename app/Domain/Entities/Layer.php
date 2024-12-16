@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Domain\Entities;
+use App\Infrastructure\Repositories\EloquentSubcategoryRepository;
 
 class Layer
 {
@@ -22,20 +22,20 @@ class Layer
         string $name,
         string $layer_name,
         string $crs,
-        string $legend_url,
-        string $type,
-        string $description,
-        int $order,
-        $subcategory,
-        string $image_path,
-        int $max_scale,
-        string $symbol
+        ?string $legend_url = null,
+        string $type = 'default', // Valor padrão
+        string $description = '', // Valor padrão
+        int $order = 0, // Valor padrão
+        $subcategory = null, // Pode ser nulo, depende de lógica externa
+        string $image_path = '', // Valor padrão
+        int $max_scale = 0, // Valor padrão
+        string $symbol = '' // Valor padrão
     ) {
         $this->id = $id;
         $this->name = $name;
         $this->layer_name = $layer_name;
         $this->crs = $crs;
-        $this->legend_url = $legend_url;
+        $this->legend_url = $legend_url ?? ''; // Se for null, usa vazio
         $this->type = $type;
         $this->description = $description;
         $this->order = $order;
@@ -85,12 +85,17 @@ class Layer
     {
         return $this->order;
     }
-
-    public function getSubcategory()
+    public function getSubcategory(): ?string
     {
-        return $this->subcategory;  // Pode ser uma instância de Subcategory
+        // Se $subcategory for uma instância de Subcategory, retorna o nome diretamente
+        if ($this->subcategory instanceof Subcategory) {
+            return $this->subcategory->name;
+        }
+    
+        // Caso contrário, tenta buscar o nome da subcategoria pelo ID usando o repositório
+        return EloquentSubcategoryRepository::getNameById($this->subcategory);
     }
-
+    
     public function getImagePath(): string
     {
         return $this->image_path;

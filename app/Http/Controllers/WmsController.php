@@ -33,11 +33,14 @@ class WmsController extends Controller
         $request->validate([
             'url' => 'required|url',
             'name' => 'required|string|max:255',
+            'version' => 'nullable|string|max:10',  // Adicionando a validação para a versão
         ]);
+
+        $version = $request->version ?? '1.3.0';  // Se não passar a versão, usa a versão padrão 1.3.0
 
         try {
             // Chama o serviço para criar o WMS Link e as camadas associadas
-            $this->service->createWmsLinkWithLayers($request->url, $request->name);
+            $this->service->createWmsLinkWithLayers($request->url, $request->name, $version);
 
             // Redireciona para a página admin.wms com uma mensagem de sucesso
             return redirect()->route('wms.index')->with('success', 'WMS Link e camadas salvos com sucesso!');
@@ -56,18 +59,22 @@ class WmsController extends Controller
         $request->validate([
             'url' => 'required|url',
             'name' => 'required|string|max:255',
+            'version' => 'nullable|string|max:10',  // Adicionando a validação para a versão
         ]);
-    
+
+        $version = $request->version ?? '1.3.0';  // Se não passar a versão, usa a versão padrão 1.3.0
+
         try {
             // Atualiza o WMS Link usando o serviço
-            $this->service->updateWmsLink($id, $request->name, $request->url);
-    
+            $this->service->updateWmsLink($id, $request->name, $request->url, $version);
+
             // Retorna resposta JSON para o frontend
             return response()->json([
                 'success' => true,
                 'message' => 'WMS Link atualizado com sucesso!',
                 'name' => $request->name,
                 'url' => $request->url,
+                'version' => $version,
             ]);
         } catch (\Exception $e) {
             // Em caso de erro, retorna resposta JSON com o erro
@@ -77,7 +84,6 @@ class WmsController extends Controller
             ]);
         }
     }
-    
 
     /**
      * Exclui um WMS Link e suas camadas associadas.
@@ -93,6 +99,21 @@ class WmsController extends Controller
         } catch (\Exception $e) {
             // Em caso de erro, redireciona de volta com a mensagem de erro
             return redirect()->back()->with('error', 'Erro ao excluir o WMS Link: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Obtém as camadas de um WMS Link específico.
+     */
+    public function getWmsLayersByLink($wmsLinkId)
+    {
+        try {
+            // Chama o serviço para obter as camadas
+            $layers = $this->service->getWmsLayersByLink($wmsLinkId);
+
+            return response()->json($layers, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
         }
     }
 }

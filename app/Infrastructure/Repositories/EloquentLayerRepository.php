@@ -5,111 +5,153 @@ namespace App\Infrastructure\Repositories;
 use App\Domain\Entities\Layer;
 use App\Domain\Repositories\ILayerRepository;
 use App\Infrastructure\Models\Layer as EloquentLayer;
+use Illuminate\Support\Facades\Log;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class EloquentLayerRepository implements ILayerRepository
 {
-    // Método para encontrar um layer pelo ID
-    public function findById(int $id): ?Layer
+    private function mapToDomain(EloquentLayer $eloquentLayer): Layer
     {
-        $layer = EloquentLayer::find($id);
-        if (!$layer) {
-            return null;
-        }
-
-        return new Layer(
-            $layer->id,
-            $layer->name,
-            $layer->layer_name,
-            $layer->crs,
-            $layer->legend_url,
-            $layer->type,
-            $layer->description,
-            $layer->order,
-            $layer->subcategory, // Relacionamento com Subcategory
-            $layer->image_path,
-            $layer->max_scale,
-            $layer->symbol
-        );
-    }
-
-    // Método para criar um novo layer
-    public function create(array $data): Layer
-    {
-        $eloquentLayer = EloquentLayer::create($data);
-
         return new Layer(
             $eloquentLayer->id,
             $eloquentLayer->name,
             $eloquentLayer->layer_name,
             $eloquentLayer->crs,
             $eloquentLayer->legend_url,
-            $eloquentLayer->type,
-            $eloquentLayer->description,
-            $eloquentLayer->order,
-            $eloquentLayer->subcategory, // Relacionamento com Subcategory
-            $eloquentLayer->image_path,
-            $eloquentLayer->max_scale,
-            $eloquentLayer->symbol
+            $eloquentLayer->type ?? 'default', // Default value for type
+            $eloquentLayer->description ?? '', // Default value for description
+            $eloquentLayer->order ?? 0, // Default value for order
+            $eloquentLayer->subcategory,
+            $eloquentLayer->image_path ?? '', // Default value for image_path
+            $eloquentLayer->max_scale ?? 0, // Default value for max_scale
+            $eloquentLayer->symbol ?? '' // Default value for symbol
         );
     }
+    
 
-    // Método para atualizar um layer
+    public function findById(int $id): ?Layer
+    {
+        try {
+            Log::info('Accessed findById', ['layer_id' => $id]);
+
+            $eloquentLayer = EloquentLayer::find($id);
+            if (!$eloquentLayer) {
+                Log::warning('Layer not found', ['layer_id' => $id]);
+                return null;
+            }
+
+            return $this->mapToDomain($eloquentLayer);
+        } catch (Exception $e) {
+            Log::error('Error in findById', ['error' => $e->getMessage(), 'layer_id' => $id]);
+            throw $e;
+        }
+    }
+
+    public function create(array $data): Layer
+    {
+        DB::beginTransaction();
+        try {
+            Log::info('Creating layer', ['data' => $data]);
+
+            $eloquentLayer = EloquentLayer::create($data);
+            DB::commit();
+
+            return $this->mapToDomain($eloquentLayer);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error in create', ['error' => $e->getMessage(), 'data' => $data]);
+            throw $e;
+        }
+    }
+
     public function update(Layer $layer): void
     {
-        $eloquentLayer = EloquentLayer::find($layer->getId());
+        DB::beginTransaction();
+        try {
+            Log::info('Updating layer', ['layer_id' => $layer->getId()]);
 
-        if ($eloquentLayer) {
-            $eloquentLayer->name = $layer->getName();
-            $eloquentLayer->layer_name = $layer->getLayerName();
-            $eloquentLayer->crs = $layer->getCrs();
-            $eloquentLayer->legend_url = $layer->getLegendUrl();
-            $eloquentLayer->type = $layer->getType();
-            $eloquentLayer->description = $layer->getDescription();
-            $eloquentLayer->order = $layer->getOrder();
-            $eloquentLayer->subcategory = $layer->getSubcategory();
-            $eloquentLayer->image_path = $layer->getImagePath();
-            $eloquentLayer->max_scale = $layer->getMaxScale();
-            $eloquentLayer->symbol = $layer->getSymbol();
-            $eloquentLayer->save();
+            $eloquentLayer = EloquentLayer::find($layer->getId());
+            if (!$eloquentLayer) {
+                Log::warning('Layer not found for update', ['layer_id' => $layer->getId()]);
+                return;
+            }
+
+            $eloquentLayer->fill([
+                'name' => $layer->getName(),
+                'layer_name' => $layer->getLayerName(),
+                'crs' => $layer->getCrs(),
+                'legend_url' => $layer->getLegendUrl(),
+                'type' => $layer->getType(),
+                'description' => $layer->getDescription(),
+                'order' => $layer->getOrder(),
+                'subcategory' => $layer->getSubcategory(),
+                'image_path' => $layer->getImagePath(),
+                'max_scale' => $layer->getMaxScale(),
+                'symbol' => $layer->getSymbol(),
+            ])->save();
+
+            DB::commit();
+            Log::info('Layer updated successfully', ['layer_id' => $layer->getId()]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error in update', ['error' => $e->getMessage(), 'layer_id' => $layer->getId()]);
+            throw $e;
         }
     }
 
-    // Método para deletar um layer
     public function delete(int $id): void
     {
-        $eloquentLayer = EloquentLayer::find($id);
+        DB::beginTransaction();
+        try {
+            Log::info('Deleting layer', ['layer_id' => $id]);
 
-        if ($eloquentLayer) {
+            $eloquentLayer = EloquentLayer::find($id);
+            if (!$eloquentLayer) {
+                Log::warning('Layer not found for deletion', ['layer_id' => $id]);
+                return;
+            }
+
             $eloquentLayer->delete();
+            DB::commit();
+
+            Log::info('Layer deleted successfully', ['layer_id' => $id]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error in delete', ['error' => $e->getMessage(), 'layer_id' => $id]);
+            throw $e;
         }
     }
 
-    // Método para obter todos os layers
     public function getAllLayers(): array
     {
-        $layers = EloquentLayer::all();
+        try {
+            Log::info('Fetching all layers');
 
-        return $layers->map(function ($layer) {
-            return new Layer(
-                $layer->id,
-                $layer->name,
-                $layer->layer_name,
-                $layer->crs,
-                $layer->legend_url,
-                $layer->type,
-                $layer->description,
-                $layer->order,
-                $layer->subcategory, // Relacionamento com Subcategory
-                $layer->image_path,
-                $layer->max_scale,
-                $layer->symbol
-            );
-        })->toArray();
+            $layers = EloquentLayer::all();
+
+            Log::info('Fetched layers', ['count' => $layers->count()]);
+
+            return $layers->map(fn($layer) => $this->mapToDomain($layer))->toArray();
+        } catch (Exception $e) {
+            Log::error('Error in getAllLayers', ['error' => $e->getMessage()]);
+            throw $e;
+        }
     }
 
-    // Método para verificar se um layer existe pelo nome
     public function existByName(string $name): bool
     {
-        return EloquentLayer::where('name', $name)->exists();
+        try {
+            Log::info('Checking if layer exists', ['name' => $name]);
+
+            $exists = EloquentLayer::where('name', $name)->exists();
+
+            Log::info('Existence check result', ['name' => $name, 'exists' => $exists]);
+
+            return $exists;
+        } catch (Exception $e) {
+            Log::error('Error in existByName', ['error' => $e->getMessage(), 'name' => $name]);
+            throw $e;
+        }
     }
 }

@@ -20,20 +20,22 @@ class WmsService
      *
      * @param string $url
      * @param string $name
+     * @param string $version // Novo campo para versão
      */
-    public function createWmsLinkWithLayers($url, $name)
+    public function createWmsLinkWithLayers($url, $name, $version)
     {
         \DB::beginTransaction();
 
         try {
-            // Criar o WMS Link
+            // Criar o WMS Link com a versão
             $wmsLink = new WmsLink();
             $wmsLink->url = $url;
             $wmsLink->name = $name;
+            $wmsLink->version = $version; // Definindo o valor para o campo version
             $wmsLink->save(); // Salva o WMS Link
 
             // Buscar as camadas do WMS usando o adaptador
-            $wmsData = $this->wmsAdapter->fetchWmsData($url);
+            $wmsData = $this->wmsAdapter->fetchWmsData($url,$version);
 
             // Processar as camadas e salvar no banco de dados
             foreach ($wmsData['layers'] as $layerData) {
@@ -94,13 +96,14 @@ class WmsService
     }
 
     /**
-     * Edita o nome e a URL de um WMS Link.
+     * Edita o nome, a URL e a versão de um WMS Link.
      *
      * @param int $wmsLinkId
      * @param string $name
      * @param string $url
+     * @param string $version // Novo campo para versão
      */
-    public function updateWmsLink($id, $name, $url)
+    public function updateWmsLink($id, $name, $url, $version)
     {
         // Verifique se o WMS Link existe
         $wmsLink = WmsLink::find($id);
@@ -112,7 +115,25 @@ class WmsService
         // Atualiza os dados
         $wmsLink->name = $name;
         $wmsLink->url = $url;
+        $wmsLink->version = $version; // Atualiza o campo version
         $wmsLink->save();
     }
-    
+
+    /**
+     * Retorna as camadas associadas a um WMS Link.
+     *
+     * @param int $wmsLinkId
+     */
+    public function getWmsLayersByLink($wmsLinkId)
+    {
+        // Verifica se o WMS Link existe
+        $wmsLink = WmsLink::find($wmsLinkId);
+
+        if (!$wmsLink) {
+            throw new \Exception('WMS Link não encontrado!');
+        }
+
+        // Retorna todas as camadas associadas
+        return WmsLayer::where('wms_link_id', $wmsLinkId)->get();
+    }
 }
