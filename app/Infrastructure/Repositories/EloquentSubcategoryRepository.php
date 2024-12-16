@@ -166,5 +166,11 @@ class EloquentSubcategoryRepository implements ISubcategoryRepository
     // Log: Alterações salvas com sucesso
     Log::info('Alterações salvas com sucesso', ['id' => $eloquentSubcategory->id]);
 }
+public static function getNameById(int $id): ?string
+{
+    $subcategory = EloquentSubcategory::find($id); // Usando o modelo Eloquent diretamente
+    return $subcategory ? $subcategory->name : null; // Retorna o nome ou null se não encontrado
+}
+
 
 }

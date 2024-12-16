@@ -11,4 +11,5 @@ interface ISubcategoryRepository
     public function save(Subcategory $subcategory): void;
     public function delete(int $id): void;
     public function update(Subcategory $subcategory): void;
+    public static function getNameById(int $id): ?string;
 }

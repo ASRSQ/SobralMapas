@@ -791,6 +791,13 @@ input[type="checkbox"] {
 .close-btn{
     display: none; 
 }
+
+.main-header.navbar {
+    background-color: var(--primary-color); /* Use sua variável de cor principal */
+    color: #fff; /* Ajuste a cor do texto, se necessário */
+    border-bottom: 1px solid var(--primary-dark); /* Adicione um contorno ou sombra, se desejar */
+}
+
 /* Estilos para telas menores */
 @media (max-width: 768px) {
     #show-chat-button {

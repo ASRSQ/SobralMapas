@@ -33,10 +33,38 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            (0,_map__WEBPACK_IMPORTED_MODULE_2__.initializeMap)();
-            (0,_ui__WEBPACK_IMPORTED_MODULE_0__.InitializeUI)();
-            (0,_components__WEBPACK_IMPORTED_MODULE_1__.InitializeComponents)();
-          case 3:
+            console.log("initializeApp foi chamado com sucesso."); // Log para verificar se initializeApp é chamado
+
+            // Verificação de initializeMap
+            try {
+              console.log("Iniciando initializeMap...");
+              (0,_map__WEBPACK_IMPORTED_MODULE_2__.initializeMap)();
+              console.log("initializeMap carregado com sucesso.");
+            } catch (error) {
+              console.log("Erro ao carregar initializeMap: " + error.message);
+              console.error("Erro ao carregar initializeMap:", error);
+            }
+
+            // Verificação de InitializeUI
+            try {
+              console.log("Iniciando InitializeUI...");
+              (0,_ui__WEBPACK_IMPORTED_MODULE_0__.InitializeUI)();
+              console.log("InitializeUI carregado com sucesso.");
+            } catch (error) {
+              console.log("Erro ao carregar InitializeUI: " + error.message);
+              console.error("Erro ao carregar InitializeUI:", error);
+            }
+
+            // Verificação de InitializeComponents
+            try {
+              console.log("Iniciando InitializeComponents...");
+              (0,_components__WEBPACK_IMPORTED_MODULE_1__.InitializeComponents)();
+              console.log("InitializeComponents carregado com sucesso.");
+            } catch (error) {
+              console.log("Erro ao carregar InitializeComponents: " + error.message);
+              console.error("Erro ao carregar InitializeComponents:", error);
+            }
+          case 4:
           case "end":
             return _context.stop();
         }
@@ -45,6 +73,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     return _initializeApp.apply(this, arguments);
   }
   document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM completamente carregado."); // Log para garantir que o evento DOMContentLoaded foi acionado
     initializeApp();
   });
 })();
@@ -547,6 +576,55 @@ function initializeChat() {
   if (firstEmptyMessage) {
     firstEmptyMessage.remove();
   }
+
+  // Adicionar suporte para toques nos botões de chat
+  showChatButton.addEventListener("touchstart", function () {
+    chatContainer.style.display = "flex";
+    showChatButton.style.display = "none"; // Esconde o botão depois que o chat é mostrado
+  });
+  toggleChatButton.addEventListener("touchstart", function () {
+    chatContainer.style.display = "none";
+    showChatButton.style.display = "block";
+  });
+  sendButton.addEventListener("touchstart", function () {
+    var message = messageInput.value.trim();
+    if (message !== "") {
+      addMessageToChat("user", message);
+      messageInput.value = "";
+
+      // Send the message to the server using AJAX
+      fetch("".concat(window.location.origin, "/sobralmapas/public/api/send-message"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+          sender: "user",
+          // Include a sender field as Rasa expects
+          message: message
+        })
+      }).then(function (response) {
+        console.log('Resposta do servidor:', response);
+        if (!response.ok) {
+          throw new Error("Erro ao comunicar com o servidor");
+        }
+        return response.json(); // Convert response to JSON
+      }).then(function (data) {
+        console.log('Dados recebidos do servidor:', data);
+        if (data && data.length > 0) {
+          data.forEach(function (msg) {
+            addMessageToChat("bot", msg.text);
+          });
+        } else {
+          addMessageToChat("bot", "Nenhuma resposta encontrada.");
+        }
+      })["catch"](function (error) {
+        console.error("Erro:", error);
+        addMessageToChat("bot", "Erro ao se comunicar com o servidor.");
+      });
+    }
+  });
 }
 function mobileMenu() {
   var hamburger = document.getElementById('hamburger-btn');
@@ -904,15 +982,26 @@ function initializeSearch() {
     searchInput.classList.toggle("hidden");
   });
 }
-
-// Função para alternar entre tela cheia (Fullscreen)
 function toggleFullScreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen()["catch"](function (err) {
-      console.log("Error attempting to enable full-screen mode: ".concat(err.message));
-    });
+  // Verifica se o navegador está no modo de tela cheia
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    // Para navegadores que não são Safari
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen()["catch"](function (err) {
+        console.log("Erro ao tentar ativar o modo de tela cheia: ".concat(err.message));
+      });
+    }
+    // Para o Safari no iPhone
+    else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen();
+    }
   } else {
-    document.exitFullscreen();
+    // Para sair do modo de tela cheia
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
   }
 }
 
@@ -950,8 +1039,18 @@ function initializeLayerToggles() {
     (0,_map__WEBPACK_IMPORTED_MODULE_0__.toggleLayer)(window.map, "transol_linha_5", this.checked);
   });
 
+  // Adicionando suporte para dispositivos móveis
+  layer5Checkbox.addEventListener("touchstart", function () {
+    (0,_map__WEBPACK_IMPORTED_MODULE_0__.toggleLayer)(window.map, "transol_linha_5", this.checked);
+  });
+
   // Listener para a camada Linha 6
   layer6Checkbox.addEventListener("change", function () {
+    (0,_map__WEBPACK_IMPORTED_MODULE_0__.toggleLayer)(window.map, "transol_linha_6", this.checked);
+  });
+
+  // Adicionando suporte para dispositivos móveis
+  layer6Checkbox.addEventListener("touchstart", function () {
     (0,_map__WEBPACK_IMPORTED_MODULE_0__.toggleLayer)(window.map, "transol_linha_6", this.checked);
   });
 }

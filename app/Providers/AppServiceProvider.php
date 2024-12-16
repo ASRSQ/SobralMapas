@@ -13,6 +13,8 @@ use App\Domain\Repositories\ISubcategoryRepository;
 use App\Infrastructure\Repositories\EloquentSubcategoryRepository;
 use App\Infrastructure\Adapters\ChatbotAdapter;
 use App\Application\Services\ChatbotService;
+use App\Infrastructure\Adapters\WmsAdapter;
+use App\Application\Services\WmsService;
 
 
 
@@ -28,11 +30,15 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ICategoryRepository::class, EloquentCategoryRepository::class);
         $this->app->bind(ILayerRepository::class, EloquentLayerRepository::class);
         $this->app->bind(ISubcategoryRepository::class, EloquentSubcategoryRepository::class);
+        $this->app->bind(ILayerRepository::class, EloquentLayerRepository::class);
         $this->app->singleton(GeoServerService::class, function ($app) {
             return new GeoServerService($app->make(GeoServerClient::class));
         });
         $this->app->singleton(ChatbotService::class, function ($app) {
             return new ChatbotService($app->make(ChatbotAdapter::class));
+        });
+        $this->app->singleton(WmsService::class, function ($app) {
+            return new WmsService($app->make(WmsAdapter::class));
         });
     }
 

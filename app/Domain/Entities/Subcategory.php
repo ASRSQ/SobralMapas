@@ -88,5 +88,6 @@ class Subcategory
     {
         return $this->category ? $this->category->getName() : null;
     }
+    
 }
 

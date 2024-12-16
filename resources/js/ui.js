@@ -28,18 +28,31 @@ function initializeSearch() {
     });
 }
 
-// Função para alternar entre tela cheia (Fullscreen)
 function toggleFullScreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch((err) => {
-            console.log(
-                `Error attempting to enable full-screen mode: ${err.message}`
-            );
-        });
+    // Verifica se o navegador está no modo de tela cheia
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        // Para navegadores que não são Safari
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen().catch((err) => {
+                console.log(
+                    `Erro ao tentar ativar o modo de tela cheia: ${err.message}`
+                );
+            });
+        }
+        // Para o Safari no iPhone
+        else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen();
+        }
     } else {
-        document.exitFullscreen();
+        // Para sair do modo de tela cheia
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
     }
 }
+
 
 // Função para inicializar o botão de expandir (fullscreen)
 function initializeExpandButton() {
@@ -75,8 +88,18 @@ function initializeLayerToggles() {
         toggleLayer(window.map, "transol_linha_5", this.checked);
     });
 
+    // Adicionando suporte para dispositivos móveis
+    layer5Checkbox.addEventListener("touchstart", function () {
+        toggleLayer(window.map, "transol_linha_5", this.checked);
+    });
+
     // Listener para a camada Linha 6
     layer6Checkbox.addEventListener("change", function () {
+        toggleLayer(window.map, "transol_linha_6", this.checked);
+    });
+
+    // Adicionando suporte para dispositivos móveis
+    layer6Checkbox.addEventListener("touchstart", function () {
         toggleLayer(window.map, "transol_linha_6", this.checked);
     });
 }
