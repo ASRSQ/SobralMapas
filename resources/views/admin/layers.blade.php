@@ -148,7 +148,9 @@
     layersSelect.innerHTML = '<option value="">Carregando...</option>';
 
     if (wmsLinkId) {
-        fetch(`/sobralmapas/public/admin/wms/${wmsLinkId}/layers`)
+        const serverURL = window.location.origin; // Obtém o link do servidor dinamicamente
+        const endpoint = `${serverURL}/sobralmapas/public/admin/wms/${wmsLinkId}/layers`;
+        fetch(endpoint)
             .then(response => response.json())
             .then(data => {
                 layersSelect.innerHTML = '<option value="">Selecione uma camada</option>';
