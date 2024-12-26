@@ -34,57 +34,119 @@
     padding: 0;
 }
 
-/* Estilos gerais para Topbar */
-.topbar {
+/* Estilo geral para a Navbar */
+
+/* Menu para Telas Grandes */
+.menu-below {
+    background: transparent; /* Fundo invisível */
+    border: none; /* Remove qualquer borda */
+    align-items: end;
+}
+
+.menu-below .navbar-nav {
     display: flex;
-    justify-content: space-between;  /* Espaço entre os itens */
-    align-items: center;  /* Alinha os itens verticalmente no centro */
-    background-color: var(--primary-color);
-    height: 60px;
-    transition: all 0.3s ease-in-out;
-    padding: 0 20px;  /* Espaçamento interno */
+    align-items: center; /* Alinhamento vertical */
 }
 
-.topbar .logo {
-    height: 50px;
+.menu-below .nav-link {
+    font-size: 1rem; /* Tamanho do texto */
+    color: #ffffff !important; /* Texto branco */
+    display: flex;
+    align-items: center; /* Alinhamento vertical */
+    gap: 0.2rem; /* Espaçamento entre ícone e texto */
+    text-decoration: none; /* Remove sublinhado */
+    font-weight: bold; /* Deixa o texto em negrito */
+    transition: color 0.3s ease; /* Suaviza a mudança de cor */
+    line-height: 1.2; /* Altura da linha */
 }
 
-.topbar h1 {
-    margin: 0;
-    color: var(--text-white-color);
+.menu-below .nav-link i {
+    font-size: 1rem; /* Tamanho dos ícones */
+    line-height: 1; /* Corrige altura interna do ícone */
+    color: #ffffff; /* Ícones brancos */
+    position: relative; /* Mantém a posição consistente */
+    top: 1px; /* Ajuste fino para alinhar com o texto */
+    transition: color 0.3s ease; /* Transição suave */
+    align-items: center;
 }
 
-.topbar a {
-    font-weight: bold;
-    color: var(--text-white-color);
-    text-decoration: none;
+.menu-below .nav-link:hover,
+.menu-below .nav-link:hover i {
+    color: #c5c5c5 !important; /* Amarelo no hover */
 }
 
-.topbar a:hover {
-    text-decoration: underline;
-}
+/* Menu Fullscreen para Telas Pequenas */
+/* Estilos aplicados somente em telas pequenas */
+/* Offcanvas Fullscreen */
+@media (max-width: 1280px) {
+    .fullscreen-menu {
+        background-color: #007bff; /* Fundo azul */
+        color: #ffffff; /* Texto branco */
+        height: 100vh; /* Ocupa toda a altura da tela */
+        width: 100%; /* Largura total */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow-y: auto; /* Caso o conteúdo ultrapasse a tela */
+        position: fixed; /* Fixa o menu na tela */
+        top: 0; /* Começa do topo */
+        left: 0; /* Ocupa toda a largura */
+        z-index: 1050; /* Garante que está acima de outros elementos */
+    }
 
-.topbar.hidden-topbar {
-    display: none;
-}
+    /* Links do menu */
+    .fullscreen-menu .menu-items a {
+        color: #ffffff !important; /* Texto branco */
+        text-decoration: none;
+        font-size: 1.5rem; /* Tamanho do texto */
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
 
-.topbar-center {
-    color: var(--text-white-color);
-    flex-grow: 1;  /* Faz com que o título ocupe o espaço restante */
-    text-align: center;
-}
+    .fullscreen-menu .menu-items a:hover {
+        color: #ffc107; /* Hover amarelo */
+    }
 
-.topbar-right {
-    color: var(--text-white-color);
-}
+    .navbar-toggler {
+        border: none; /* Remove a borda */
+        outline: none; /* Remove o contorno */
+        background: transparent; /* Certifique-se de que o fundo seja transparente */
+        padding: 8px; /* Ajuste opcional para um melhor espaçamento */
+        cursor: pointer; /* Mostra o cursor de ponteiro */
+    }
+    
+    .navbar-toggler:focus {
+        outline: none; /* Remove o contorno ao focar */
+        box-shadow: none; /* Remove qualquer sombra */
+    }    
 
-.topbar-left {
-    margin-left: 20px;
-}
+    #menuIcon {
+        font-size: 24px; /* Tamanho do ícone */
+        cursor: pointer; /* Mostra o cursor de ponteiro */
+        color: var(--background-color); /* Cor padrão */
+        transition: color 0.3s ease; /* Transição suave para mudanças de cor */
+    }
 
+    /* Efeito hover */
+    #menuIcon:hover {
+        color: var(--background-color); /* Cor amarela ao passar o mouse */
+    }
+
+    /* Cor amarela após o clique (simulação de estado ativo) */
+    #menuIcon:active {
+        color: var(--secondary-color-orange); /* Cor ao ser clicado */
+    }
+
+
+    /* Alinhar o botão à direita */
+    .offcanvas-header {
+        display: flex !important;
+        justify-content: flex-end !important; /* Alinha os itens ao lado direito */
+    }
+}
 
 /* Estilos gerais para sidebar */
-
 .sidebar {
     position: absolute;
     top: 10px;
@@ -785,130 +847,28 @@ input[type="checkbox"] {
     font-weight: bold;
     margin-bottom: 5px;
 }
-.hamburger {
-    display: none; /* Hides the hamburger menu on larger screens */
-}
-.close-btn{
-    display: none; 
-}
-/* Estilos para telas menores */
-@media (max-width: 768px) {
+
+/* Chat para telas menores */
+@media (max-width: 1280px) {
     #show-chat-button {
-        width: 90%; /* O botão se ajusta à largura da tela */
-        bottom: 10px;
-        left: 5%;
-        right: 5%;
-        margin-left: 0;
-        padding: 15px 0;
-        text-align: center;
-        border-radius: 30px;
-    }
-
-    #chat-container {
-        width: 90%; /* Chat se ajusta à tela */
-        height: 50%;
-        bottom: 10px;
-        left: 5%;
-        right: 5%;
-    }
-    .topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         padding: 10px;
-        color: white;
-    }
-    
-    .topbar-left .logo {
-        height: 40px;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
         text-align: center;
+        font-size: 20px;
+        background-color: #007bff;
+        color: white;
+        right: 10px;
+        bottom: 10px;
     }
-    
-    .topbar-center h1 {
-        display: none;
 
+    #show-chat-button i {
+        margin-right: 0; /* Remove o texto */
     }
-    
-    .topbar-right {
-        margin-left: auto;
-    }
-    
-    .hamburger {
-        background: none;
-        border: none;
-        cursor: pointer;
-        display: block;
-        width: 30px;
-        height: 25px;
-        position: relative;
-        margin-right: 30px;
-        span {
-            display: block;
-            background-color: white;
-            height: 4px;
-            width: 100%;
-            position: absolute;
-            transition: 0.3s;
-        }
-        span:nth-child(1) {
-            top: 0;
-        }
-        span:nth-child(2) {
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        span:nth-child(3) {
-            bottom: 0;
-        }
-    }
-    
-    .menu {
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: var( --primary-color-glass);
-        color: white;
-        display: none;
-        flex-direction: column;
-        padding-top: 50px;
-        z-index: 1500;
-        align-items: center;
-    }
-    
-    .menu a {
-        color: white;
-        padding: 15px;
-        text-decoration: none;
-    }
-    
-    .close-btn {
-        display: block;
-        font-size: 30px;
-        color: white;
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        cursor: pointer;
-    }
-    
-    .menu.open {
-        display: flex;
-    }
-    
-    .menu.open .hamburger span:nth-child(1) {
-        transform: translateY(10px) rotate(45deg);
-    }
-    
-    .menu.open .hamburger span:nth-child(2) {
-        opacity: 0;
-    }
-    
-    .menu.open .hamburger span:nth-child(3) {
-        transform: translateY(-10px) rotate(-45deg);
-    }
-    
-    
 }
+
+
+
+
 
