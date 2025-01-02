@@ -82,12 +82,10 @@
     .fullscreen-menu {
         background-color: #007bff; /* Fundo azul */
         color: #ffffff; /* Texto branco */
-        height: 100vh; /* Ocupa toda a altura da tela */
+        height: 50vh; /* Ocupa toda a altura da tela */
         width: 100%; /* Largura total */
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
         overflow-y: auto; /* Caso o conteúdo ultrapasse a tela */
         position: fixed; /* Fixa o menu na tela */
         top: 0; /* Começa do topo */
@@ -142,6 +140,7 @@
     /* Alinhar o botão à direita */
     .offcanvas-header {
         display: flex !important;
+        align-items: flex-end !important;
         justify-content: flex-end !important; /* Alinha os itens ao lado direito */
     }
 }
@@ -850,6 +849,8 @@ input[type="checkbox"] {
 
 /* Chat para telas menores */
 @media (max-width: 1280px) {
+
+    /* Ajuste o botão para ficar menor, se quiser */
     #show-chat-button {
         padding: 10px;
         border-radius: 50%;
@@ -864,7 +865,57 @@ input[type="checkbox"] {
     }
 
     #show-chat-button i {
-        margin-right: 0; /* Remove o texto */
+        margin-right: 0;
+    }
+
+    /* 
+       Agora, no mobile, NÃO vamos usar display: none/flex no #chat-container.
+       Vamos usar a animação com transform.
+    */
+    #chat-container {
+        /* Remova as larguras/alturas fixas do desktop */
+        width: 100vw;              
+        height: 70vh;             
+        border-radius: 0;          
+        margin-left: 0;
+        box-shadow: none;
+
+        /* Para a animação: começa fora da tela, embaixo */
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        transform: translateY(100%); 
+        transition: transform 0.3s ease;
+        /* Exibir por padrão (block ou flex),
+           mas invisível porque está "empurrado" lá embaixo */
+        display: flex;
+        flex-direction: column;
+        z-index: 9999;
+    }
+
+    /* Quando estiver com a classe .open, "sobe" */
+    #chat-container.open {
+        transform: translateY(0);
+    }
+
+    /* Ajuste o header e footer conforme quiser */
+    .chat-header {
+        border-radius: 0;
+        height: 50px;    
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    #messages {
+        flex: 1; 
+        overflow-y: auto;
+        background-color: #f7f7f7; 
+    }
+
+    #message-input-container {
+        border-radius: 0;
+        flex-shrink: 0;
     }
 }
 
