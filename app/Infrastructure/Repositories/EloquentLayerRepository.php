@@ -19,16 +19,32 @@ class EloquentLayerRepository implements ILayerRepository
             $eloquentLayer->layer_name,
             $eloquentLayer->crs,
             $eloquentLayer->legend_url,
-            $eloquentLayer->type ?? 'default', // Default value for type
-            $eloquentLayer->description ?? '', // Default value for description
-            $eloquentLayer->order ?? 0, // Default value for order
+            $eloquentLayer->type ?? 'default',
+            $eloquentLayer->description ?? '',
+            $eloquentLayer->order ?? 0,
             $eloquentLayer->subcategory,
-            $eloquentLayer->image_path ?? '', // Default value for image_path
-            $eloquentLayer->max_scale ?? 0, // Default value for max_scale
-            $eloquentLayer->symbol ?? '' // Default value for symbol
+            $eloquentLayer->image_path ?? '',
+            $eloquentLayer->max_scale ?? 0,
+            $eloquentLayer->symbol ?? '',
+            $eloquentLayer->wms_link_id
         );
     }
-    
+
+    public function getAllLayers(): array
+    {
+        try {
+            Log::info('Fetching all layers');
+
+            $layers = EloquentLayer::all();
+
+            Log::info('Fetched layers', ['count' => $layers->count()]);
+
+            return $layers->map(fn($layer) => $this->mapToDomain($layer))->toArray();
+        } catch (Exception $e) {
+            Log::error('Error in getAllLayers', ['error' => $e->getMessage()]);
+            throw $e;
+        }
+    }
 
     public function findById(int $id): ?Layer
     {
@@ -44,6 +60,29 @@ class EloquentLayerRepository implements ILayerRepository
             return $this->mapToDomain($eloquentLayer);
         } catch (Exception $e) {
             Log::error('Error in findById', ['error' => $e->getMessage(), 'layer_id' => $id]);
+            throw $e;
+        }
+    }
+
+    public function delete(int $id): void
+    {
+        DB::beginTransaction();
+        try {
+            Log::info('Deleting layer', ['layer_id' => $id]);
+
+            $eloquentLayer = EloquentLayer::find($id);
+            if (!$eloquentLayer) {
+                Log::warning('Layer not found for deletion', ['layer_id' => $id]);
+                return;
+            }
+
+            $eloquentLayer->delete();
+            DB::commit();
+
+            Log::info('Layer deleted successfully', ['layer_id' => $id]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error in delete', ['error' => $e->getMessage(), 'layer_id' => $id]);
             throw $e;
         }
     }
@@ -89,6 +128,7 @@ class EloquentLayerRepository implements ILayerRepository
                 'image_path' => $layer->getImagePath(),
                 'max_scale' => $layer->getMaxScale(),
                 'symbol' => $layer->getSymbol(),
+                'wms_link_id' => $layer->getWmsLinkId()
             ])->save();
 
             DB::commit();
@@ -96,45 +136,6 @@ class EloquentLayerRepository implements ILayerRepository
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error in update', ['error' => $e->getMessage(), 'layer_id' => $layer->getId()]);
-            throw $e;
-        }
-    }
-
-    public function delete(int $id): void
-    {
-        DB::beginTransaction();
-        try {
-            Log::info('Deleting layer', ['layer_id' => $id]);
-
-            $eloquentLayer = EloquentLayer::find($id);
-            if (!$eloquentLayer) {
-                Log::warning('Layer not found for deletion', ['layer_id' => $id]);
-                return;
-            }
-
-            $eloquentLayer->delete();
-            DB::commit();
-
-            Log::info('Layer deleted successfully', ['layer_id' => $id]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            Log::error('Error in delete', ['error' => $e->getMessage(), 'layer_id' => $id]);
-            throw $e;
-        }
-    }
-
-    public function getAllLayers(): array
-    {
-        try {
-            Log::info('Fetching all layers');
-
-            $layers = EloquentLayer::all();
-
-            Log::info('Fetched layers', ['count' => $layers->count()]);
-
-            return $layers->map(fn($layer) => $this->mapToDomain($layer))->toArray();
-        } catch (Exception $e) {
-            Log::error('Error in getAllLayers', ['error' => $e->getMessage()]);
             throw $e;
         }
     }
@@ -153,5 +154,23 @@ class EloquentLayerRepository implements ILayerRepository
             Log::error('Error in existByName', ['error' => $e->getMessage(), 'name' => $name]);
             throw $e;
         }
+    }
+
+    public function getAllBySubcategoryId(int $subcategoryId): array
+    {
+        $layers = EloquentLayer::where('subcategory', $subcategoryId)->get();
+
+        return $layers->map(function ($layer) {
+            return $this->mapToDomain($layer);
+        })->toArray();
+    }
+
+    public function getAllByWmsLinkId(int $wmsLinkId): array
+    {
+        $layers = EloquentLayer::where('wms_link_id', $wmsLinkId)->get();
+
+        return $layers->map(function ($layer) {
+            return $this->mapToDomain($layer);
+        })->toArray();
     }
 }
