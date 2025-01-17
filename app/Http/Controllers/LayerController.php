@@ -5,30 +5,29 @@ namespace App\Http\Controllers;
 use App\Application\Services\LayerService;
 use App\Application\Services\WmsService;
 use App\Application\Services\SubcategoryService;
-use App\Domain\Entities\Layer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log; // Importando o Log
+use Illuminate\Support\Facades\Log;
 
 class LayerController extends Controller
 {
     protected $layerService;
     protected $wmsService;
-    protected $subcategory;
+    protected $subcategoryService;
 
-    public function __construct(LayerService $layerService, WmsService $wmsService, SubcategoryService $subcategory)
+    public function __construct(LayerService $layerService, WmsService $wmsService, SubcategoryService $subcategoryService)
     {
-        $this->subcategory  = $subcategory;
         $this->layerService = $layerService;
-        $this->wmsService = $wmsService; // Injeta o WmsService
+        $this->wmsService = $wmsService;
+        $this->subcategoryService = $subcategoryService;
     }
 
     // Exibe todas as camadas
     public function index()
     {
-        Log::info('Accessed LayerController@index'); // Log indicando acesso ao método
+        Log::info('Accessed LayerController@index');
 
         try {
-            $subcategories = $this->subcategory->getAll();
+            $subcategories = $this->subcategoryService->getAll();
             $layers = $this->layerService->getAll();
             $wmsLinks = $this->wmsService->getAllWmsLinks();
 
@@ -39,12 +38,10 @@ class LayerController extends Controller
         }
     }
 
-    // Método para criar um novo layer
     public function store(Request $request)
     {
-        Log::info('Accessed LayerController@store', ['request_data' => $request->all()]); // Log de dados recebidos na requisição
-
-        // Validação de dados de entrada (exemplo simples)
+        Log::info('Accessed LayerController@store', ['request_data' => $request->all()]);
+    
         try {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -58,27 +55,39 @@ class LayerController extends Controller
                 'image_path' => 'nullable|string|max:255',
                 'max_scale' => 'nullable|numeric',
                 'symbol' => 'nullable|string|max:255',
+                'wms_link_id' => 'required|integer',
             ]);
-
+    
+            // Verifica se o layer já existe
+            if ($this->layerService->existsByLayerName($request->input('name'))) {
+                return redirect()->route('admin.layers.index')->with('error', 'A camada já existe.');
+            }
+    
             // Criação do layer
-            $layer = $this->layerService->create($request->all());
-
-            Log::info('Layer created successfully', ['layer_id' => $layer->getId()]); // Log indicando sucesso na criação
-
-            return response()->json($layer, 201);
+            $this->layerService->create($request->all());
+    
+            return redirect()->route('admin.layers.index')->with('success', 'Camada criada com sucesso.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            Log::error('Error in LayerController@store', ['error' => $e->getMessage(), 'request_data' => $request->all()]);
-            return response()->json(['message' => 'Error storing layer'], 500);
+            return redirect()->route('admin.layers.index')->with('error', 'Erro ao criar a camada.');
         }
     }
+    
+    
 
     // Método para atualizar um layer
-    public function update(Request $request, int $id)
+    public function update(Request $request, $id)
     {
-        Log::info('Accessed LayerController@update', ['layer_id' => $id, 'request_data' => $request->all()]); // Log de dados recebidos para atualização
-
+        $id = (int) $id; // Garantir que o ID seja um inteiro
+        Log::info('Accessed LayerController@update', [
+            'layer_id' => $id, 
+            'type' => gettype($id), 
+            'request_data' => $request->all(),
+            'subcategory' => $request->input('subcategory')
+        ]);
+    
         try {
-            // Validação de dados de entrada
             $request->validate([
                 'name' => 'required|string|max:255',
                 'layer_name' => 'required|string|max:255',
@@ -91,51 +100,49 @@ class LayerController extends Controller
                 'image_path' => 'nullable|string|max:255',
                 'max_scale' => 'nullable|numeric',
                 'symbol' => 'nullable|string|max:255',
+                'wms_link_id' => 'required|integer',
             ]);
-
-            // Criar a entidade Layer
-            $layer = new Layer(
-                $id,
-                $request->input('name'),
-                $request->input('layer_name'),
-                $request->input('crs'),
-                $request->input('legend_url'),
-                $request->input('type'),
-                $request->input('description'),
-                $request->input('order'),
-                $request->input('subcategory'),
-                $request->input('image_path'),
-                $request->input('max_scale'),
-                $request->input('symbol')
-            );
-
-            // Atualização do layer
-            $this->layerService->update($layer);
-
-            Log::info('Layer updated successfully', ['layer_id' => $id]); // Log indicando sucesso na atualização
-
-            return response()->json(['message' => 'Layer updated successfully']);
+    
+            $this->layerService->update($id, $request->all());
+    
+            Log::info('Layer updated successfully', ['layer_id' => $id]);
+    
+            return redirect()->route('admin.layers.index')->with('success', 'Camada atualizada com sucesso.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            Log::error('Error in LayerController@update', ['error' => $e->getMessage(), 'layer_id' => $id, 'request_data' => $request->all()]);
-            return response()->json(['message' => 'Error updating layer'], 500);
+            Log::error('Error in LayerController@update', [
+                'error' => $e->getMessage(),
+                'layer_id' => $id,
+                'request_data' => $request->all(),
+            ]);
+    
+            return redirect()->route('admin.layers.index')->with('error', 'Erro ao atualizar a camada.');
         }
     }
+    
+    
 
-    // Método para deletar um layer
-    public function destroy(int $id)
-    {
-        Log::info('Accessed LayerController@destroy', ['layer_id' => $id]); // Log indicando que o método delete foi chamado
+    
 
-        try {
-            // Deletar o layer
-            $this->layerService->delete($id);
 
-            Log::info('Layer deleted successfully', ['layer_id' => $id]); // Log indicando sucesso na exclusão
+   // Método para deletar um layer
+public function destroy(int $id)
+{
+    Log::info('Accessed LayerController@destroy', ['layer_id' => $id]);
 
-            return response()->json(['message' => 'Layer deleted successfully']);
-        } catch (\Exception $e) {
-            Log::error('Error in LayerController@destroy', ['error' => $e->getMessage(), 'layer_id' => $id]);
-            return response()->json(['message' => 'Error deleting layer'], 500);
-        }
+    try {
+        $this->layerService->delete($id);
+
+        Log::info('Layer deleted successfully', ['layer_id' => $id]);
+
+        return redirect()->route('admin.layers.index')
+            ->with('success', 'Camada deletada com sucesso.');
+    } catch (\Exception $e) {
+        Log::error('Error in LayerController@destroy', ['error' => $e->getMessage(), 'layer_id' => $id]);
+        return redirect()->route('admin.layers.index')
+            ->with('error', 'Erro ao deletar camada: ' . $e->getMessage());
     }
+}
+
 }

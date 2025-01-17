@@ -331,6 +331,11 @@ return [
             'url' => 'admin/layers', // URL para gerenciar layers
             'icon' => 'fas fa-fw fa-layer-group',
         ],
+        [
+            'text' => 'WMS',
+            'url' => 'admin/wms', // URL para o WMS
+            'icon' => 'fas fa-fw fa-globe',
+        ],
 
         ['header' => 'account_settings'],
         [

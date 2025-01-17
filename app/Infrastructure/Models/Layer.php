@@ -4,7 +4,8 @@ namespace App\Infrastructure\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Infrastructure\Models\subcategory;
+use App\Infrastructure\Models\Subcategory;
+use App\Infrastructure\Models\WmsLink;
 
 class Layer extends Model
 {
@@ -24,8 +25,11 @@ class Layer extends Model
         'order',
         'subcategory', // Chave estrangeira para a subcategoria
         'image_path',
+        'created_at',
+        'updated_at',
         'max_scale',
-        'symbol'
+        'symbol',
+        'wms_link_id' // Novo campo adicionado como chave estrangeira para WmsLink
     ];
 
     // Defina os campos que são datetimes
@@ -35,5 +39,11 @@ class Layer extends Model
     public function subcategory()
     {
         return $this->belongsTo(Subcategory::class, 'subcategory');
+    }
+
+    // Relacionamento com WmsLink
+    public function wmsLink()
+    {
+        return $this->belongsTo(WmsLink::class, 'wms_link_id');
     }
 }
