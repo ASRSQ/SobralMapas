@@ -124,7 +124,7 @@ class EloquentLayerRepository implements ILayerRepository
                 'type' => $layer->getType(),
                 'description' => $layer->getDescription(),
                 'order' => $layer->getOrder(),
-                'subcategory' => $layer->getSubcategory(),
+                'subcategory' => $layer->getSubcategoryId(),
                 'image_path' => $layer->getImagePath(),
                 'max_scale' => $layer->getMaxScale(),
                 'symbol' => $layer->getSymbol(),

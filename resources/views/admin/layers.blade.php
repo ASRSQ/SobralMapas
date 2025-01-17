@@ -175,7 +175,7 @@
                         @foreach($layers as $layer)
                         <li class="list-group-item d-flex justify-content-between align-items-center" id="layer-{{ $layer->getId() }}">
                             <span class="layer-name" data-id="{{ $layer->getId() }}" data-name="{{ $layer->getName() }}">
-                                {{ $layer->getName() }}
+                                {{ $layer->getName() }}({{$layer->getSubcategory()}} )
                             </span>
                             <div>
                             <button 
@@ -214,7 +214,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editLayerModalLabel">Editar Camada</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()">X</button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
             <form id="edit-layer-form" method="POST" action="{{ route('admin.layers.update', ['id' => ':id']) }}">

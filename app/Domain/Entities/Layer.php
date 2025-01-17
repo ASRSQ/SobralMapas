@@ -99,6 +99,13 @@ class Layer
         // Caso contrário, tenta buscar o nome da subcategoria pelo ID usando o repositório
         return EloquentSubcategoryRepository::getNameById($this->subcategory);
     }
+    public function getSubcategoryId(): ?int
+{
+    // Verifica se $subcategory é uma instância da entidade Subcategory
+   
+        return $this->subcategory; // Retorna o ID diretamente
+    
+    }
 
     public function getImagePath(): string
     {

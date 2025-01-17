@@ -83,7 +83,8 @@ class LayerController extends Controller
         Log::info('Accessed LayerController@update', [
             'layer_id' => $id, 
             'type' => gettype($id), 
-            'request_data' => $request->all()
+            'request_data' => $request->all(),
+            'subcategory' => $request->input('subcategory')
         ]);
     
         try {
@@ -106,7 +107,7 @@ class LayerController extends Controller
     
             Log::info('Layer updated successfully', ['layer_id' => $id]);
     
-            return redirect()->route('admin.layers')->with('success', 'Camada atualizada com sucesso.');
+            return redirect()->route('admin.layers.index')->with('success', 'Camada atualizada com sucesso.');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
