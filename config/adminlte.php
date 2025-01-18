@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => '',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,12 +63,14 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo' => '',
+    //'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo_img' => 'img/Logo_Sobral.png',
+    //'logo_img_class' => 'brand-image ',
+    'logo_img_class' => 'logo topbar-left',
     'logo_img_xl' => null,
-    'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Admin Logo',
+    //'logo_img_xl_class' => 'brand-image-xs',
+    'logo_img_alt' => 'Prefeitura de Sobral',
 
     /*
     |--------------------------------------------------------------------------
@@ -110,7 +112,7 @@ return [
     */
 
     'preloader' => [
-        'enabled' => true,
+        'enabled' => false,
         'mode' => 'fullscreen',
         'img' => [
             'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
@@ -154,8 +156,8 @@ return [
 
     'layout_topnav' => null,
     'layout_boxed' => null,
-    'layout_fixed_sidebar' => null,
-    'layout_fixed_navbar' => null,
+    'layout_fixed_sidebar' => true,
+    'layout_fixed_navbar' => true,
     'layout_fixed_footer' => null,
     'layout_dark_mode' => null,
 
@@ -196,10 +198,12 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
-    'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-white navbar-light',
-    'classes_topnav_nav' => 'navbar-expand',
+    //'classes_sidebar' => 'sidebar-light-primary elevation-4',
+    'classes_sidebar' => '',
+    //'classes_sidebar_nav' => 'sidebar-camadas-admin',
+    //'classes_topnav' => 'navbar-white navbar-light',
+    'classes_topnav' => 'topbar',
+    'classes_topnav_nav' => 'navbar-expand align-items-center',
     'classes_topnav_container' => 'container',
 
     /*
@@ -214,13 +218,13 @@ return [
     |
     */
 
-    'sidebar_mini' => 'lg',
+    'sidebar_mini' => false,
     'sidebar_collapse' => false,
     'sidebar_collapse_auto_size' => false,
     'sidebar_collapse_remember' => false,
     'sidebar_collapse_remember_no_transition' => true,
     'sidebar_scrollbar_theme' => 'os-theme-light',
-    'sidebar_scrollbar_auto_hide' => 'l',
+    'sidebar_scrollbar_auto_hide' => false,
     'sidebar_nav_accordion' => true,
     'sidebar_nav_animation_speed' => 300,
 
@@ -278,7 +282,7 @@ return [
     */
 
     'enabled_laravel_mix' => false,
-    'laravel_mix_css_path' => 'css/app.css',
+    'laravel_mix_css_path' => 'css/custom.css',
     'laravel_mix_js_path' => 'js/app.js',
 
     /*
@@ -315,33 +319,44 @@ return [
             'url' => 'admin/blog',
             'can' => 'manage-blog',
         ],
-        ['header' => 'Configurações de mapa'],
+        [
+            'header' => 'Configurações de mapa',
+            'classes' => 'sidebar-header d-flex justify-content-between'
+        ],
         [
             'text' => 'Categorias',
             'url' => 'admin/categories', // URL para gerenciar categorias
             'icon' => 'fas fa-fw fa-folder',
+            'classes' => 'sidebar-content accordion-button cat',
         ],
         [
             'text' => 'Subcategorias',
             'url' => 'admin/subcategories', // URL para gerenciar subcategorias
             'icon' => 'fas fa-fw fa-folder-open',
+            'classes' => 'sidebar-content accordion-button cat',
         ],
         [
             'text' => 'Layers',
             'url' => 'admin/layers', // URL para gerenciar layers
             'icon' => 'fas fa-fw fa-layer-group',
+            'classes' => 'sidebar-content accordion-button cat',
         ],
 
-        ['header' => 'account_settings'],
+        [
+            'header' => 'account_settings',
+            'classes' => 'sidebar-header d-flex justify-content-between',
+        ],
         [
             'text' => 'profile',
             'url' => 'admin/settings',
             'icon' => 'fas fa-fw fa-user',
+            'classes' => 'sidebar-content accordion-button cat',
         ],
         [
             'text' => 'change_password',
             'url' => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
+            'classes' => 'sidebar-content accordion-button cat',
         ],
         
     ],
@@ -381,6 +396,16 @@ return [
     */
 
     'plugins' => [
+        'CustomCSS' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'css/custom.css',
+                ],
+            ],
+        ],
         'Datatables' => [
             'active' => false,
             'files' => [

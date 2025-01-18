@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Relatórios de Acessos e Interesses')
+@section('title', 'Painel de Configurações')
 
 
 @section('content_header')
@@ -63,6 +63,11 @@
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Seleciona o elemento âncora pai da logo e altera as classes 
+        // $('.brand-link')
+        //     .addClass('topbar align-items-center') 
+        //     .removeClass('brand-link');
+            
         // Gráfico de Barras (Acessos por Mês)
         const ctxBarras = document.getElementById('graficoBarras').getContext('2d');
         new Chart(ctxBarras, {

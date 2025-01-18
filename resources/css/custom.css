@@ -103,6 +103,14 @@
     border-radius: 0 8px 8px 0;
 }
 
+.sidebar-camadas-admin {
+    background-color: var(--background-color);
+    height: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 0 8px 8px 0;
+}
+
 .sidebar-mapas-ativos {
     padding-left: 5px;
     padding-right: 5px;
@@ -113,22 +121,22 @@
 
 /* Estiliza a barra de rolagem */
 
-.sidebar-camadas::-webkit-scrollbar {
+.sidebar-camadas.sidebar-camadas-admin::-webkit-scrollbar {
     width: 6px;
 }
 
-.sidebar-camadas::-webkit-scrollbar-track {
+.sidebar-camadas.sidebar-camadas-admin::-webkit-scrollbar-track {
     background: transparent;
     border-radius: 8px;
 }
 
-.sidebar-camadas::-webkit-scrollbar-thumb {
+.sidebar-camadas.sidebar-camadas-admin::-webkit-scrollbar-thumb {
     background-color: var(--text-gray-color);
     border-radius: 10px;
     border: none;
 }
 
-.sidebar-camadas::-webkit-scrollbar-thumb:hover {
+.sidebar-camadas.sidebar-camadas-admin::-webkit-scrollbar-thumb:hover {
     background-color: var(--text-gray-color);
 }
 
