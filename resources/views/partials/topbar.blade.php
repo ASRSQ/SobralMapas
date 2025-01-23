@@ -3,12 +3,12 @@
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <!-- Logo à Esquerda -->
         <a class="navbar-brand d-flex align-items-center" href="#">
-            <img src="{{ asset('img/Logo_Sobral.png') }}" alt="Prefeitura de Sobral" class="logo me-2" height="40">
+            <img src="{{ asset('img/Logo_Sobral.png') }}" alt="Prefeitura de Sobral" class="logo" height="40">
         </a>
 
         <!-- Título e Botão Hamburguer -->
         <div class="d-flex align-items-center justify-content-between flex-grow-1">
-            <h1 class="text-white mb-0 fw-bold d-block d-md-none position-absolute start-50 translate-middle-x" style="font-size: 1.2rem; text-align: center;">
+            <h1 class="text-white mb-0 fw-bold d-block d-md-none position-absolute start-50 translate-middle-x ms-4" style="font-size: 1.1rem; text-align: center;">
                 Sobral em <span style="color: #ffc107;">Mapas</span>
             </h1>
             <h1 class="text-white mb-0 fw-bold d-none d-md-block position-absolute start-50 translate-middle-x" style="font-size: 2rem;">
@@ -22,7 +22,7 @@
         data-bs-target="#fullscreenMenu" 
         aria-controls="fullscreenMenu" 
         aria-label="Toggle navigation">
-        <span class="fa-solid fa-bars" id="menuIcon"></span>
+        <span class="fa-solid fa-bars" id="menuIcon"></span>  
         </button>
 
         <!-- Menu Abaixo (Telas Grandes) -->

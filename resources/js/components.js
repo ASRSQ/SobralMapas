@@ -440,19 +440,19 @@ function initializeChat() {
           chatContainer.classList.add("open");
         }
         showChatButton.style.display = "none";
-      });
+    });
       
-      toggleChatButton.addEventListener("click", () => {
+    toggleChatButton.addEventListener("click", () => {
         if (window.innerWidth > 1280) {
-          // Desktop
-          chatContainer.style.display = "none";
+            // Desktop
+            chatContainer.style.display = "none";
         } else {
-          // Mobile
-          chatContainer.classList.remove("open");
+            // Mobile
+            chatContainer.classList.remove("open");
         }
         showChatButton.style.display = "block";
-      });
-      
+    });
+    
     // Função para envio de mensagens com AJAX
     sendButton.addEventListener("click", function () {
         const message = messageInput.value.trim();
