@@ -15,6 +15,10 @@ use App\Infrastructure\Adapters\ChatbotAdapter;
 use App\Application\Services\ChatbotService;
 use App\Infrastructure\Adapters\WmsAdapter;
 use App\Application\Services\WmsService;
+use App\Domain\Repositories\IUserRepository;
+use App\Infrastructure\Repositories\EloquentUserRepository;
+use App\Domain\Repositories\IProfileRepository;
+use App\Infrastructure\Repositories\EloquentProfileRepository;
 
 
 
@@ -40,6 +44,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(WmsService::class, function ($app) {
             return new WmsService($app->make(WmsAdapter::class));
         });
+        $this->app->bind(IUserRepository::class, EloquentUserRepository::class);
+        $this->app->bind(IProfileRepository::class, EloquentProfileRepository::class);
     }
 
     /**
