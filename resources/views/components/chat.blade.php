@@ -6,7 +6,7 @@
     <div class="chat-header">
         <div class="chat-title">
             <i class="fas fa-comment"></i>
-            Chat - SobralMapas
+            Chat - Sobral Mapas
         </div>
         <button id="toggle-chat-button">
             <i class="fas fa-times" id="toggle-icon"></i>

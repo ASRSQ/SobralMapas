@@ -489,16 +489,24 @@ function initializeChat() {
   var sendButton = document.getElementById("send-button");
   var messageInput = document.getElementById("message-input");
   var messagesContainer = document.getElementById("messages");
-
-  // Função para mostrar a caixa de chat ao clicar no botão
   showChatButton.addEventListener("click", function () {
-    chatContainer.style.display = "flex";
-    showChatButton.style.display = "none"; // Esconde o botão depois que o chat é mostrado
+    if (window.innerWidth > 1280) {
+      // Desktop
+      chatContainer.style.display = "flex";
+    } else {
+      // Mobile
+      chatContainer.classList.add("open");
+    }
+    showChatButton.style.display = "none";
   });
-
-  // Função para esconder o chat ao clicar no botão "X"
   toggleChatButton.addEventListener("click", function () {
-    chatContainer.style.display = "none";
+    if (window.innerWidth > 1280) {
+      // Desktop
+      chatContainer.style.display = "none";
+    } else {
+      // Mobile
+      chatContainer.classList.remove("open");
+    }
     showChatButton.style.display = "block";
   });
 
@@ -624,17 +632,6 @@ function initializeChat() {
         addMessageToChat("bot", "Erro ao se comunicar com o servidor.");
       });
     }
-  });
-}
-function mobileMenu() {
-  var hamburger = document.getElementById('hamburger-btn');
-  var menu = document.getElementById('menu');
-  var closeBtn = document.getElementById('close-btn');
-  hamburger.addEventListener('click', function () {
-    menu.classList.add('open');
-  });
-  closeBtn.addEventListener('click', function () {
-    menu.classList.remove('open');
   });
 }
 function InitializeComponents() {
