@@ -584,55 +584,6 @@ function initializeChat() {
   if (firstEmptyMessage) {
     firstEmptyMessage.remove();
   }
-
-  // Adicionar suporte para toques nos botões de chat
-  showChatButton.addEventListener("touchstart", function () {
-    chatContainer.style.display = "flex";
-    showChatButton.style.display = "none"; // Esconde o botão depois que o chat é mostrado
-  });
-  toggleChatButton.addEventListener("touchstart", function () {
-    chatContainer.style.display = "none";
-    showChatButton.style.display = "block";
-  });
-  sendButton.addEventListener("touchstart", function () {
-    var message = messageInput.value.trim();
-    if (message !== "") {
-      addMessageToChat("user", message);
-      messageInput.value = "";
-
-      // Send the message to the server using AJAX
-      fetch("".concat(window.location.origin, "/sobralmapas/public/api/send-message"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({
-          sender: "user",
-          // Include a sender field as Rasa expects
-          message: message
-        })
-      }).then(function (response) {
-        console.log('Resposta do servidor:', response);
-        if (!response.ok) {
-          throw new Error("Erro ao comunicar com o servidor");
-        }
-        return response.json(); // Convert response to JSON
-      }).then(function (data) {
-        console.log('Dados recebidos do servidor:', data);
-        if (data && data.length > 0) {
-          data.forEach(function (msg) {
-            addMessageToChat("bot", msg.text);
-          });
-        } else {
-          addMessageToChat("bot", "Nenhuma resposta encontrada.");
-        }
-      })["catch"](function (error) {
-        console.error("Erro:", error);
-        addMessageToChat("bot", "Erro ao se comunicar com o servidor.");
-      });
-    }
-  });
 }
 function InitializeComponents() {
   initializeSelectionBox();
@@ -18514,12 +18465,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 /*!**********************************!*\
   !*** ./resources/css/custom.css ***!
   \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (() => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
+throw new Error("Module build failed (from ./node_modules/mini-css-extract-plugin/dist/loader.js):\nModuleBuildError: Module build failed (from ./node_modules/postcss-loader/dist/cjs.js):\nSyntaxError\n\n(844:1) C:\\xampp\\htdocs\\sobralmapas\\resources\\css\\custom.css Unclosed block\n\n \u001b[90m 842 | \u001b[39m\n \u001b[90m 843 | \u001b[39m\u001b[90m/* Chat para telas menores */\u001b[39m\n\u001b[1m\u001b[31m>\u001b[39m\u001b[22m\u001b[90m 844 | \u001b[39m\u001b[36m@media\u001b[39m\u001b[36m \u001b[39m\u001b[36m(max-width: 1280px)\u001b[39m \u001b[33m{\u001b[39m\n \u001b[90m     | \u001b[39m\u001b[1m\u001b[31m^\u001b[39m\u001b[22m\n \u001b[90m 845 | \u001b[39m\n \u001b[90m 846 | \u001b[39m\u001b[33m.hamburger\u001b[39m \u001b[33m{\u001b[39m\n\n    at processResult (C:\\xampp\\htdocs\\sobralmapas\\node_modules\\webpack\\lib\\NormalModule.js:889:19)\n    at C:\\xampp\\htdocs\\sobralmapas\\node_modules\\webpack\\lib\\NormalModule.js:1030:5\n    at C:\\xampp\\htdocs\\sobralmapas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:400:11\n    at C:\\xampp\\htdocs\\sobralmapas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:252:18\n    at context.callback (C:\\xampp\\htdocs\\sobralmapas\\node_modules\\loader-runner\\lib\\LoaderRunner.js:124:13)\n    at Object.loader (C:\\xampp\\htdocs\\sobralmapas\\node_modules\\postcss-loader\\dist\\index.js:140:7)");
 
 /***/ })
 
@@ -18552,42 +18500,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = __webpack_modules__;
-/******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/chunk loaded */
-/******/ 	(() => {
-/******/ 		var deferred = [];
-/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
-/******/ 			if(chunkIds) {
-/******/ 				priority = priority || 0;
-/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
-/******/ 				deferred[i] = [chunkIds, fn, priority];
-/******/ 				return;
-/******/ 			}
-/******/ 			var notFulfilled = Infinity;
-/******/ 			for (var i = 0; i < deferred.length; i++) {
-/******/ 				var [chunkIds, fn, priority] = deferred[i];
-/******/ 				var fulfilled = true;
-/******/ 				for (var j = 0; j < chunkIds.length; j++) {
-/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
-/******/ 						chunkIds.splice(j--, 1);
-/******/ 					} else {
-/******/ 						fulfilled = false;
-/******/ 						if(priority < notFulfilled) notFulfilled = priority;
-/******/ 					}
-/******/ 				}
-/******/ 				if(fulfilled) {
-/******/ 					deferred.splice(i--, 1)
-/******/ 					var r = fn();
-/******/ 					if (r !== undefined) result = r;
-/******/ 				}
-/******/ 			}
-/******/ 			return result;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -18637,68 +18550,13 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 		};
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/jsonp chunk loading */
-/******/ 	(() => {
-/******/ 		// no baseURI
-/******/ 		
-/******/ 		// object to store loaded and loading chunks
-/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
-/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
-/******/ 		var installedChunks = {
-/******/ 			"/js/app": 0,
-/******/ 			"css/custom": 0
-/******/ 		};
-/******/ 		
-/******/ 		// no chunk on demand loading
-/******/ 		
-/******/ 		// no prefetching
-/******/ 		
-/******/ 		// no preloaded
-/******/ 		
-/******/ 		// no HMR
-/******/ 		
-/******/ 		// no HMR manifest
-/******/ 		
-/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
-/******/ 		
-/******/ 		// install a JSONP callback for chunk loading
-/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
-/******/ 			var [chunkIds, moreModules, runtime] = data;
-/******/ 			// add "moreModules" to the modules object,
-/******/ 			// then flag all "chunkIds" as loaded and fire callback
-/******/ 			var moduleId, chunkId, i = 0;
-/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
-/******/ 				for(moduleId in moreModules) {
-/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
-/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
-/******/ 					}
-/******/ 				}
-/******/ 				if(runtime) var result = runtime(__webpack_require__);
-/******/ 			}
-/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
-/******/ 			for(;i < chunkIds.length; i++) {
-/******/ 				chunkId = chunkIds[i];
-/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
-/******/ 					installedChunks[chunkId][0]();
-/******/ 				}
-/******/ 				installedChunks[chunkId] = 0;
-/******/ 			}
-/******/ 			return __webpack_require__.O(result);
-/******/ 		}
-/******/ 		
-/******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
-/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
-/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
-/******/ 	})();
-/******/ 	
 /************************************************************************/
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	__webpack_require__.O(undefined, ["css/custom"], () => (__webpack_require__("./resources/js/app.js")))
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["css/custom"], () => (__webpack_require__("./resources/css/custom.css")))
-/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	__webpack_require__("./resources/js/app.js");
+/******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__("./resources/css/custom.css");
 /******/ 	
 /******/ })()
 ;
