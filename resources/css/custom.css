@@ -112,6 +112,15 @@
     border-radius: 0 8px 8px 0;
 }
 
+.sidebar-camadas-admin {
+    overflow-y: hidden;
+    background-color: var(--background-color);
+    height: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 0 8px 8px 0;
+}
+
 .sidebar-mapas-ativos {
     padding-left: 5px;
     padding-right: 5px;
@@ -913,4 +922,20 @@ input[type="checkbox"] {
     }
     
     
+}
+
+/* Estilização para adminlte */
+a.nav-link.accordion-button.cat:not(.active):hover {
+    color: #fff;
+}
+
+.os-viewport.os-viewport-native-scrollbars-invisible {
+    width: 100%;
+    padding: 5px;
+    height: 100%;
+    background: var(--primary-dark-color-glass);
+}
+
+img.logo {
+    opacity: 1 !important;
 }
