@@ -14,7 +14,7 @@
     /* Cores Secundárias */
     --background-secondary-color: #f0f0f0; /* Cinza Claro */
     --secondary-color-orange: #ffa500; /* Laranja */
-    --secondary-color-red: #ff0000; /* Laranja */
+    --secondary-color-red: #ff0000; /* Vermelho */
     --secondary-color-gray: #c5c5c5; /* Cinza */
     --secondary-color-white: #ffffff; /* Branco */
     --secondary-color-dark: #333333; /* Preto */
@@ -843,17 +843,19 @@ input[type="checkbox"] {
 /* Chat para telas menores */
 @media (max-width: 1280px) {
 
-.hamburger {
-    display: none; /* Hides the hamburger menu on larger screens */
-}
-.close-btn{
-    display: none; 
-}
+    .hamburger {
+        display: none; /* Hides the hamburger menu on larger screens */
+    }
+    .close-btn{
+        display: none; 
+    }
 
-.main-header.navbar {
-    background-color: var(--primary-color); /* Use sua variável de cor principal */
-    color: #fff; /* Ajuste a cor do texto, se necessário */
-    border-bottom: 1px solid var(--primary-dark); /* Adicione um contorno ou sombra, se desejar */
+    .main-header.navbar {
+        background-color: var(--primary-color); /* Use sua variável de cor principal */
+        color: #fff; /* Ajuste a cor do texto, se necessário */
+        border-bottom: 1px solid var(--primary-dark); /* Adicione um contorno ou sombra, se desejar */
+    }
+
 }
 
 /* Estilos para telas menores */
@@ -924,6 +926,6 @@ input[type="checkbox"] {
     }
 }
 
-}
+
 
 
