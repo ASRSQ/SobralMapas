@@ -77,6 +77,7 @@ class LayerService
         $layer->setMaxScale($data['max_scale'] ?? null);
         $layer->setSymbol($data['symbol'] ?? null);
         $layer->setWmsLinkId($data['wms_link_id']);
+        $layer->setIsPublic($data['isPublic'] ?? $layer->IsPublic());
 
         // Atualizar no repositório
         $this->layerRepository->update($layer);

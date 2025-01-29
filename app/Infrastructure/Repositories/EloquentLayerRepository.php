@@ -26,7 +26,9 @@ class EloquentLayerRepository implements ILayerRepository
             $eloquentLayer->image_path ?? '',
             $eloquentLayer->max_scale ?? 0,
             $eloquentLayer->symbol ?? '',
-            $eloquentLayer->wms_link_id
+            $eloquentLayer->wms_link_id,
+            $eloquentLayer->isPublic?? 1// Inclui o campo isPublic
+
         );
     }
 
@@ -93,8 +95,18 @@ class EloquentLayerRepository implements ILayerRepository
         try {
             Log::info('Creating layer', ['data' => $data]);
 
-            $eloquentLayer = EloquentLayer::create($data);
-            DB::commit();
+             // Habilitar captura de query
+                DB::enableQueryLog();
+
+                // Criar a camada
+                $eloquentLayer = EloquentLayer::create($data);
+                Log::info('Eloequnt', ['data' => $eloquentLayer]);
+                // Capturar a query executada
+                $queries = DB::getQueryLog();
+                Log::info('Query executada no banco', ['queries' => $queries]);
+
+                DB::commit();;
+                    
 
             return $this->mapToDomain($eloquentLayer);
         } catch (Exception $e) {
@@ -128,7 +140,8 @@ class EloquentLayerRepository implements ILayerRepository
                 'image_path' => $layer->getImagePath(),
                 'max_scale' => $layer->getMaxScale(),
                 'symbol' => $layer->getSymbol(),
-                'wms_link_id' => $layer->getWmsLinkId()
+                'wms_link_id' => $layer->getWmsLinkId(),
+                'isPublic' => $layer->IsPublic(), // Atualiza o campo isPublic
             ])->save();
 
             DB::commit();

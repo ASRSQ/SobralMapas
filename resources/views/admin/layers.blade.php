@@ -156,6 +156,14 @@
                             <label for="order">Ordem</label>
                             <input type="number" class="form-control" id="order" name="order" required>
                         </div>
+                        <div class="form-group">
+                            <label for="isPublic">É público?</label>
+                            <select class="form-control" id="isPublic" name="isPublic" required>
+                                <option value="1">Sim</option>
+                                <option value="0">Não</option>
+                            </select>
+                        </div>
+
 
                         <button type="submit" class="btn btn-primary mt-3">Criar Camada</button>
                     </form>
@@ -191,7 +199,8 @@
                                 data-description="{{ $layer->getDescription() }}"
                                 data-max-scale="{{ $layer->getMaxScale() }}"
                                 data-symbol="{{ $layer->getSymbol() }}"
-                                data-order="{{ $layer->getOrder() }}">
+                                data-order="{{ $layer->getOrder() }}"
+                                data-is-public="{{ $layer->isPublic()}}">
                                 Editar
                             </button>
                                 <form action="{{ route('admin.layers.destroy', $layer->getId()) }}" method="POST" style="display:inline;">
@@ -293,6 +302,14 @@
                         <label for="edit-order">Ordem</label>
                         <input type="number" class="form-control" id="edit-order" name="order" required>
                     </div>
+                    <div class="form-group">
+                        <label for="edit-is-public">É público?</label>
+                        <select class="form-control" id="edit-is-public" name="isPublic" required>
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                        </select>
+                    </div>
+
 
                     <input type="hidden" id="edit-layer-id" name="layer_id">
 
@@ -398,6 +415,8 @@
     document.getElementById('edit-max-scale').value = button.dataset.maxScale;
     document.getElementById('edit-symbol').value = button.dataset.symbol;
     document.getElementById('edit-order').value = button.dataset.order;
+    document.getElementById('edit-is-public').value = button.dataset.isPublic;
+
 
     // Abrir o modal
     const modal = new bootstrap.Modal(document.getElementById('editLayerModal'));
