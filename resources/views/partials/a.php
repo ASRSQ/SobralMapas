@@ -7,7 +7,7 @@
                 <span>Camadas</span>
             </div>
             <div class="accordion" id="accordionExample">
-                @foreach($layers->groupBy(fn($layer) => $layer->getCategory() ?? 'Sem Categoria') as $categoryName => $subcategories)
+            @foreach($layers->groupBy(fn($layer) => $layer->getCategory() ?? 'Sem Categoria') as $categoryName => $subcategories)
                     <div class="accordion-item cat">
                         <h2 class="accordion-header cat">
                             <button class="accordion-button cat" type="button" data-bs-toggle="collapse" data-bs-target="#cat-{{ Str::slug($categoryName) }}">
@@ -15,55 +15,35 @@
                             </button>
                         </h2>
                         <div id="cat-{{ Str::slug($categoryName) }}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-    <div class="accordion-body cat">
-        <div class="accordion" id="accordionSubcat-{{ Str::slug($categoryName) }}">
-            @foreach($subcategories->groupBy(fn($layer) => $layer->getSubcategory() ?? 'Sem Subcategoria') as $subcategoryName => $subcategoryLayers)
-                <div class="accordion-item sub">
-                    <h2 class="accordion-header sub">
-                        <button class="accordion-button sub collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subcat-{{ Str::slug($subcategoryName) }}">
-                            {{ $subcategoryName }}
-                        </button>
-                    </h2>
-                    <div id="subcat-{{ Str::slug($subcategoryName) }}" class="accordion-collapse collapse" data-bs-parent="#accordionSubcat-{{ Str::slug($categoryName) }}">
-                        <div class="accordion-body sub">
-                            <ul class="list-unstyled sub-list">
-                                @foreach($subcategoryLayers as $layer)
-                                    @php
-                                        // Criar um JSON com todos os atributos da camada
-                                        $layerData = json_encode([
-                                            'layer_name' => $layer->getLayerName(),
-                                            'name' => $layer->getName(),
-                                            'crs' => $layer->getCrs(),
-                                            'max_scale' => $layer->getMaxScale(),
-                                            'order' => $layer->getOrder(),
-                                            'wms_link_id' => $layer->getWmsLinkId(),
-                                            'legend_url' => $layer->getLegendUrl(),
-                                            'symbol' => $layer->getSymbol(),
-                                            'description' => $layer->getDescription()
-                                        ]);
-                                    @endphp
-
-                                    <li>
-                                        <input type="checkbox" id="{{ $layer->getLayerName() }}" 
-                                            class="layer-toggle"
-                                            data-layer='@json($layerData)'>
-
-                                        <label for="{{ $layer->getLayerName() }}">
-                                            {{ $layer->getName() }}
-                                        </label>
-
-                                        <i class="fas fa-exclamation-circle hide-layer-alert"></i>
-                                    </li>
-                                @endforeach
-                            </ul>
+                            <div class="accordion-body cat">
+                                <div class="accordion" id="accordionSubcat-{{ Str::slug($categoryName) }}">
+                                    @foreach($subcategories->groupBy(fn($layer) => $layer->getSubcategory() ?? 'Sem Subcategoria') as $subcategoryName => $subcategoryLayers)
+                                        <div class="accordion-item sub">
+                                            <h2 class="accordion-header sub">
+                                                <button class="accordion-button sub collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subcat-{{ Str::slug($subcategoryName) }}">
+                                                    {{ $subcategoryName }}
+                                                </button>
+                                            </h2>
+                                            <div id="subcat-{{ Str::slug($subcategoryName) }}" class="accordion-collapse collapse" data-bs-parent="#accordionSubcat-{{ Str::slug($categoryName) }}">
+                                                <div class="accordion-body sub">
+                                                    <ul class="list-unstyled sub-list">
+                                                        @foreach($subcategoryLayers as $layer)
+                                                            <li>
+                                                                <input type="checkbox" id="layer_{{ $layer->getId() }}" onchange="toggleLayer(map, '{{ $layer->getLayerName() }}', this.checked)">
+                                                                <label for="layer_{{ $layer->getId() }}">
+                                                                    {{ $layer->getName() }}
+                                                                </label>
+                                                                <i class="fas fa-exclamation-circle hide-layer-alert"></i>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</div>
-
                     </div>
                 @endforeach
             </div>  

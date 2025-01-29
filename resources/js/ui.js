@@ -79,30 +79,21 @@ function initializeExpandButton() {
 }
 
 // Função para inicializar os toggles de camadas (checkboxes)
+// Inicializa os toggles das camadas
 function initializeLayerToggles() {
-    const layer5Checkbox = document.getElementById("transol_linha_5");
-    const layer6Checkbox = document.getElementById("transol_linha_6");
+    document.querySelectorAll(".layer-toggle").forEach((checkbox) => {
+        checkbox.addEventListener("change", function () {
+            // Converte o atributo data-layer de volta para objeto JSON
+            const layerData = JSON.parse(this.getAttribute("data-layer"));
 
-    // Listener para a camada Linha 5
-    layer5Checkbox.addEventListener("change", function () {
-        toggleLayer(window.map, "transol_linha_5", this.checked);
-    });
-
-    // Adicionando suporte para dispositivos móveis
-    layer5Checkbox.addEventListener("touchstart", function () {
-        toggleLayer(window.map, "transol_linha_5", this.checked);
-    });
-
-    // Listener para a camada Linha 6
-    layer6Checkbox.addEventListener("change", function () {
-        toggleLayer(window.map, "transol_linha_6", this.checked);
-    });
-
-    // Adicionando suporte para dispositivos móveis
-    layer6Checkbox.addEventListener("touchstart", function () {
-        toggleLayer(window.map, "transol_linha_6", this.checked);
+            // Chama toggleLayer passando o mapa e os dados da camada
+            toggleLayer(window.map, layerData, this.checked);
+        });
     });
 }
+
+
+
 
 function enableSwipeToDeleteAccordion(accordionId) {
     const items = document.querySelectorAll(`#${accordionId} .accordion-item`);

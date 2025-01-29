@@ -112,7 +112,11 @@ class Layer
         return $this->subcategory; // Retorna o ID diretamente
     
     }
-
+    public function getCategory(): ?string
+    {
+        return EloquentSubcategoryRepository::getCategoryNameById($this->subcategory);
+    }
+    
     public function getImagePath(): string
     {
         return $this->image_path;
