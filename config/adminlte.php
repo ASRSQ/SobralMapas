@@ -348,6 +348,11 @@ return [
             'url' => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
         ],
+        [
+            'text' => 'Gerenciar Usuários',
+            'url' => 'admin/users', // URL para gerenciar usuários
+            'icon' => 'fas fa-fw fa-user-plus', // Ícone de perfil com símbolo de "+"
+        ],
         
     ],
 

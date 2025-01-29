@@ -29,7 +29,8 @@ class Layer extends Model
         'updated_at',
         'max_scale',
         'symbol',
-        'wms_link_id' // Novo campo adicionado como chave estrangeira para WmsLink
+        'wms_link_id', // Novo campo adicionado como chave estrangeira para WmsLink
+        'isPublic' // Novo campo adicionado
     ];
 
     // Defina os campos que são datetimes
