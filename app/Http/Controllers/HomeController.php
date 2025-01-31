@@ -22,10 +22,10 @@ class HomeController extends Controller
 
     public function index()
     {
-        // $categories = $this->categoryService->getAllWithRelations();
-        // $layers = $this->layerService->getAll();
-        //return view('home.index', compact('categories', 'layers'));
-        return view('pages.home');
+        // Adicionar lógica apra testar se é pública ou não
+        $layers = collect($this->layerService->getPublicLAyers()); // Converte para Collection
+        // dd($layers );
+        return view('pages.home', compact('layers'));
     }
 
     public function tile()
@@ -34,8 +34,11 @@ class HomeController extends Controller
     }
 
     public function coord()
+
     {
-        return view('home.coord');
+        $publicteLayers = $this->layerService->getPublicLAyers();
+        
+        return view('home.coord',compact('publicteLayers'));
     }
 
     public function search(Request $request)

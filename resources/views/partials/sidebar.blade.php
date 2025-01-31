@@ -6,145 +6,68 @@
             <div class="sidebar-header d-flex justify-content-between">
                 <span>Camadas</span>
             </div>
-            
             <div class="accordion" id="accordionExample">
-                <!-- Accordion Item #1 (Categoria) -->
-                <div class="accordion-item cat">
-                    <h2 class="accordion-header cat" id="headingOne">
-                        <button class="accordion-button cat" type="button" data-bs-toggle="collapse" data-bs-target="#cat1" aria-expanded="true" aria-controls="collapseOne">
-                            Categoria #1
+                @foreach($layers->groupBy(fn($layer) => $layer->getCategory() ?? 'Sem Categoria') as $categoryName => $subcategories)
+                    <div class="accordion-item cat">
+                        <h2 class="accordion-header cat">
+                            <button class="accordion-button cat" type="button" data-bs-toggle="collapse" data-bs-target="#cat-{{ Str::slug($categoryName) }}">
+                                {{ $categoryName }}
+                            </button>
+                        </h2>
+                        <div id="cat-{{ Str::slug($categoryName) }}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+    <div class="accordion-body cat">
+        <div class="accordion" id="accordionSubcat-{{ Str::slug($categoryName) }}">
+            @foreach($subcategories->groupBy(fn($layer) => $layer->getSubcategory() ?? 'Sem Subcategoria') as $subcategoryName => $subcategoryLayers)
+                <div class="accordion-item sub">
+                    <h2 class="accordion-header sub">
+                        <button class="accordion-button sub collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subcat-{{ Str::slug($subcategoryName) }}">
+                            {{ $subcategoryName }}
                         </button>
                     </h2>
-                    <div id="cat1" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                        <div class="accordion-body cat">
-    
-                            <!-- Subcategorias como um accordion interno -->
-                            <div class="accordion" id="accordionSubcat1">
-    
-                                <!-- Subcategoria 1 -->
-                                <div class="accordion-item sub">
-                                    <h2 class="accordion-header sub" id="headingSubcat1">
-                                        <button class="accordion-button sub collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subcat1" aria-expanded="false" aria-controls="subcat1">
-                                            Subcategoria 1
-                                        </button>
-                                    </h2>
-                                    <div id="subcat1" class="accordion-collapse collapse" aria-labelledby="headingSubcat1" data-bs-parent="#accordionSubcat1">
-                                        <div class="accordion-body sub">
-                                            <!-- Camadas da Subcategoria 1 -->
-                                            <ul class="list-unstyled sub-list">
-                                                <li>
-                                                    <input type="checkbox" id="transol_linha_6">
-                                                    <div class="label-layer-box">
-                                                        <label for="transol_linha_6">Linha transol 6</label>
-                                                        <i class="fas fa-exclamation-circle hide-layer-alert" ></i>
-                                                    </div>
-                                                    
-                                                </li>
-                                                <li>
-                                                    
-                                                    <input type="checkbox" id="transol_linha_5">
-                                                    <div class="label-layer-box">
-                                                        <label for="transol_linha_55">Linha transol 5</label>
-                                                        <i class="fas fa-exclamation-circle hide-layer-alert" ></i>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Subcategoria 2 -->
-                                <div class="accordion-item sub">
-                                    <h2 class="accordion-header sub" id="headingSubcat2">
-                                        <button class="accordion-button sub collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subcat2" aria-expanded="false" aria-controls="subcat2">
-                                            Subcategoria 2
-                                        </button>
-                                    </h2>
-                                    <div id="subcat2" class="accordion-collapse collapse" aria-labelledby="headingSubcat2" data-bs-parent="#accordionSubcat1">
-                                        <div class="accordion-body sub">
-                                            <!-- Camadas da Subcategoria 2 -->
-                                            <ul class="list-unstyled">
-                                                <li>
-                                                    <input type="checkbox" id="layer3">
-                                                    <label for="layer3">Layer 3</label>
-                                                </li>
-                                                <li>
-                                                    <input type="checkbox" id="layer4">
-                                                    <label for="layer4">Layer 4</label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div id="subcat-{{ Str::slug($subcategoryName) }}" class="accordion-collapse collapse" data-bs-parent="#accordionSubcat-{{ Str::slug($categoryName) }}">
+                        <div class="accordion-body sub">
+                            <ul class="list-unstyled sub-list">
+                                @foreach($subcategoryLayers as $layer)
+                                    @php
+                                        // Criar um JSON com todos os atributos da camada
+                                        $layerData = json_encode([
+                                            'layer_name' => $layer->getLayerName(),
+                                            'name' => $layer->getName(),
+                                            'crs' => $layer->getCrs(),
+                                            'max_scale' => $layer->getMaxScale(),
+                                            'order' => $layer->getOrder(),
+                                            'wms_link_id' => $layer->getWmsLinkId(),
+                                            'legend_url' => $layer->getLegendUrl(),
+                                            'symbol' => $layer->getSymbol(),
+                                            'description' => $layer->getDescription()
+                                        ]);
+                                    @endphp
+
+                                    <li>
+                                        <input type="checkbox" id="{{ $layer->getLayerName() }}" 
+                                            class="layer-toggle"
+                                            data-layer='@json($layerData)'>
+
+                                        <label for="{{ $layer->getLayerName() }}">
+                                            {{ $layer->getName() }}
+                                        </label>
+
+                                        <i class="fas fa-exclamation-circle hide-layer-alert"></i>
+                                    </li>
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 </div>
-    
-                <!-- Accordion Item #2 (Categoria) -->
-                <div class="accordion-item cat">
-                    <h2 class="accordion-header cat" id="headingTwo">
-                        <button class="accordion-button cat collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Categoria #2
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                        <div class="accordion-body cat">
-    
-                            <!-- Subcategorias como um accordion interno -->
-                            <div class="accordion" id="accordionSubcat2">
-                                <!-- Subcategoria 1 -->
-                                <div class="accordion-item sub">
-                                    <h2 class="accordion-header sub" id="headingSubcat3">
-                                        <button class="accordion-button sub collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subcat3" aria-expanded="false" aria-controls="subcat3">
-                                            Subcategoria 1
-                                        </button>
-                                    </h2>
-                                    <div id="subcat3" class="accordion-collapse collapse" aria-labelledby="headingSubcat3" data-bs-parent="#accordionSubcat2">
-                                        <div class="accordion-body sub">
-                                            <!-- Camadas da Subcategoria 1 -->
-                                            <ul class="list-unstyled">
-                                                <li>
-                                                    <input type="checkbox" id="layer5">
-                                                    <label for="layer5">Layer 5</label>
-                                                </li>
-                                                <li>
-                                                    <input type="checkbox" id="layer6">
-                                                    <label for="layer6">Layer 6</label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Subcategoria 2 -->
-                                <div class="accordion-item sub">
-                                    <h2 class="accordion-header sub" id="headingSubcat4">
-                                        <button class="accordion-button sub collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subcat4" aria-expanded="false" aria-controls="subcat4">
-                                            Subcategoria 2
-                                        </button>
-                                    </h2>
-                                    <div id="subcat4" class="accordion-collapse collapse" aria-labelledby="headingSubcat4" data-bs-parent="#accordionSubcat2">
-                                        <div class="accordion-body sub">
-                                            <!-- Camadas da Subcategoria 2 -->
-                                            <ul class="list-unstyled">
-                                                <li>
-                                                    <input type="checkbox" id="layer7">
-                                                    <label for="layer7">Layer 7</label>
-                                                </li>
-                                                <li>
-                                                    <input type="checkbox" id="layer8">
-                                                    <label for="layer8">Layer 8</label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>  
+            @endforeach
+        </div>
+    </div>
+</div>
+
+    </div>
+@endforeach
+</div>  
+        
         </div>
 
         <div id="view-mapas-ativos" style="display: none" class="sidebar-mapas-ativos">
@@ -153,47 +76,48 @@
             </div>
             <!-- Mapas Ativos como um conjunto de accordion  -->
             <div class="accordion" id="accordionMapasAtivos"> 
-                <!-- Accordion Item #1 (Categoria) -->
-                <div class="accordion-item ma">
-                    <div class="accordion-header ma">
-                        <button class="accordion-button ma" type="button" data-bs-toggle="collapse" data-bs-target="#ma1" aria-expanded="true" aria-controls="collapseOne">
-                            <img height="30px" src="api/layer/legend?layer=Ceara:transol_linha_3" alt="">
-                            <span>Transol Linha 3</span>
-                        </button>
-                    </div>
-                    <div id="ma1" class="accordion-collapse ma collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMapasAtivos">
-                        <div class="accordion-body ma">
-                            <h3>Legenda</h3>
+            @foreach($layers as $layer)
+        @if($layer->isPublic()) 
+            <div class="accordion-item ma" id="active-layer-{{$layer->getLayerName()}}" style="display: none;">
+                <div class="accordion-header ma">
+                    <button class="accordion-button ma collapsed" type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#ma-{{ Str::slug($layer->getLayerName()) }}" 
+                            aria-expanded="false">
+                        
+                        @if(!empty($layer->getLegendUrl()))
+                            <img height="30px" src="{{ $layer->getLegendUrl() }}" alt="Legenda de {{ $layer->getName() }}">
+                        @endif
+                        
+                        <span>{{ $layer->getName() }}</span>
+                    </button>
+                </div>
+                
+                <div id="ma-{{ Str::slug($layer->getLayerName()) }}" 
+                     class="accordion-collapse ma collapse" 
+                     data-bs-parent="#accordionMapasAtivos">
+                     
+                    <div class="accordion-body ma">
+                        <h3>Legenda</h3>
+
+                        @if(!empty($layer->getLegendUrl()))
                             <div class="ma-img-box">
-                                <img src="api/layer/legend?layer=Ceara:transol_linha_3" alt="">
+                                <img src="{{ $layer->getLegendUrl() }}" alt="Legenda de {{ $layer->getName() }}">
                             </div>
+                        @endif
+                        
+                        @if(!empty($layer->getDescription()))
                             <div class="ma-leg-box">
-                                <p>Linha sul do transol que sai do bairro cohab 3 até arco do triunfo.</p>
-                            </div>            
-                        </div>
+                                <p>{{ $layer->getDescription() }}</p>
+                            </div>
+                        @else
+                            <p>ℹ️ Nenhuma descrição fornecida para esta camada.</p>
+                        @endif
                     </div>
                 </div>
-            
-                <!-- Accordion Item #2 -->
-                <div class="accordion-item ma">
-                    <div class="accordion-header ma">
-                        <button class="accordion-button ma collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ma2" aria-expanded="false" aria-controls="collapseTwo">
-                            <img height="30px" src="api/layer/legend?layer=Ceara:transol_linha_1" alt="">
-                            <span>Transol Linha 1</span>
-                        </button>
-                    </div>
-                    <div id="ma2" class="accordion-collapse ma collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionMapasAtivos">
-                        <div class="accordion-body ma">
-                            <h3>Legenda</h3>
-                            <div class="ma-img-box">
-                                <img src="api/layer/legend?layer=Ceara:transol_linha_1" alt="">
-                            </div>
-                            <div class="ma-leg-box">
-                                <p>Linha norte do transol que sai do bairro novo recanto até Campo dos Velhos.</p>
-                            </div>            
-                        </div>
-                    </div>
-                </div>
+            </div>
+        @endif
+        @endforeach
             </div>
             
         </div>

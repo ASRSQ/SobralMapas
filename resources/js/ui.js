@@ -79,30 +79,54 @@ function initializeExpandButton() {
 }
 
 // Função para inicializar os toggles de camadas (checkboxes)
+// Inicializa os toggles das camadas
 function initializeLayerToggles() {
-    const layer5Checkbox = document.getElementById("transol_linha_5");
-    const layer6Checkbox = document.getElementById("transol_linha_6");
+    document.querySelectorAll(".layer-toggle").forEach((checkbox) => {
+        checkbox.addEventListener("change", function () {
+            // Converte o atributo data-layer de volta para objeto JSON
+            const layerData = JSON.parse(this.getAttribute("data-layer"));
 
-    // Listener para a camada Linha 5
-    layer5Checkbox.addEventListener("change", function () {
-        toggleLayer(window.map, "transol_linha_5", this.checked);
-    });
+            // Chama toggleLayer passando o mapa e os dados da camada
+            toggleLayer(window.map, layerData, this.checked);
 
-    // Adicionando suporte para dispositivos móveis
-    layer5Checkbox.addEventListener("touchstart", function () {
-        toggleLayer(window.map, "transol_linha_5", this.checked);
-    });
-
-    // Listener para a camada Linha 6
-    layer6Checkbox.addEventListener("change", function () {
-        toggleLayer(window.map, "transol_linha_6", this.checked);
-    });
-
-    // Adicionando suporte para dispositivos móveis
-    layer6Checkbox.addEventListener("touchstart", function () {
-        toggleLayer(window.map, "transol_linha_6", this.checked);
+            // Atualiza a exibição das legendas
+            updateLegends(layerData, this.checked);
+        });
     });
 }
+
+// Função para atualizar as legendas em "Mapas Ativos"
+function updateLegends(layerData, isChecked) {
+    console.log("🛠 Dados recebidos em RemoveWmsLayer:", JSON.stringify(layerData, null, 2));
+    
+    if (typeof layerData === "string") {
+        try {
+            layerData = JSON.parse(layerData);
+            console.log("✅ JSON convertido para objeto:", layerData);
+        } catch (error) {
+            console.error("❌ ERRO ao converter JSON para objeto:", error);
+            return;
+        }
+    }
+    const layerName = layerData.layer_name;
+
+    const layerElement = document.getElementById(`active-layer-${layerName}`);
+    if (layerElement) {
+        if (isChecked) {
+            // Se marcado, exibe a camada nos "Mapas Ativos"
+            layerElement.style.display = "block";
+            console.log(`✅ Camada ${layerName} adicionada à seção de legendas.`);
+        } else {
+            // Se desmarcado, oculta dos "Mapas Ativos"
+            layerElement.style.display = "none";
+            console.log(`❌ Camada ${layerName} removida da seção de legendas.`);
+        }
+    } else {
+        console.warn(`⚠️ Elemento de legenda para "${layerName}" não encontrado.`);
+    }
+}
+
+
 
 function enableSwipeToDeleteAccordion(accordionId) {
     const items = document.querySelectorAll(`#${accordionId} .accordion-item`);

@@ -186,4 +186,20 @@ class EloquentLayerRepository implements ILayerRepository
             return $this->mapToDomain($layer);
         })->toArray();
     }
+    public function getPublicLAyers(): array
+{
+    try {
+        Log::info('Fetching private layers from database');
+
+        $layers = EloquentLayer::where('isPublic', 1)->get();
+
+        return $layers->map(fn($layer) => $this->mapToDomain($layer))->toArray();
+    } catch (\Exception $e) {
+        Log::error('Error fetching private layers from repository', [
+            'error' => $e->getMessage(),
+        ]);
+        throw $e;
+    }
+}
+
 }

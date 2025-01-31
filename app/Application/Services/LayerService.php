@@ -183,4 +183,18 @@ class LayerService
             throw $e;
         }
     }
+    public function getPublicLAyers(): array
+{
+    try {
+        Log::info('Fetching private layers');
+
+        return $this->layerRepository->getPublicLAyers();
+    } catch (\Exception $e) {
+        Log::error('Error fetching private layers', [
+            'error' => $e->getMessage(),
+            'stack' => $e->getTraceAsString()
+        ]);
+        throw $e;
+    }
+}
 }

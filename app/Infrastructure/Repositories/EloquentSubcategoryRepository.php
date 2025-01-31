@@ -171,6 +171,11 @@ public static function getNameById(int $id): ?string
     $subcategory = EloquentSubcategory::find($id); // Usando o modelo Eloquent diretamente
     return $subcategory ? $subcategory->name : null; // Retorna o nome ou null se não encontrado
 }
+public static function getCategoryNameById(int $subcategoryId): ?string
+{
+    $subcategory = EloquentSubcategory::with('category')->find($subcategoryId);
 
+    return $subcategory && $subcategory->category ? $subcategory->category->name : null;
+}
 
 }
