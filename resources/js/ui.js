@@ -295,6 +295,66 @@ function initializeActionButtons() {
     });
 }
 
+function statistic() {
+    console.log("📊 Função statistic() inicializada...");
+
+    let tempoInicio = Date.now();
+    let mapasSelecionados = {};
+
+    // Atualiza a contagem dos mapas corretamente
+    function atualizarMapas(layerData, isChecked) {
+        let layerName = layerData.layer_name;
+
+        if (isChecked) {
+            if (!mapasSelecionados[layerName]) {
+                mapasSelecionados[layerName] = 1; // Primeira vez que foi selecionado
+            }
+
+            // Aumenta a contagem de todas as camadas que permaneceram ativas
+            for (let mapa in mapasSelecionados) {
+                if (mapa !== layerName) {
+                    mapasSelecionados[mapa]++;
+                }
+            }
+        } else {
+            delete mapasSelecionados[layerName]; // Apenas remove sem alterar outros contadores
+        }
+
+        console.log("📊 Mapas Selecionados Atualizados:", mapasSelecionados);
+    }
+
+    // Captura mudanças nos checkboxes das camadas
+    document.addEventListener("change", function (event) {
+        if (event.target.classList.contains("layer-toggle")) {
+            let layerData = JSON.parse(event.target.getAttribute("data-layer"));
+            atualizarMapas(layerData, event.target.checked);
+            console.log(`🛠 Camada "${layerData.layer_name}" foi ${event.target.checked ? "selecionada" : "desmarcada"}`);
+        }
+    });
+
+    // Envia os dados ao servidor quando o usuário **fecha ou recarrega** a página
+    function enviarEstatisticas() {
+        let tempoFinal = Date.now();
+        let tempoTotal = Math.round((tempoFinal - tempoInicio) / 1000); // Tempo em segundos
+
+        let estatisticas = {
+            mapas_selecionados: mapasSelecionados, // Apenas os nomes das camadas e contagem
+            tempo_total: tempoTotal,
+        };
+
+        console.log("📤 Enviando estatísticas ao sair da página:", estatisticas);
+
+        navigator.sendBeacon(`${window.location.origin}/sobralmapas/public/api/estatisticas`, JSON.stringify(estatisticas));
+    }
+
+    // Captura o evento de saída da página (fechamento ou atualização)
+    window.addEventListener("beforeunload", enviarEstatisticas);
+}
+
+
+
+
+
 export function InitializeUI() {
     initializeSidebar();
     initializeTooltip();
@@ -304,4 +364,5 @@ export function InitializeUI() {
     initializeLayerToggles();
     enableSwipeToDeleteAccordion("accordionMapasAtivos");
     initializeActionButtons();
+    statistic();
 }
