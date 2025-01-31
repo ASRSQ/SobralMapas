@@ -88,10 +88,43 @@ function initializeLayerToggles() {
 
             // Chama toggleLayer passando o mapa e os dados da camada
             toggleLayer(window.map, layerData, this.checked);
+
+            // Atualiza a exibição das legendas
+            updateLegends(layerData, this.checked);
         });
     });
 }
 
+// Função para atualizar as legendas em "Mapas Ativos"
+function updateLegends(layerData, isChecked) {
+    console.log("🛠 Dados recebidos em RemoveWmsLayer:", JSON.stringify(layerData, null, 2));
+    
+    if (typeof layerData === "string") {
+        try {
+            layerData = JSON.parse(layerData);
+            console.log("✅ JSON convertido para objeto:", layerData);
+        } catch (error) {
+            console.error("❌ ERRO ao converter JSON para objeto:", error);
+            return;
+        }
+    }
+    const layerName = layerData.layer_name;
+
+    const layerElement = document.getElementById(`active-layer-${layerName}`);
+    if (layerElement) {
+        if (isChecked) {
+            // Se marcado, exibe a camada nos "Mapas Ativos"
+            layerElement.style.display = "block";
+            console.log(`✅ Camada ${layerName} adicionada à seção de legendas.`);
+        } else {
+            // Se desmarcado, oculta dos "Mapas Ativos"
+            layerElement.style.display = "none";
+            console.log(`❌ Camada ${layerName} removida da seção de legendas.`);
+        }
+    } else {
+        console.warn(`⚠️ Elemento de legenda para "${layerName}" não encontrado.`);
+    }
+}
 
 
 

@@ -77,48 +77,46 @@
             <!-- Mapas Ativos como um conjunto de accordion  -->
             <div class="accordion" id="accordionMapasAtivos"> 
             @foreach($layers as $layer)
-            @if($layer->isPublic()) 
-                <div class="accordion-item ma">
-                    <div class="accordion-header ma">
-                        <button class="accordion-button ma collapsed" type="button" 
-                                data-bs-toggle="collapse" 
-                                data-bs-target="#ma-{{ Str::slug($layer->getLayerName()) }}" 
-                                aria-expanded="false">
-                            
-                            @if(!empty($layer->getLegendUrl()))
-                                <img height="30px" src="{{ $layer->getLegendUrl() }}" alt="Legenda de {{ $layer->getName() }}">
-                            @endif
-                            
-                            <span>{{ $layer->getName() }}</span>
-                        </button>
-                    </div>
-                    
-                    <div id="ma-{{ Str::slug($layer->getLayerName()) }}" 
-                         class="accordion-collapse ma collapse" 
-                         data-bs-parent="#accordionMapasAtivos">
-                         
-                        <div class="accordion-body ma">
-                            <h3>Legenda</h3>
+        @if($layer->isPublic()) 
+            <div class="accordion-item ma" id="active-layer-{{$layer->getLayerName()}}" style="display: none;">
+                <div class="accordion-header ma">
+                    <button class="accordion-button ma collapsed" type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#ma-{{ Str::slug($layer->getLayerName()) }}" 
+                            aria-expanded="false">
+                        
+                        @if(!empty($layer->getLegendUrl()))
+                            <img height="30px" src="{{ $layer->getLegendUrl() }}" alt="Legenda de {{ $layer->getName() }}">
+                        @endif
+                        
+                        <span>{{ $layer->getName() }}</span>
+                    </button>
+                </div>
+                
+                <div id="ma-{{ Str::slug($layer->getLayerName()) }}" 
+                     class="accordion-collapse ma collapse" 
+                     data-bs-parent="#accordionMapasAtivos">
+                     
+                    <div class="accordion-body ma">
+                        <h3>Legenda</h3>
 
-                            @if(!empty($layer->getLegendUrl()))
-                                <div class="ma-img-box">
-                                    <img src="{{ $layer->getLegendUrl() }}" alt="Legenda de {{ $layer->getName() }}">
-                                </div>
-                            @else
-                              
-                            @endif
-                            
-                            @if(!empty($layer->getDescription()))
-                                <div class="ma-leg-box">
-                                    <p>{{ $layer->getDescription() }}</p>
-                                </div>
-                            @else
-                                <p>ℹ️ Nenhuma descrição fornecida para esta camada.</p>
-                            @endif
-                        </div>
+                        @if(!empty($layer->getLegendUrl()))
+                            <div class="ma-img-box">
+                                <img src="{{ $layer->getLegendUrl() }}" alt="Legenda de {{ $layer->getName() }}">
+                            </div>
+                        @endif
+                        
+                        @if(!empty($layer->getDescription()))
+                            <div class="ma-leg-box">
+                                <p>{{ $layer->getDescription() }}</p>
+                            </div>
+                        @else
+                            <p>ℹ️ Nenhuma descrição fornecida para esta camada.</p>
+                        @endif
                     </div>
                 </div>
-            @endif
+            </div>
+        @endif
         @endforeach
             </div>
             
