@@ -64,9 +64,9 @@
     </div>
 </div>
 
-                    </div>
-                @endforeach
-            </div>  
+    </div>
+@endforeach
+</div>  
         
         </div>
 
@@ -76,47 +76,50 @@
             </div>
             <!-- Mapas Ativos como um conjunto de accordion  -->
             <div class="accordion" id="accordionMapasAtivos"> 
-                <!-- Accordion Item #1 (Categoria) -->
+            @foreach($layers as $layer)
+            @if($layer->isPublic()) 
                 <div class="accordion-item ma">
                     <div class="accordion-header ma">
-                        <button class="accordion-button ma" type="button" data-bs-toggle="collapse" data-bs-target="#ma1" aria-expanded="true" aria-controls="collapseOne">
-                            <img height="30px" src="api/layer/legend?layer=Ceara:transol_linha_3" alt="">
-                            <span>Transol Linha 3</span>
+                        <button class="accordion-button ma collapsed" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#ma-{{ Str::slug($layer->getLayerName()) }}" 
+                                aria-expanded="false">
+                            
+                            @if(!empty($layer->getLegendUrl()))
+                                <img height="30px" src="{{ $layer->getLegendUrl() }}" alt="Legenda de {{ $layer->getName() }}">
+                            @endif
+                            
+                            <span>{{ $layer->getName() }}</span>
                         </button>
                     </div>
-                    <div id="ma1" class="accordion-collapse ma collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMapasAtivos">
+                    
+                    <div id="ma-{{ Str::slug($layer->getLayerName()) }}" 
+                         class="accordion-collapse ma collapse" 
+                         data-bs-parent="#accordionMapasAtivos">
+                         
                         <div class="accordion-body ma">
                             <h3>Legenda</h3>
-                            <div class="ma-img-box">
-                                <img src="api/layer/legend?layer=Ceara:transol_linha_3" alt="">
-                            </div>
-                            <div class="ma-leg-box">
-                                <p>Linha sul do transol que sai do bairro cohab 3 até arco do triunfo.</p>
-                            </div>            
+
+                            @if(!empty($layer->getLegendUrl()))
+                                <div class="ma-img-box">
+                                    <img src="{{ $layer->getLegendUrl() }}" alt="Legenda de {{ $layer->getName() }}">
+                                </div>
+                            @else
+                              
+                            @endif
+                            
+                            @if(!empty($layer->getDescription()))
+                                <div class="ma-leg-box">
+                                    <p>{{ $layer->getDescription() }}</p>
+                                </div>
+                            @else
+                                <p>ℹ️ Nenhuma descrição fornecida para esta camada.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
-            
-                <!-- Accordion Item #2 -->
-                <div class="accordion-item ma">
-                    <div class="accordion-header ma">
-                        <button class="accordion-button ma collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ma2" aria-expanded="false" aria-controls="collapseTwo">
-                            <img height="30px" src="api/layer/legend?layer=Ceara:transol_linha_1" alt="">
-                            <span>Transol Linha 1</span>
-                        </button>
-                    </div>
-                    <div id="ma2" class="accordion-collapse ma collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionMapasAtivos">
-                        <div class="accordion-body ma">
-                            <h3>Legenda</h3>
-                            <div class="ma-img-box">
-                                <img src="api/layer/legend?layer=Ceara:transol_linha_1" alt="">
-                            </div>
-                            <div class="ma-leg-box">
-                                <p>Linha norte do transol que sai do bairro novo recanto até Campo dos Velhos.</p>
-                            </div>            
-                        </div>
-                    </div>
-                </div>
+            @endif
+        @endforeach
             </div>
             
         </div>

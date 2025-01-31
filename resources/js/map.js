@@ -211,16 +211,40 @@ async function addWmsLayer(map, layerData) {
 
 
 
-// Função para remover uma camada WMS do mapa
-async function removeWmsLayer(map, layerName) {
+// Função para remover uma camada WMS específica do mapa e do cache
+// Função para ocultar uma camada WMS do mapa (sem removê-la do cache)
+async function removeWmsLayer(map, layerData) {
+    console.log("🛠 Dados recebidos em RemoveWmsLayer:", JSON.stringify(layerData, null, 2));
+    if (typeof layerData === "string") {
+        try {
+            layerData = JSON.parse(layerData);
+            console.log("✅ JSON convertido para objeto:", layerData);
+        } catch (error) {
+            console.error("❌ ERRO ao converter JSON para objeto:", error);
+            return;
+        }
+    }
+    console.log(layerData.layer_name)
+    const layerName = layerData.layer_name;
+    console.log(`🕶 Tentando ocultar camada: ${layerName}`);
+
+    // Obtém todas as camadas carregadas no mapa
     const layers = map.getLayers().getArray();
-    const layerToRemove = layers.find(
-        (layer) => layer.get("name") === layerName
-    );
+    console.log("📌 Camadas carregadas no mapa:", layers.map(layer => layer.get("name") || "Sem Nome"));
+
+    // Encontra a camada correspondente pelo nome
+    const layerToRemove = layers.find(layer => layer.get("name") === layerName);
+
     if (layerToRemove) {
-        map.removeLayer(layerToRemove);
+        console.log(`✅ Ocultando camada "${layerName}" no mapa.`);
+        map.removeLayer(layerToRemove); 
+    } else {
+        console.warn(`⚠️ Camada "${layerName}" não encontrada no mapa.`);
     }
 }
+
+
+
 
 // Função para manipular camadas do mapa de fora do arquivo
 export function toggleLayer(map, layerName, shouldAdd) {
