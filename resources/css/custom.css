@@ -793,6 +793,15 @@ input[type="checkbox"] {
     color: #fff; /* Ajuste a cor do texto, se necessário */
     border-bottom: 1px solid var(--primary-dark); /* Adicione um contorno ou sombra, se desejar */
 }
+.ol-zoom {
+    background: none !important;
+}
+.ol-zoom {
+    top: 10px;    /* Distância do topo da tela */
+    right: 10px;  /* Distância da direita da tela */
+    left: auto;   /* Define 'left' como automático para evitar conflitos */
+}
+
 
 /* Estilos para telas menores */
 @media (max-width: 768px) {
