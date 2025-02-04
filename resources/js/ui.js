@@ -301,9 +301,26 @@ function statistic() {
     let tempoInicio = Date.now();
     let mapasSelecionados = {};
 
+    // Gera um identificador único para a sessão (se não existir na localStorage)
+    let sessionId = sessionStorage.getItem("sessionId");
+    if (!sessionId) {
+        sessionId = Math.floor(100000 + Math.random() * 900000).toString(); // Gera um número de 6 dígitos
+        sessionStorage.setItem("sessionId", sessionId);
+    }
+    console.log(`🆔 ID da sessão: ${sessionId}`);
+
     // Atualiza a contagem dos mapas corretamente
     function atualizarMapas(layerData, isChecked) {
-        let layerName = layerData.layer_name;
+        if (typeof layerData === "string") {
+            try {
+                layerData = JSON.parse(layerData);
+                console.log("✅ JSON convertido para objeto:", layerData);
+            } catch (error) {
+                console.error("❌ ERRO ao converter JSON para objeto:", error);
+                return;
+            }
+        }
+        const layerName = layerData.layer_name;
 
         if (isChecked) {
             if (!mapasSelecionados[layerName]) {
@@ -332,24 +349,39 @@ function statistic() {
         }
     });
 
-    // Envia os dados ao servidor quando o usuário **fecha ou recarrega** a página
+    // Função para enviar estatísticas periodicamente
     function enviarEstatisticas() {
-        let tempoFinal = Date.now();
-        let tempoTotal = Math.round((tempoFinal - tempoInicio) / 1000); // Tempo em segundos
+        let tempoAtual = Date.now();
+        let tempoTotal = Math.round((tempoAtual - tempoInicio) / 1000); // Tempo em segundos
 
         let estatisticas = {
+            session_id: sessionId, // Enviamos o identificador único da sessão
             mapas_selecionados: mapasSelecionados, // Apenas os nomes das camadas e contagem
             tempo_total: tempoTotal,
         };
 
-        console.log("📤 Enviando estatísticas ao sair da página:", estatisticas);
+        console.log("📤 Enviando estatísticas a cada 30s:", estatisticas);
 
-        navigator.sendBeacon(`${window.location.origin}/sobralmapas/public/api/estatisticas`, JSON.stringify(estatisticas));
+        fetch(`${window.location.origin}/sobralmapas/public/api/estatisticas`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(estatisticas),
+        })
+        .then((response) => response.json())
+        .then((data) => console.log("📊 Estatísticas enviadas com sucesso:", data))
+        .catch((error) => console.error("❌ Erro ao enviar estatísticas:", error));
     }
 
-    // Captura o evento de saída da página (fechamento ou atualização)
+    // **Envia estatísticas a cada 30 segundos**
+    setInterval(enviarEstatisticas, 30000);
+
+    // Envia estatísticas finais ao sair da página
     window.addEventListener("beforeunload", enviarEstatisticas);
 }
+
+
 
 
 

@@ -11,21 +11,24 @@ class EstatisticasController extends Controller
     {
         Log::info("📩 Recebendo estatísticas...", ['request' => $request->all()]);
     
+        // Valida os dados recebidos
         $request->validate([
+            'session_id' => 'required|string|max:6',
             'mapas_selecionados' => 'required|array',
             'tempo_total' => 'required|integer',
         ]);
-    
-        $ipUsuario = $request->ip();
+
+        $sessionId = $request->input('session_id');
         $novosMapas = $request->input('mapas_selecionados');
         $tempoTotal = $request->input('tempo_total');
-    
-        Log::info("📌 IP do usuário: $ipUsuario");
+
+        Log::info("🆔 ID da Sessão: $sessionId");
         Log::info("🗺 Mapas Selecionados:", $novosMapas);
         Log::info("⏳ Tempo total na página: {$tempoTotal} segundos");
     
         // Busca o registro existente pelo IP
-        $estatistica = Estatistica::where('ip_usuario', $ipUsuario)->first();
+        $estatistica = Estatistica::where('ip_usuario', 
+        $sessionId )->first();
     
         if ($estatistica) {
             // Garante que mapas_atual sejam um array válido
@@ -33,7 +36,7 @@ class EstatisticasController extends Controller
                 ? json_decode($estatistica->mapas_selecionados, true) 
                 : $estatistica->mapas_selecionados;
     
-            Log::info("📊 Estatística existente encontrada para o IP $ipUsuario", $mapasAtuais);
+            Log::info("📊 Estatística existente encontrada para o IP $sessionId ", $mapasAtuais);
     
             foreach ($novosMapas as $mapa => $contador) {
                 if (isset($mapasAtuais[$mapa])) {
@@ -51,16 +54,16 @@ class EstatisticasController extends Controller
                 'tempo_total' => $estatistica->tempo_total + $tempoTotal,
             ]);
     
-            Log::info("✅ Estatística atualizada com sucesso para $ipUsuario.");
+            Log::info("✅ Estatística atualizada com sucesso para $sessionId .");
         } else {
             // Primeiro registro do usuário
             $estatistica = Estatistica::create([
-                'ip_usuario' => $ipUsuario,
+                'ip_usuario' =>$sessionId,
                 'mapas_selecionados' => $novosMapas,
                 'tempo_total' => $tempoTotal,
             ]);
     
-            Log::info("🆕 Criando novo registro de estatística para o IP: $ipUsuario");
+            Log::info("🆕 Criando novo registro de estatística para o IP: $sessionId");
         }
     
         return response()->json(['message' => 'Estatísticas registradas com sucesso'], 200);
