@@ -77,6 +77,7 @@ class LayerService
         $layer->setMaxScale($data['max_scale'] ?? null);
         $layer->setSymbol($data['symbol'] ?? null);
         $layer->setWmsLinkId($data['wms_link_id']);
+        $layer->setIsPublic($data['isPublic'] ?? $layer->IsPublic());
 
         // Atualizar no repositório
         $this->layerRepository->update($layer);
@@ -182,4 +183,18 @@ class LayerService
             throw $e;
         }
     }
+    public function getPublicLAyers(): array
+{
+    try {
+        Log::info('Fetching private layers');
+
+        return $this->layerRepository->getPublicLAyers();
+    } catch (\Exception $e) {
+        Log::error('Error fetching private layers', [
+            'error' => $e->getMessage(),
+            'stack' => $e->getTraceAsString()
+        ]);
+        throw $e;
+    }
+}
 }

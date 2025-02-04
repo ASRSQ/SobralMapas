@@ -17,6 +17,7 @@ class Layer
     protected $max_scale;
     protected $symbol;
     protected $wms_link_id;
+    protected $isPublic; // Novo campo adicionado
 
     public function __construct(
         int $id,
@@ -31,7 +32,8 @@ class Layer
         string $image_path = '', // Valor padrão
         int $max_scale = 0, // Valor padrão
         string $symbol = '', // Valor padrão
-        $wms_link_id = null // Novo campo adicionado
+        $wms_link_id = null, // Novo campo adicionado
+        int $isPublic = 0 
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -46,6 +48,7 @@ class Layer
         $this->max_scale = $max_scale;
         $this->symbol = $symbol;
         $this->wms_link_id = $wms_link_id;
+        $this->isPublic = $isPublic; // Atribui o valor do novo campo
     }
 
     // Métodos getters
@@ -68,7 +71,10 @@ class Layer
     {
         return $this->crs;
     }
-
+    public function isPublic(): int
+    {
+        return $this->isPublic;
+    }
     public function getLegendUrl(): string
     {
         return $this->legend_url;
@@ -106,7 +112,11 @@ class Layer
         return $this->subcategory; // Retorna o ID diretamente
     
     }
-
+    public function getCategory(): ?string
+    {
+        return EloquentSubcategoryRepository::getCategoryNameById($this->subcategory);
+    }
+    
     public function getImagePath(): string
     {
         return $this->image_path;
@@ -137,4 +147,8 @@ class Layer
     public function setMaxScale(?float $maxScale): void { $this->maxScale = $maxScale; }
     public function setSymbol(?string $symbol): void { $this->symbol = $symbol; }
     public function setWmsLinkId(int $wmsLinkId): void { $this->wmsLinkId = $wmsLinkId; }
+    public function setIsPublic(bool $isPublic): void
+{
+    $this->isPublic = $isPublic;
+}
 }

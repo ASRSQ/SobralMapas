@@ -149,6 +149,11 @@ function initializeFloatingButton() {
     }
 
 }
+document.querySelector(".dropdown-toggle").addEventListener("touchend", function (event) {
+    event.stopPropagation();
+    let dropdown = new bootstrap.Dropdown(this);
+    dropdown.toggle();
+});
 
 
 // Card com opcoes de medição

@@ -68,4 +68,6 @@ interface ILayerRepository
      * @return array
      */
     public function getAllByWmsLinkId(int $wmsLinkId): array;
+
+    public function getPublicLAyers():array;
 }
