@@ -295,6 +295,98 @@ function initializeActionButtons() {
     });
 }
 
+function statistic() {
+    console.log("📊 Função statistic() inicializada...");
+
+    let tempoInicio = Date.now();
+    let mapasSelecionados = {};
+
+    // Gera um identificador único para a sessão (se não existir na localStorage)
+    let sessionId = sessionStorage.getItem("sessionId");
+    if (!sessionId) {
+        sessionId = Math.floor(100000 + Math.random() * 900000).toString(); // Gera um número de 6 dígitos
+        sessionStorage.setItem("sessionId", sessionId);
+    }
+    console.log(`🆔 ID da sessão: ${sessionId}`);
+
+    // Atualiza a contagem dos mapas corretamente
+    function atualizarMapas(layerData, isChecked) {
+        if (typeof layerData === "string") {
+            try {
+                layerData = JSON.parse(layerData);
+                console.log("✅ JSON convertido para objeto:", layerData);
+            } catch (error) {
+                console.error("❌ ERRO ao converter JSON para objeto:", error);
+                return;
+            }
+        }
+        const layerName = layerData.layer_name;
+
+        if (isChecked) {
+            if (!mapasSelecionados[layerName]) {
+                mapasSelecionados[layerName] = 1; // Primeira vez que foi selecionado
+            }
+
+            // Aumenta a contagem de todas as camadas que permaneceram ativas
+            for (let mapa in mapasSelecionados) {
+                if (mapa !== layerName) {
+                    mapasSelecionados[mapa]++;
+                }
+            }
+        } else {
+            delete mapasSelecionados[layerName]; // Apenas remove sem alterar outros contadores
+        }
+
+        console.log("📊 Mapas Selecionados Atualizados:", mapasSelecionados);
+    }
+
+    // Captura mudanças nos checkboxes das camadas
+    document.addEventListener("change", function (event) {
+        if (event.target.classList.contains("layer-toggle")) {
+            let layerData = JSON.parse(event.target.getAttribute("data-layer"));
+            atualizarMapas(layerData, event.target.checked);
+            console.log(`🛠 Camada "${layerData.layer_name}" foi ${event.target.checked ? "selecionada" : "desmarcada"}`);
+        }
+    });
+
+    // Função para enviar estatísticas periodicamente
+    function enviarEstatisticas() {
+        let tempoAtual = Date.now();
+        let tempoTotal = Math.round((tempoAtual - tempoInicio) / 1000); // Tempo em segundos
+
+        let estatisticas = {
+            session_id: sessionId, // Enviamos o identificador único da sessão
+            mapas_selecionados: mapasSelecionados, // Apenas os nomes das camadas e contagem
+            tempo_total: tempoTotal,
+        };
+
+        console.log("📤 Enviando estatísticas a cada 30s:", estatisticas);
+
+        fetch(`${window.location.origin}/sobralmapas/public/api/estatisticas`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(estatisticas),
+        })
+        .then((response) => response.json())
+        .then((data) => console.log("📊 Estatísticas enviadas com sucesso:", data))
+        .catch((error) => console.error("❌ Erro ao enviar estatísticas:", error));
+    }
+
+    // **Envia estatísticas a cada 30 segundos**
+    setInterval(enviarEstatisticas, 30000);
+
+    // Envia estatísticas finais ao sair da página
+    window.addEventListener("beforeunload", enviarEstatisticas);
+}
+
+
+
+
+
+
+
 export function InitializeUI() {
     initializeSidebar();
     initializeTooltip();
@@ -304,4 +396,5 @@ export function InitializeUI() {
     initializeLayerToggles();
     enableSwipeToDeleteAccordion("accordionMapasAtivos");
     initializeActionButtons();
+    statistic();
 }
