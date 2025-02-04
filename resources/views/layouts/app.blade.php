@@ -8,6 +8,7 @@
     <!-- Adiciona o CDN do Font Awesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Adiciona o CSS correto do OpenLayers (versão 6.13.0) -->
     <link rel="stylesheet" href="https://openlayers.org/en/v6.13.0/css/ol.css" />

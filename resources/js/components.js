@@ -436,18 +436,28 @@ function initializeChat() {
     const messageInput = document.getElementById("message-input");
     const messagesContainer = document.getElementById("messages");
 
-    // Função para mostrar a caixa de chat ao clicar no botão
-    showChatButton.addEventListener("click", function () {
-        chatContainer.style.display = "flex";
-        showChatButton.style.display = "none"; // Esconde o botão depois que o chat é mostrado
+    showChatButton.addEventListener("click", () => {
+        if (window.innerWidth > 800) {
+          // Desktop
+          chatContainer.style.display = "flex";
+        } else {
+          // Mobile
+          chatContainer.classList.add("open");
+        }
+        showChatButton.style.display = "none";
     });
-
-    // Função para esconder o chat ao clicar no botão "X"
-    toggleChatButton.addEventListener("click", function () {
-        chatContainer.style.display = "none";
+      
+    toggleChatButton.addEventListener("click", () => {
+        if (window.innerWidth > 800) {
+            // Desktop
+            chatContainer.style.display = "none";
+        } else {
+            // Mobile
+            chatContainer.classList.remove("open");
+        }
         showChatButton.style.display = "block";
     });
-
+    
     // Função para envio de mensagens com AJAX
     sendButton.addEventListener("click", function () {
         const message = messageInput.value.trim();
@@ -530,84 +540,12 @@ function initializeChat() {
     if (firstEmptyMessage) {
         firstEmptyMessage.remove();
     }
-
-    // Adicionar suporte para toques nos botões de chat
-    showChatButton.addEventListener("touchstart", function () {
-        chatContainer.style.display = "flex";
-        showChatButton.style.display = "none"; // Esconde o botão depois que o chat é mostrado
-    });
-
-    toggleChatButton.addEventListener("touchstart", function () {
-        chatContainer.style.display = "none";
-        showChatButton.style.display = "block";
-    });
-
-    sendButton.addEventListener("touchstart", function () {
-        const message = messageInput.value.trim();
-        if (message !== "") {
-            addMessageToChat("user", message);
-            messageInput.value = "";
-    
-            // Send the message to the server using AJAX
-            fetch(`${window.location.origin}/sobralmapas/public/api/send-message`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: JSON.stringify({
-                    sender: "user",  // Include a sender field as Rasa expects
-                    message: message
-                }),
-            })
-            .then(response => {
-                console.log('Resposta do servidor:', response);
-    
-                if (!response.ok) {
-                    throw new Error("Erro ao comunicar com o servidor");
-                }
-                return response.json();  // Convert response to JSON
-            })
-            .then((data) => {
-                console.log('Dados recebidos do servidor:', data);
-    
-                if (data && data.length > 0) {
-                    data.forEach((msg) => {
-                        addMessageToChat("bot", msg.text);
-                    });
-                } else {
-                    addMessageToChat("bot", "Nenhuma resposta encontrada.");
-                }
-            })
-            .catch((error) => {
-                console.error("Erro:", error);
-                addMessageToChat("bot", "Erro ao se comunicar com o servidor.");
-            });
-        }
-    });
 }
-
-function mobileMenu() {
-    const hamburger = document.getElementById('hamburger-btn');
-    const menu = document.getElementById('menu');
-    const closeBtn = document.getElementById('close-btn');
-    
-    hamburger.addEventListener('click', () => {
-        menu.classList.add('open');
-    });
-    
-    closeBtn.addEventListener('click', () => {
-        menu.classList.remove('open');
-    });
-    
-}
-
 
 export function InitializeComponents() {
-
     initializeSelectionBox();
     initializeFloatingButton();
     initializeChat();
     initializeMeasure();
-    mobileMenu();
+   
 }
