@@ -432,7 +432,7 @@ function initializeChat() {
     const messagesContainer = document.getElementById("messages");
 
     showChatButton.addEventListener("click", () => {
-        if (window.innerWidth > 1280) {
+        if (window.innerWidth > 800) {
           // Desktop
           chatContainer.style.display = "flex";
         } else {
@@ -443,7 +443,7 @@ function initializeChat() {
     });
       
     toggleChatButton.addEventListener("click", () => {
-        if (window.innerWidth > 1280) {
+        if (window.innerWidth > 800) {
             // Desktop
             chatContainer.style.display = "none";
         } else {
@@ -542,5 +542,5 @@ export function InitializeComponents() {
     initializeFloatingButton();
     initializeChat();
     initializeMeasure();
-    mobileMenu();
+   
 }

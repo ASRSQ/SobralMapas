@@ -1,6 +1,6 @@
 <!-- resources/views/components/chat.blade.php -->
 <!-- Botão para mostrar o chat -->
-<button id="show-chat-button"><i class="fas fa-comment"></i>  Chat - SobralMapas </button>
+<button id="show-chat-button"><i class="fas fa-comment"></i>  <span> Chat - SobralMapas</span></button>
 
 <div id="chat-container">
     <div class="chat-header">
