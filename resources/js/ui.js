@@ -310,35 +310,38 @@ function statistic() {
     console.log(`🆔 ID da sessão: ${sessionId}`);
 
     // Atualiza a contagem dos mapas corretamente
-    function atualizarMapas(layerData, isChecked) {
-        if (typeof layerData === "string") {
-            try {
-                layerData = JSON.parse(layerData);
-                console.log("✅ JSON convertido para objeto:", layerData);
-            } catch (error) {
-                console.error("❌ ERRO ao converter JSON para objeto:", error);
-                return;
-            }
+function atualizarMapas(layerData, isChecked) {
+    if (typeof layerData === "string") {
+        try {
+            layerData = JSON.parse(layerData);
+            console.log("✅ JSON convertido para objeto:", layerData);
+        } catch (error) {
+            console.error("❌ ERRO ao converter JSON para objeto:", error);
+            return;
         }
-        const layerName = layerData.layer_name;
-
-        if (isChecked) {
-            if (!mapasSelecionados[layerName]) {
-                mapasSelecionados[layerName] = 1; // Primeira vez que foi selecionado
-            }
-
-            // Aumenta a contagem de todas as camadas que permaneceram ativas
-            for (let mapa in mapasSelecionados) {
-                if (mapa !== layerName) {
-                    mapasSelecionados[mapa]++;
-                }
-            }
-        } else {
-            delete mapasSelecionados[layerName]; // Apenas remove sem alterar outros contadores
-        }
-
-        console.log("📊 Mapas Selecionados Atualizados:", mapasSelecionados);
     }
+    const layerName = layerData.layer_name;
+
+    if (isChecked) {
+        if (!mapasSelecionados[layerName]) {
+            mapasSelecionados[layerName] = 1; // Primeira vez que foi selecionado
+        }
+
+        // Aumenta a contagem de todas as camadas que permaneceram ativas
+        for (let mapa in mapasSelecionados) {
+            if (mapa !== layerName) {
+                mapasSelecionados[mapa]++;
+            }
+        }
+    } else {
+        // Apenas mantém o contador sem aumentar ou remover a camada da lista
+        console.log(`🛠 Camada "${layerName}" desmarcada. Contador mantido: ${mapasSelecionados[layerName]}`);
+    }
+
+    console.log("📊 Mapas Selecionados Atualizados:", mapasSelecionados);
+}
+
+    window.updateStatistics = atualizarMapas;
 
     // Captura mudanças nos checkboxes das camadas
     document.addEventListener("change", function (event) {
