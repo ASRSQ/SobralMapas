@@ -256,6 +256,7 @@
 .search-container {
     position: relative;
 }
+
 .input-search {
     display: block;
     position: absolute;
@@ -268,7 +269,9 @@
     transition: width 0.3s ease-in-out;
     overflow: hidden;
     padding-left: 10px;
+    padding-right: 30px; /* Ajusta espaço para o botão ❌ */
 }
+
 .input-search:focus {
     background-color: var(--background-color);
     color: var(--secondary-color);
@@ -278,6 +281,27 @@
     width: 0;
     padding: 0;
 }
+
+/* Botão "X" dentro do input */
+.clear-search {
+    position: absolute;
+    right: 10px;
+    top: 30%;
+    transform: translateX(2000%);
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--secondary-color);
+    display: none; /* Oculto até que o usuário digite algo */
+}
+
+.input-search:not(:placeholder-shown) + .clear-search {
+    display: block; /* Exibe o botão "X" quando há texto no input */
+}
+
+.clear-search:hover {
+    color: var(--primary-color);
+}
+
 
 /* Estilo geral para o componente accordion */
 .accordion-button:not(.collapsed)::after {
@@ -945,6 +969,15 @@ input[type="checkbox"] {
         border-radius: 0;
         flex-shrink: 0;
     }
+    .input-search {
+        width: 150px; /* Reduz a largura no mobile */
+        max-width: 60vw;
+    }
+
+    .clear-search {
+        right: 8px;
+        font-size: 14px;
+    }
 }
 
 /* Estilização para adminlte */
@@ -984,3 +1017,4 @@ img.logo {
     color: var(--text-white-color);
     text-decoration: none;
 }
+

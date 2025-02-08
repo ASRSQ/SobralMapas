@@ -132,9 +132,14 @@
     
         {{-- pesquisar --}}
         <div class="search-container">
-            <input type="text" class="input-search hidden form-control" placeholder="Pesquisar... [ENTER]" aria-label="Pesquisar" aria-describedby="searchButton">
-            <button id="btn-search" class="btn" data-bs-toggle="tooltip" title="Pesquisar"><i class="fas fa-search"></i></button>
-        </div>
+    <input type="text" class="input-search hidden form-control" placeholder="Pesquisar..." aria-label="Pesquisar" aria-describedby="searchButton">
+    <span class="clear-search">&times;</span>
+    <button id="btn-search" class="btn" data-bs-toggle="tooltip" title="Pesquisar">
+        <i class="fas fa-search"></i>
+    </button>
+</div>
+
+
         
         <button class="btn active" id="btn-camadas" data-bs-toggle="tooltip" title="Camadas"><i class="fas fa-layer-group"></i></button>
         <button class="btn" id="btn-mapas-ativos" data-bs-toggle="tooltip" title="Legenda e Mapas Ativos"><i class="fas fa-info"></i></button>

@@ -303,7 +303,7 @@ function initializeMeasure() {
                 new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: selectedLineColor,
-                        width: 2,
+                        width: 5,
                         lineDash: null,
                     }),
                     fill: new ol.style.Fill({
@@ -487,6 +487,7 @@ function initializeChat() {
             })
             .then((data) => {
                 console.log('Dados recebidos do servidor:', data);
+                handleServerResponse(data);
     
                 if (data && data.length > 0) {
                     data.forEach((msg) => {
@@ -541,11 +542,57 @@ function initializeChat() {
         firstEmptyMessage.remove();
     }
 }
+function handleServerResponse(responseData) {
+    // Verifica se há um objeto com `map_type` na resposta
+    const mapTypeData = responseData.find(item => item.custom && item.custom.map_type);
+    
+    if (mapTypeData) {
+        const mapType = mapTypeData.custom.map_type.toLowerCase();
+        console.log(`📍 Tentando marcar a camada: ${mapType}`);
+
+        // Percorre todas as camadas e encontra a que corresponde ao `map_type`
+        let foundLayer = false;
+        document.querySelectorAll(".layer-toggle").forEach(layerCheckbox => {
+            let layerData;
+
+            try {
+                layerData = JSON.parse(layerCheckbox.getAttribute("data-layer").replace(/&quot;/g, '"'));
+                if (typeof layerData === "string") {
+                    layerData = JSON.parse(layerData);
+                }
+
+                // Se o `map_type` for igual ao nome da camada, marca e ativa
+                if (layerData.name.toLowerCase() === mapType) {
+                    foundLayer = true;
+                    layerCheckbox.checked = true;
+                    console.log(`✅ Marcando automaticamente: ${layerData.layer_name}`);
+
+                    // 🚀 Disparar evento "change" para ativar a camada no mapa
+                    layerCheckbox.dispatchEvent(new Event("change"));
+
+                    // Atualiza estatísticas
+                    window.updateStatistics(layerData, true);
+
+                    // Adiciona a camada ao mapa
+                    toggleLayer(window.map, layerData, true);
+                }
+            } catch (error) {
+                console.error("❌ ERRO ao processar data-layer:", error);
+            }
+        });
+
+        if (!foundLayer) {
+            console.warn("⚠ Nenhuma camada correspondente encontrada para:", mapType);
+        }
+    }
+}
+
 
 export function InitializeComponents() {
     initializeSelectionBox();
     initializeFloatingButton();
     initializeChat();
     initializeMeasure();
+    handleServerResponse();
    
 }
