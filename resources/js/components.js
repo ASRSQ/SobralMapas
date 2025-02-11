@@ -1,3 +1,4 @@
+import { toggleLayer } from "./map";
 // Função para inicializar a caixa de seleção (mover e redimensionar)
 function initializeSelectionBox() {
     const selectionBox = document.getElementById("selection-box");
@@ -550,6 +551,12 @@ function handleServerResponse(responseData) {
         const mapType = mapTypeData.custom.map_type.toLowerCase();
         console.log(`📍 Tentando marcar a camada: ${mapType}`);
 
+        // Expande o menu lateral automaticamente
+        const sidebar = document.getElementById("sidebar");
+        if (sidebar) {
+            sidebar.classList.add("open"); // Certifique-se de que essa classe abre o menu
+        }
+
         // Percorre todas as camadas e encontra a que corresponde ao `map_type`
         let foundLayer = false;
         document.querySelectorAll(".layer-toggle").forEach(layerCheckbox => {
@@ -575,6 +582,9 @@ function handleServerResponse(responseData) {
 
                     // Adiciona a camada ao mapa
                     toggleLayer(window.map, layerData, true);
+
+                    // **Abre automaticamente a categoria e subcategoria**
+                    expandCategoryAndSubcategory(layerCheckbox);
                 }
             } catch (error) {
                 console.error("❌ ERRO ao processar data-layer:", error);
@@ -583,6 +593,41 @@ function handleServerResponse(responseData) {
 
         if (!foundLayer) {
             console.warn("⚠ Nenhuma camada correspondente encontrada para:", mapType);
+        }
+    }
+}
+
+// **Função para abrir a categoria e subcategoria automaticamente**
+function expandCategoryAndSubcategory(layerCheckbox) {
+    // Encontra a subcategoria e categoria associadas
+    let subcategory = layerCheckbox.closest(".accordion-item.sub");
+    let category = layerCheckbox.closest(".accordion-item.cat");
+
+    // Expande a subcategoria se estiver fechada
+    if (subcategory) {
+        subcategory.style.display = "block";
+        let subCategoryButton = subcategory.querySelector(".accordion-button");
+        if (subCategoryButton) {
+            subCategoryButton.classList.remove("collapsed");
+            subCategoryButton.setAttribute("aria-expanded", "true");
+            let subCategoryContent = document.querySelector(`#${subCategoryButton.getAttribute("data-bs-target").substring(1)}`);
+            if (subCategoryContent) {
+                subCategoryContent.classList.add("show");
+            }
+        }
+    }
+
+    // Expande a categoria se estiver fechada
+    if (category) {
+        category.style.display = "block";
+        let categoryButton = category.querySelector(".accordion-button");
+        if (categoryButton) {
+            categoryButton.classList.remove("collapsed");
+            categoryButton.setAttribute("aria-expanded", "true");
+            let categoryContent = document.querySelector(`#${categoryButton.getAttribute("data-bs-target").substring(1)}`);
+            if (categoryContent) {
+                categoryContent.classList.add("show");
+            }
         }
     }
 }
