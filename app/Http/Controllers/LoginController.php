@@ -16,6 +16,10 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
+        // Se o usuário já está autenticado, redireciona para /admin
+        if (auth()->check()) {
+            return redirect('/admin');
+        }
         return view('adminlte::auth.login');
     }
 
@@ -26,6 +30,7 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+
         // Autentica o usuário
         if (Auth::attempt($credentials)) {
             // Regenera a sessão ao autenticar

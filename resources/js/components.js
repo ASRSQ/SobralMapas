@@ -85,12 +85,13 @@ function initializeFloatingButton() {
 
     // Função para alternar a visibilidade do botão flutuante
     const toggleFloatingButtonVisibility = () => {
-        floatingButton.style.display = floatingButton.style.display === "none" ? "block" : "none";
+        floatingButton.style.display =
+            floatingButton.style.display === "none" ? "block" : "none";
     };
 
     // Adicionando eventos de clique para o botão "Medir"
     measureButton.addEventListener("click", toggleFloatingButtonVisibility);
-    
+
     // Adicionando evento de toque para dispositivos móveis
     measureButton.addEventListener("touchend", (e) => {
         e.preventDefault(); // Previne o comportamento padrão
@@ -105,7 +106,10 @@ function initializeFloatingButton() {
 
         const startDrag = (e) => {
             // Previne arrastar quando é um clique em dropdown ou select
-            if (e.target.closest(".dropdown-menu") || e.target.closest("select")) {
+            if (
+                e.target.closest(".dropdown-menu") ||
+                e.target.closest("select")
+            ) {
                 return;
             }
 
@@ -123,8 +127,12 @@ function initializeFloatingButton() {
 
         const elementDrag = (e) => {
             e.preventDefault(); // Previne o comportamento padrão
-            pos1 = pos3 - (e.type === "mousemove" ? e.clientX : e.touches[0].clientX);
-            pos2 = pos4 - (e.type === "mousemove" ? e.clientY : e.touches[0].clientY);
+            pos1 =
+                pos3 -
+                (e.type === "mousemove" ? e.clientX : e.touches[0].clientX);
+            pos2 =
+                pos4 -
+                (e.type === "mousemove" ? e.clientY : e.touches[0].clientY);
             pos3 = e.type === "mousemove" ? e.clientX : e.touches[0].clientX;
             pos4 = e.type === "mousemove" ? e.clientY : e.touches[0].clientY;
 
@@ -148,14 +156,14 @@ function initializeFloatingButton() {
     if (floatingButton) {
         dragElement(floatingButton);
     }
-
 }
-document.querySelector(".dropdown-toggle").addEventListener("touchend", function (event) {
-    event.stopPropagation();
-    let dropdown = new bootstrap.Dropdown(this);
-    dropdown.toggle();
-});
-
+document
+    .querySelector(".dropdown-toggle")
+    .addEventListener("touchend", function (event) {
+        event.stopPropagation();
+        let dropdown = new bootstrap.Dropdown(this);
+        dropdown.toggle();
+    });
 
 // Card com opcoes de medição
 function initializeMeasure() {
@@ -439,15 +447,15 @@ function initializeChat() {
 
     showChatButton.addEventListener("click", () => {
         if (window.innerWidth > 800) {
-          // Desktop
-          chatContainer.style.display = "flex";
+            // Desktop
+            chatContainer.style.display = "flex";
         } else {
-          // Mobile
-          chatContainer.classList.add("open");
+            // Mobile
+            chatContainer.classList.add("open");
         }
         showChatButton.style.display = "none";
     });
-      
+
     toggleChatButton.addEventListener("click", () => {
         if (window.innerWidth > 800) {
             // Desktop
@@ -458,53 +466,61 @@ function initializeChat() {
         }
         showChatButton.style.display = "block";
     });
-    
+
     // Função para envio de mensagens com AJAX
     sendButton.addEventListener("click", function () {
         const message = messageInput.value.trim();
         if (message !== "") {
             addMessageToChat("user", message);
             messageInput.value = "";
-    
+
             // Send the message to the server using AJAX
-            fetch(`${window.location.origin}/sobralmapas/public/api/send-message`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: JSON.stringify({
-                    sender: "user",  // Include a sender field as Rasa expects
-                    message: message
-                }),
-            })
-            .then(response => {
-                console.log('Resposta do servidor:', response);
-    
-                if (!response.ok) {
-                    throw new Error("Erro ao comunicar com o servidor");
+            fetch(
+                `${window.location.origin}/sobralmapas2/public/api/send-message`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content"),
+                    },
+                    body: JSON.stringify({
+                        sender: "user", // Include a sender field as Rasa expects
+                        message: message,
+                    }),
                 }
-                return response.json();  // Convert response to JSON
-            })
-            .then((data) => {
-                console.log('Dados recebidos do servidor:', data);
-                handleServerResponse(data);
-    
-                if (data && data.length > 0) {
-                    data.forEach((msg) => {
-                        addMessageToChat("bot", msg.text);
-                    });
-                } else {
-                    addMessageToChat("bot", "Nenhuma resposta encontrada.");
-                }
-            })
-            .catch((error) => {
-                console.error("Erro:", error);
-                addMessageToChat("bot", "Erro ao se comunicar com o servidor.");
-            });
+            )
+                .then((response) => {
+                    console.log("Resposta do servidor:", response);
+
+                    if (!response.ok) {
+                        throw new Error("Erro ao comunicar com o servidor");
+                    }
+                    return response.json(); // Convert response to JSON
+                })
+                .then((data) => {
+                    console.log("Dados recebidos do servidor:", data);
+                    handleServerResponse(data);
+
+                    if (data && data.length > 0) {
+                        data.forEach((msg) => {
+                            addMessageToChat("bot", msg.text);
+                        });
+                    } else {
+                        addMessageToChat("bot", "Nenhuma resposta encontrada.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro:", error);
+                    addMessageToChat(
+                        "bot",
+                        "Erro ao se comunicar com o servidor."
+                    );
+                });
         }
     });
-    
+
     // Enviar mensagem ao pressionar Enter
     messageInput.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
@@ -545,8 +561,10 @@ function initializeChat() {
 }
 function handleServerResponse(responseData) {
     // Verifica se há um objeto com `map_type` na resposta
-    const mapTypeData = responseData.find(item => item.custom && item.custom.map_type);
-    
+    const mapTypeData = responseData.find(
+        (item) => item.custom && item.custom.map_type
+    );
+
     if (mapTypeData) {
         const mapType = mapTypeData.custom.map_type.toLowerCase();
         console.log(`📍 Tentando marcar a camada: ${mapType}`);
@@ -559,11 +577,15 @@ function handleServerResponse(responseData) {
 
         // Percorre todas as camadas e encontra a que corresponde ao `map_type`
         let foundLayer = false;
-        document.querySelectorAll(".layer-toggle").forEach(layerCheckbox => {
+        document.querySelectorAll(".layer-toggle").forEach((layerCheckbox) => {
             let layerData;
 
             try {
-                layerData = JSON.parse(layerCheckbox.getAttribute("data-layer").replace(/&quot;/g, '"'));
+                layerData = JSON.parse(
+                    layerCheckbox
+                        .getAttribute("data-layer")
+                        .replace(/&quot;/g, '"')
+                );
                 if (typeof layerData === "string") {
                     layerData = JSON.parse(layerData);
                 }
@@ -572,7 +594,9 @@ function handleServerResponse(responseData) {
                 if (layerData.name.toLowerCase() === mapType) {
                     foundLayer = true;
                     layerCheckbox.checked = true;
-                    console.log(`✅ Marcando automaticamente: ${layerData.layer_name}`);
+                    console.log(
+                        `✅ Marcando automaticamente: ${layerData.layer_name}`
+                    );
 
                     // 🚀 Disparar evento "change" para ativar a camada no mapa
                     layerCheckbox.dispatchEvent(new Event("change"));
@@ -592,7 +616,10 @@ function handleServerResponse(responseData) {
         });
 
         if (!foundLayer) {
-            console.warn("⚠ Nenhuma camada correspondente encontrada para:", mapType);
+            console.warn(
+                "⚠ Nenhuma camada correspondente encontrada para:",
+                mapType
+            );
         }
     }
 }
@@ -610,7 +637,11 @@ function expandCategoryAndSubcategory(layerCheckbox) {
         if (subCategoryButton) {
             subCategoryButton.classList.remove("collapsed");
             subCategoryButton.setAttribute("aria-expanded", "true");
-            let subCategoryContent = document.querySelector(`#${subCategoryButton.getAttribute("data-bs-target").substring(1)}`);
+            let subCategoryContent = document.querySelector(
+                `#${subCategoryButton
+                    .getAttribute("data-bs-target")
+                    .substring(1)}`
+            );
             if (subCategoryContent) {
                 subCategoryContent.classList.add("show");
             }
@@ -624,7 +655,9 @@ function expandCategoryAndSubcategory(layerCheckbox) {
         if (categoryButton) {
             categoryButton.classList.remove("collapsed");
             categoryButton.setAttribute("aria-expanded", "true");
-            let categoryContent = document.querySelector(`#${categoryButton.getAttribute("data-bs-target").substring(1)}`);
+            let categoryContent = document.querySelector(
+                `#${categoryButton.getAttribute("data-bs-target").substring(1)}`
+            );
             if (categoryContent) {
                 categoryContent.classList.add("show");
             }
@@ -632,12 +665,10 @@ function expandCategoryAndSubcategory(layerCheckbox) {
     }
 }
 
-
 export function InitializeComponents() {
     initializeSelectionBox();
     initializeFloatingButton();
     initializeChat();
     initializeMeasure();
-    handleServerResponse();
-   
+    //handleServerResponse();
 }

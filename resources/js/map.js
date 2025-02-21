@@ -90,20 +90,18 @@ async function showError(message, layerName) {
 // Função para adicionar uma camada WMS ao mapa com cache habilitado
 async function addWmsLayer(map, layerData) {
     //console.log("🛠 Dados recebidos em addWmsLayer:", JSON.stringify(layerData, null, 2));
-    if (typeof layerData === "string") {
-        try {
-            layerData = JSON.parse(layerData);
-            //console.log("✅ JSON convertido para objeto:", layerData);
-        } catch (error) {
-            console.error("❌ ERRO ao converter JSON para objeto:", error);
-            return;
-        }
-    }
+    console.log("tentando adiciona essa camada");
     //console.log(layerData.layer_name)
     try {
-       
-        
-
+        if (typeof layerData === "string") {
+            try {
+                layerData = JSON.parse(layerData);
+                //console.log("✅ JSON convertido para objeto:", layerData);
+            } catch (error) {
+                console.error("❌ ERRO ao converter JSON para objeto:", error);
+                return;
+            }
+        }
         const layerName = layerData.layer_name;
         const maxScale = layerData.max_scale;
         const order = layerData.order;
@@ -111,7 +109,7 @@ async function addWmsLayer(map, layerData) {
         const wmsLinkId = layerData.wms_link_id;
         const legendUrl = layerData.legend_url;
 
-        //console.log(`⚡️ Processando camada: ${layerName}`);
+        console.log(`⚡️ Processando camada: ${layerName}`);
         //console.log("📌 CRS:", crs, "| MaxScale:", maxScale, "| Order:", order, "| WMS Link ID:", wmsLinkId);
         //console.log("🔗 URL da Legenda:", legendUrl || "Nenhuma legenda disponível");
 
@@ -119,6 +117,8 @@ async function addWmsLayer(map, layerData) {
             map.addLayer(layersCache[layerName]);
             //console.log(`✅ Camada "${layerName}" carregada do cache local.`);
         } else {
+            console.log("entrando no else");
+
             let isError = 0;
             let totalTilesLoading = 0;
             let totalTilesLoaded = 0;
@@ -127,7 +127,7 @@ async function addWmsLayer(map, layerData) {
 
             const geoServerLayer = new ol.layer.Tile({
                 source: new ol.source.TileWMS({
-                    url: "api/proxy-wms",
+                    url: "/api/proxy-wms",
                     params: {
                         LAYERS: layerName,
                         TILED: true,
@@ -153,14 +153,24 @@ async function addWmsLayer(map, layerData) {
                                     imageTile.getImage().src = reader.result;
                                 };
                             } else {
-                                console.error(`❌ Erro ao carregar tile ${src}: Status ${xhr.status}`);
-                                await showError(`Erro ao carregar tile ${src}. Status: ${xhr.status}`, geoServerLayer.get("name"));
+                                console.error(
+                                    `❌ Erro ao carregar tile ${src}: Status ${xhr.status}`
+                                );
+                                await showError(
+                                    `Erro ao carregar tile ${src}. Status: ${xhr.status}`,
+                                    geoServerLayer.get("name")
+                                );
                             }
                         };
 
                         xhr.onerror = async function () {
-                            console.error(`🚨 ERRO de rede ao carregar tile: ${src}`);
-                            await showError(`Erro de rede ao carregar tile ${src}.`, geoServerLayer.get("name"));
+                            console.error(
+                                `🚨 ERRO de rede ao carregar tile: ${src}`
+                            );
+                            await showError(
+                                `Erro de rede ao carregar tile ${src}.`,
+                                geoServerLayer.get("name")
+                            );
                         };
 
                         xhr.send();
@@ -190,12 +200,19 @@ async function addWmsLayer(map, layerData) {
 
             geoServerLayer.getSource().on("tileloaderror", function () {
                 isError++;
-                console.error(`🚨 ERRO: Falha ao carregar tiles da camada "${layerName}"`);
+                console.error(
+                    `🚨 ERRO: Falha ao carregar tiles da camada "${layerName}"`
+                );
                 if (isError === 1) {
-                    console.warn(`⚠️ Removendo camada "${layerName}" do mapa devido a erro.`);
+                    console.warn(
+                        `⚠️ Removendo camada "${layerName}" do mapa devido a erro.`
+                    );
                     map.removeLayer(geoServerLayer);
                     delete layersCache[geoServerLayer.get("name")];
-                    showError(`A camada ${layerName} possui erros e não será carregada.`, geoServerLayer.get("name"));
+                    showError(
+                        `A camada ${layerName} possui erros e não será carregada.`,
+                        geoServerLayer.get("name")
+                    );
                 }
             });
 
@@ -204,12 +221,15 @@ async function addWmsLayer(map, layerData) {
             }
         }
     } catch (error) {
-        console.error(`❌ ERRO FATAL ao carregar a camada ${layerData?.layer_name || "Desconhecida"}:`, error);
+        console.error(
+            `❌ ERRO FATAL ao carregar a camada ${
+                layerData?.layer_name || "Desconhecida"
+            }:`,
+            error
+        );
         alert(`Erro ao carregar a camada. Verifique no GeoServer.`);
     }
 }
-
-
 
 // Função para remover uma camada WMS específica do mapa e do cache
 // Função para ocultar uma camada WMS do mapa (sem removê-la do cache)
@@ -233,18 +253,17 @@ async function removeWmsLayer(map, layerData) {
     //console.log("📌 Camadas carregadas no mapa:", layers.map(layer => layer.get("name") || "Sem Nome"));
 
     // Encontra a camada correspondente pelo nome
-    const layerToRemove = layers.find(layer => layer.get("name") === layerName);
+    const layerToRemove = layers.find(
+        (layer) => layer.get("name") === layerName
+    );
 
     if (layerToRemove) {
         //console.log(`✅ Ocultando camada "${layerName}" no mapa.`);
-        map.removeLayer(layerToRemove); 
+        map.removeLayer(layerToRemove);
     } else {
         console.warn(`⚠️ Camada "${layerName}" não encontrada no mapa.`);
     }
 }
-
-
-
 
 // Função para manipular camadas do mapa de fora do arquivo
 export function toggleLayer(map, layerName, shouldAdd) {
@@ -266,8 +285,3 @@ export function toggleLayer(map, layerName, shouldAdd) {
         removeWmsLayer(map, layerName);
     }
 }
-
-
-
-
-

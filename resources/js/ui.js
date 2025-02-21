@@ -1,6 +1,5 @@
 import { toggleLayer } from "./map";
 
-
 // Função para inicializar a sidebar
 function initializeSidebar() {
     const sidebar = document.getElementById("mainSidebar");
@@ -38,72 +37,112 @@ function initializeSearch() {
         let hasResults = false;
 
         // 🔄 Fecha todos os acordeões antes de iniciar a busca
-        document.querySelectorAll(".accordion-collapse").forEach(collapse => collapse.classList.remove("show"));
-        document.querySelectorAll(".accordion-button").forEach(button => {
+        document
+            .querySelectorAll(".accordion-collapse")
+            .forEach((collapse) => collapse.classList.remove("show"));
+        document.querySelectorAll(".accordion-button").forEach((button) => {
             button.classList.add("collapsed");
             button.setAttribute("aria-expanded", "false");
         });
 
         // Oculta todas as categorias e subcategorias inicialmente
-        document.querySelectorAll(".sub-list li").forEach(layer => layer.style.display = "none");
-        document.querySelectorAll(".accordion-item.sub, .accordion-item.cat").forEach(el => el.style.display = "none");
+        document
+            .querySelectorAll(".sub-list li")
+            .forEach((layer) => (layer.style.display = "none"));
+        document
+            .querySelectorAll(".accordion-item.sub, .accordion-item.cat")
+            .forEach((el) => (el.style.display = "none"));
 
         // Percorre todas as categorias
         document.querySelectorAll(".accordion-item.cat").forEach((category) => {
             let categoryHasResults = false;
 
             // Percorre todas as subcategorias dentro da categoria
-            category.querySelectorAll(".accordion-item.sub").forEach((subcategory) => {
-                let subcategoryHasResults = false;
+            category
+                .querySelectorAll(".accordion-item.sub")
+                .forEach((subcategory) => {
+                    let subcategoryHasResults = false;
 
-                // Percorre todas as layers dentro da subcategoria
-                subcategory.querySelectorAll(".sub-list li").forEach((layer) => {
-                    let layerLabel = layer.querySelector("label");
-                    let layerCheckbox = layer.querySelector(".layer-toggle");
-                    let layerName = layerLabel.textContent.toLowerCase();
-                    let isMatch = layerName.includes(searchTerm);
+                    // Percorre todas as layers dentro da subcategoria
+                    subcategory
+                        .querySelectorAll(".sub-list li")
+                        .forEach((layer) => {
+                            let layerLabel = layer.querySelector("label");
+                            let layerCheckbox =
+                                layer.querySelector(".layer-toggle");
+                            let layerName =
+                                layerLabel.textContent.toLowerCase();
+                            let isMatch = layerName.includes(searchTerm);
 
-                    // Exibe apenas as camadas que correspondem à busca
-                    if (isMatch) {
-                        layer.style.display = "block";
-                        subcategoryHasResults = true;
-                    }
-
-                    // Se o nome for exatamente igual ao buscado, seleciona a checkbox e adiciona ao mapa
-                    if (layerCheckbox && layerCheckbox.getAttribute("data-layer")) {
-                        let layerData;
-                        
-                        try {
-                            layerData = JSON.parse(layerCheckbox.getAttribute("data-layer").replace(/&quot;/g, '"'));
-                            if (typeof layerData === "string") {
-                                layerData = JSON.parse(layerData);
+                            // Exibe apenas as camadas que correspondem à busca
+                            if (isMatch) {
+                                layer.style.display = "block";
+                                subcategoryHasResults = true;
                             }
-                   
-                            if (layerData.name.toLowerCase() === searchTerm) {
-                                layerCheckbox.checked = true;
-                                console.log(`🔹 Tentando disparar evento "change" para: ${layerCheckbox.id}`);
-                                layerCheckbox.dispatchEvent(new Event("change")); // 🚀 Força o evento
-                                console.log(`✅ Evento "change" disparado para: ${layerCheckbox.id}`);
-                                console.log(`✅ Selecionando automaticamente: ${layerData.layer_name}`);
-                                
-                                // Atualiza estatísticas
-                                window.updateStatistics(layerData, true);
-                                
-                                // Adiciona a camada ao mapa
-                                toggleLayer(window.map, layerData, true);
+
+                            // Se o nome for exatamente igual ao buscado, seleciona a checkbox e adiciona ao mapa
+                            if (
+                                layerCheckbox &&
+                                layerCheckbox.getAttribute("data-layer")
+                            ) {
+                                let layerData;
+
+                                try {
+                                    layerData = JSON.parse(
+                                        layerCheckbox
+                                            .getAttribute("data-layer")
+                                            .replace(/&quot;/g, '"')
+                                    );
+                                    if (typeof layerData === "string") {
+                                        layerData = JSON.parse(layerData);
+                                    }
+
+                                    if (
+                                        layerData.name.toLowerCase() ===
+                                        searchTerm
+                                    ) {
+                                        layerCheckbox.checked = true;
+                                        console.log(
+                                            `🔹 Tentando disparar evento "change" para: ${layerCheckbox.id}`
+                                        );
+                                        layerCheckbox.dispatchEvent(
+                                            new Event("change")
+                                        ); // 🚀 Força o evento
+                                        console.log(
+                                            `✅ Evento "change" disparado para: ${layerCheckbox.id}`
+                                        );
+                                        console.log(
+                                            `✅ Selecionando automaticamente: ${layerData.layer_name}`
+                                        );
+
+                                        // Atualiza estatísticas
+                                        window.updateStatistics(
+                                            layerData,
+                                            true
+                                        );
+
+                                        // Adiciona a camada ao mapa
+                                        toggleLayer(
+                                            window.map,
+                                            layerData,
+                                            true
+                                        );
+                                    }
+                                } catch (error) {
+                                    console.error(
+                                        "❌ ERRO ao processar data-layer:",
+                                        error
+                                    );
+                                }
                             }
-                        } catch (error) {
-                            console.error("❌ ERRO ao processar data-layer:", error);
-                        }
+                        });
+
+                    // Se houver resultados na subcategoria, exibe ela, mas NÃO abre automaticamente
+                    if (subcategoryHasResults) {
+                        subcategory.style.display = "block";
+                        categoryHasResults = true;
                     }
                 });
-
-                // Se houver resultados na subcategoria, exibe ela, mas NÃO abre automaticamente
-                if (subcategoryHasResults) {
-                    subcategory.style.display = "block";
-                    categoryHasResults = true;
-                }
-            });
 
             // Se houver subcategorias com resultados, exibe a categoria
             if (categoryHasResults) {
@@ -114,23 +153,41 @@ function initializeSearch() {
 
         // 🔄 **Apenas abre os acordeões se houver resultado**
         if (hasResults) {
-            document.querySelectorAll(".accordion-item.cat").forEach(category => {
-                if (category.style.display === "block") {
-                    let categoryButton = category.querySelector(".accordion-button");
-                    categoryButton.classList.remove("collapsed");
-                    categoryButton.setAttribute("aria-expanded", "true");
-                    document.querySelector(`#${categoryButton.getAttribute("data-bs-target").substring(1)}`).classList.add("show");
-                }
-            });
+            document
+                .querySelectorAll(".accordion-item.cat")
+                .forEach((category) => {
+                    if (category.style.display === "block") {
+                        let categoryButton =
+                            category.querySelector(".accordion-button");
+                        categoryButton.classList.remove("collapsed");
+                        categoryButton.setAttribute("aria-expanded", "true");
+                        document
+                            .querySelector(
+                                `#${categoryButton
+                                    .getAttribute("data-bs-target")
+                                    .substring(1)}`
+                            )
+                            .classList.add("show");
+                    }
+                });
 
-            document.querySelectorAll(".accordion-item.sub").forEach(subcategory => {
-                if (subcategory.style.display === "block") {
-                    let subCategoryButton = subcategory.querySelector(".accordion-button");
-                    subCategoryButton.classList.remove("collapsed");
-                    subCategoryButton.setAttribute("aria-expanded", "true");
-                    document.querySelector(`#${subCategoryButton.getAttribute("data-bs-target").substring(1)}`).classList.add("show");
-                }
-            });
+            document
+                .querySelectorAll(".accordion-item.sub")
+                .forEach((subcategory) => {
+                    if (subcategory.style.display === "block") {
+                        let subCategoryButton =
+                            subcategory.querySelector(".accordion-button");
+                        subCategoryButton.classList.remove("collapsed");
+                        subCategoryButton.setAttribute("aria-expanded", "true");
+                        document
+                            .querySelector(
+                                `#${subCategoryButton
+                                    .getAttribute("data-bs-target")
+                                    .substring(1)}`
+                            )
+                            .classList.add("show");
+                    }
+                });
         } else {
             console.warn("Nenhuma camada correspondente encontrada.");
         }
@@ -162,22 +219,23 @@ function initializeSearch() {
         clearButton.style.display = "none";
 
         // 🔄 Reseta a exibição para mostrar todas as camadas
-        document.querySelectorAll(".sub-list li").forEach(layer => layer.style.display = "block");
-        document.querySelectorAll(".accordion-item.sub, .accordion-item.cat").forEach(el => el.style.display = "block");
+        document
+            .querySelectorAll(".sub-list li")
+            .forEach((layer) => (layer.style.display = "block"));
+        document
+            .querySelectorAll(".accordion-item.sub, .accordion-item.cat")
+            .forEach((el) => (el.style.display = "block"));
 
         // 🔄 **Reseta os acordeões para o estado fechado**
-        document.querySelectorAll(".accordion-collapse").forEach(collapse => collapse.classList.remove("show"));
-        document.querySelectorAll(".accordion-button").forEach(button => {
+        document
+            .querySelectorAll(".accordion-collapse")
+            .forEach((collapse) => collapse.classList.remove("show"));
+        document.querySelectorAll(".accordion-button").forEach((button) => {
             button.classList.add("collapsed");
             button.setAttribute("aria-expanded", "false");
         });
     });
 }
-
-
-
-
-    
 
 function toggleFullScreen() {
     // Verifica se o navegador está no modo de tela cheia
@@ -203,7 +261,6 @@ function toggleFullScreen() {
         }
     }
 }
-
 
 // Função para inicializar o botão de expandir (fullscreen)
 function initializeExpandButton() {
@@ -248,8 +305,11 @@ function initializeLayerToggles() {
 
 // Função para atualizar as legendas em "Mapas Ativos"
 function updateLegends(layerData, isChecked) {
-    console.log("🛠 Dados recebidos em RemoveWmsLayer:", JSON.stringify(layerData, null, 2));
-    
+    console.log(
+        "🛠 Dados recebidos em RemoveWmsLayer:",
+        JSON.stringify(layerData, null, 2)
+    );
+
     if (typeof layerData === "string") {
         try {
             layerData = JSON.parse(layerData);
@@ -266,18 +326,22 @@ function updateLegends(layerData, isChecked) {
         if (isChecked) {
             // Se marcado, exibe a camada nos "Mapas Ativos"
             layerElement.style.display = "block";
-            console.log(`✅ Camada ${layerName} adicionada à seção de legendas.`);
+            console.log(
+                `✅ Camada ${layerName} adicionada à seção de legendas.`
+            );
         } else {
             // Se desmarcado, oculta dos "Mapas Ativos"
             layerElement.style.display = "none";
-            console.log(`❌ Camada ${layerName} removida da seção de legendas.`);
+            console.log(
+                `❌ Camada ${layerName} removida da seção de legendas.`
+            );
         }
     } else {
-        console.warn(`⚠️ Elemento de legenda para "${layerName}" não encontrado.`);
+        console.warn(
+            `⚠️ Elemento de legenda para "${layerName}" não encontrado.`
+        );
     }
 }
-
-
 
 function enableSwipeToDeleteAccordion(accordionId) {
     const items = document.querySelectorAll(`#${accordionId} .accordion-item`);
@@ -470,65 +534,88 @@ function statistic() {
                 return;
             }
         }
-    
+
         const layerName = layerData.layer_name;
-    
+
         // Garante que o valor não seja indefinido
         if (!mapasSelecionados[layerName]) {
             mapasSelecionados[layerName] = 0;
         }
-    
+
         if (!isChecked) {
-            console.log(`🛠 Camada "${layerName}" desmarcada. Contador mantido: ${mapasSelecionados[layerName]}`);
+            console.log(
+                `🛠 Camada "${layerName}" desmarcada. Contador mantido: ${mapasSelecionados[layerName]}`
+            );
         }
-    
+
         // 🚀 Atualiza SOMENTE as camadas que estão ativas!
-        document.querySelectorAll(".layer-toggle:checked").forEach((checkbox) => {
-            try {
-                let activeLayerData = checkbox.getAttribute("data-layer");
-    
-                if (!activeLayerData) {
-                    console.warn("⚠️ data-layer ausente no checkbox:", checkbox);
-                    return;
-                }
-    
-                console.log("🔍 Conteúdo bruto do data-layer:", activeLayerData);
-    
-                // Converte para objeto JSON
-                if (typeof activeLayerData === "string") {
-                    try {
-                        activeLayerData = JSON.parse(activeLayerData);
-                        activeLayerData = JSON.parse(activeLayerData);
-                    } catch (parseError) {
-                        console.error("❌ ERRO ao converter data-layer para JSON:", parseError, "Conteúdo:", activeLayerData);
+        document
+            .querySelectorAll(".layer-toggle:checked")
+            .forEach((checkbox) => {
+                try {
+                    let activeLayerData = checkbox.getAttribute("data-layer");
+
+                    if (!activeLayerData) {
+                        console.warn(
+                            "⚠️ data-layer ausente no checkbox:",
+                            checkbox
+                        );
                         return;
                     }
+
+                    console.log(
+                        "🔍 Conteúdo bruto do data-layer:",
+                        activeLayerData
+                    );
+
+                    // Converte para objeto JSON
+                    if (typeof activeLayerData === "string") {
+                        try {
+                            activeLayerData = JSON.parse(activeLayerData);
+                            activeLayerData = JSON.parse(activeLayerData);
+                        } catch (parseError) {
+                            console.error(
+                                "❌ ERRO ao converter data-layer para JSON:",
+                                parseError,
+                                "Conteúdo:",
+                                activeLayerData
+                            );
+                            return;
+                        }
+                    }
+
+                    console.log("📦 Objeto convertido:", activeLayerData);
+
+                    if (
+                        !activeLayerData ||
+                        typeof activeLayerData !== "object" ||
+                        !activeLayerData.layer_name
+                    ) {
+                        console.warn(
+                            "⚠️ Estrutura inválida no objeto após parse:",
+                            activeLayerData
+                        );
+                        return;
+                    }
+
+                    let activeLayerName = activeLayerData.layer_name;
+                    console.log(
+                        `📌 Nome da camada ativa detectado: ${activeLayerName}`
+                    );
+
+                    // ✅ Agora só aumenta a contagem de camadas ATIVAS, sem duplicar
+                    mapasSelecionados[activeLayerName] =
+                        (mapasSelecionados[activeLayerName] || 0) + 1;
+                } catch (error) {
+                    console.error("❌ ERRO ao processar camada ativa:", error);
                 }
-    
-                console.log("📦 Objeto convertido:", activeLayerData);
-    
-                if (!activeLayerData || typeof activeLayerData !== "object" || !activeLayerData.layer_name) {
-                    console.warn("⚠️ Estrutura inválida no objeto após parse:", activeLayerData);
-                    return;
-                }
-    
-                let activeLayerName = activeLayerData.layer_name;
-                console.log(`📌 Nome da camada ativa detectado: ${activeLayerName}`);
-    
-                // ✅ Agora só aumenta a contagem de camadas ATIVAS, sem duplicar
-                mapasSelecionados[activeLayerName] = (mapasSelecionados[activeLayerName] || 0) + 1;
-    
-            } catch (error) {
-                console.error("❌ ERRO ao processar camada ativa:", error);
-            }
-        });
-    
-        console.log("📊 Mapas Selecionados Atualizados:", JSON.stringify(mapasSelecionados, null, 2));
+            });
+
+        console.log(
+            "📊 Mapas Selecionados Atualizados:",
+            JSON.stringify(mapasSelecionados, null, 2)
+        );
     }
-    
-    
-    
-    
 
     window.updateStatistics = atualizarMapas;
 
@@ -537,7 +624,11 @@ function statistic() {
         if (event.target.classList.contains("layer-toggle")) {
             let layerData = JSON.parse(event.target.getAttribute("data-layer"));
             atualizarMapas(layerData, event.target.checked);
-            console.log(`🛠 Camada "${layerData.layer_name}" foi ${event.target.checked ? "selecionada" : "desmarcada"}`);
+            console.log(
+                `🛠 Camada "${layerData.layer_name}" foi ${
+                    event.target.checked ? "selecionada" : "desmarcada"
+                }`
+            );
         }
     });
 
@@ -554,16 +645,23 @@ function statistic() {
 
         console.log("📤 Enviando estatísticas a cada 30s:", estatisticas);
 
-        fetch(`${window.location.origin}/sobralmapas/public/api/estatisticas`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(estatisticas),
-        })
-        .then((response) => response.json())
-        .then((data) => console.log("📊 Estatísticas enviadas com sucesso:", data))
-        .catch((error) => console.error("❌ Erro ao enviar estatísticas:", error));
+        fetch(
+            `${window.location.origin}/sobralmapas2/public/api/estatisticas`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(estatisticas),
+            }
+        )
+            .then((response) => response.json())
+            .then((data) =>
+                console.log("📊 Estatísticas enviadas com sucesso:", data)
+            )
+            .catch((error) =>
+                console.error("❌ Erro ao enviar estatísticas:", error)
+            );
     }
 
     // **Envia estatísticas a cada 30 segundos**
@@ -572,12 +670,6 @@ function statistic() {
     // Envia estatísticas finais ao sair da página
     window.addEventListener("beforeunload", enviarEstatisticas);
 }
-
-
-
-
-
-
 
 export function InitializeUI() {
     initializeSidebar();
@@ -589,5 +681,4 @@ export function InitializeUI() {
     initializeExpandButton();
     enableSwipeToDeleteAccordion("accordionMapasAtivos");
     initializeActionButtons();
-    
 }

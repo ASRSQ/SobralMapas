@@ -36,7 +36,9 @@ import { initializeMap } from "./map";
             InitializeComponents();
             console.log("InitializeComponents carregado com sucesso.");
         } catch (error) {
-            console.log("Erro ao carregar InitializeComponents: " + error.message);
+            console.log(
+                "Erro ao carregar InitializeComponents: " + error.message
+            );
             console.error("Erro ao carregar InitializeComponents:", error);
         }
     }

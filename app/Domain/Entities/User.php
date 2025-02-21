@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Domain\Entities;
 
 class User
@@ -59,25 +60,9 @@ class User
     {
         $this->email = $email;
     }
-    public function setLogin(string $login):void{
-        $this->login= $login;
-    }
-    public function findById(string $id): ?User
+    public function setLogin(string $login): void
     {
-        $eloquentUser = EloquentUser::find($id);
-
-        if (!$eloquentUser) {
-            return null;
-        }
-
-        return new User(
-            $eloquentUser->id,
-            $eloquentUser->nome,
-            $eloquentUser->email,
-            $eloquentUser->login,
-            $eloquentUser->password,
-            $eloquentUser->profile_id
-        );
+        $this->login = $login;
     }
     public function setProfileId(string $profileId): void
     {

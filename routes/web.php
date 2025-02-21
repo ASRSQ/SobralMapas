@@ -26,7 +26,7 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/tiles', [HomeController::class, 'tile']);
 Route::get('/coord', [HomeController::class, 'coord']);
 
