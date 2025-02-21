@@ -1,5 +1,6 @@
 import { toggleLayer } from "./map";
 
+
 // Função para inicializar a sidebar
 function initializeSidebar() {
     const sidebar = document.getElementById("mainSidebar");
@@ -18,15 +19,165 @@ function initializeTooltip() {
     });
 }
 
-// Função para inicializar a pesquisa
 function initializeSearch() {
-    const searchButton = document.getElementById("btn-search");
     const searchInput = document.querySelector(".input-search");
+    const searchButton = document.querySelector("#btn-search");
+    const clearButton = document.querySelector(".clear-search");
 
+    // Alternar visibilidade do campo de busca ao clicar no botão 🔍
     searchButton.addEventListener("click", () => {
         searchInput.classList.toggle("hidden");
+        if (!searchInput.classList.contains("hidden")) {
+            searchInput.focus();
+        }
+    });
+
+    // Função de busca
+    function searchLayers() {
+        let searchTerm = searchInput.value.toLowerCase().trim();
+        let hasResults = false;
+
+        // 🔄 Fecha todos os acordeões antes de iniciar a busca
+        document.querySelectorAll(".accordion-collapse").forEach(collapse => collapse.classList.remove("show"));
+        document.querySelectorAll(".accordion-button").forEach(button => {
+            button.classList.add("collapsed");
+            button.setAttribute("aria-expanded", "false");
+        });
+
+        // Oculta todas as categorias e subcategorias inicialmente
+        document.querySelectorAll(".sub-list li").forEach(layer => layer.style.display = "none");
+        document.querySelectorAll(".accordion-item.sub, .accordion-item.cat").forEach(el => el.style.display = "none");
+
+        // Percorre todas as categorias
+        document.querySelectorAll(".accordion-item.cat").forEach((category) => {
+            let categoryHasResults = false;
+
+            // Percorre todas as subcategorias dentro da categoria
+            category.querySelectorAll(".accordion-item.sub").forEach((subcategory) => {
+                let subcategoryHasResults = false;
+
+                // Percorre todas as layers dentro da subcategoria
+                subcategory.querySelectorAll(".sub-list li").forEach((layer) => {
+                    let layerLabel = layer.querySelector("label");
+                    let layerCheckbox = layer.querySelector(".layer-toggle");
+                    let layerName = layerLabel.textContent.toLowerCase();
+                    let isMatch = layerName.includes(searchTerm);
+
+                    // Exibe apenas as camadas que correspondem à busca
+                    if (isMatch) {
+                        layer.style.display = "block";
+                        subcategoryHasResults = true;
+                    }
+
+                    // Se o nome for exatamente igual ao buscado, seleciona a checkbox e adiciona ao mapa
+                    if (layerCheckbox && layerCheckbox.getAttribute("data-layer")) {
+                        let layerData;
+                        
+                        try {
+                            layerData = JSON.parse(layerCheckbox.getAttribute("data-layer").replace(/&quot;/g, '"'));
+                            if (typeof layerData === "string") {
+                                layerData = JSON.parse(layerData);
+                            }
+                   
+                            if (layerData.name.toLowerCase() === searchTerm) {
+                                layerCheckbox.checked = true;
+                                console.log(`🔹 Tentando disparar evento "change" para: ${layerCheckbox.id}`);
+                                layerCheckbox.dispatchEvent(new Event("change")); // 🚀 Força o evento
+                                console.log(`✅ Evento "change" disparado para: ${layerCheckbox.id}`);
+                                console.log(`✅ Selecionando automaticamente: ${layerData.layer_name}`);
+                                
+                                // Atualiza estatísticas
+                                window.updateStatistics(layerData, true);
+                                
+                                // Adiciona a camada ao mapa
+                                toggleLayer(window.map, layerData, true);
+                            }
+                        } catch (error) {
+                            console.error("❌ ERRO ao processar data-layer:", error);
+                        }
+                    }
+                });
+
+                // Se houver resultados na subcategoria, exibe ela, mas NÃO abre automaticamente
+                if (subcategoryHasResults) {
+                    subcategory.style.display = "block";
+                    categoryHasResults = true;
+                }
+            });
+
+            // Se houver subcategorias com resultados, exibe a categoria
+            if (categoryHasResults) {
+                category.style.display = "block";
+                hasResults = true;
+            }
+        });
+
+        // 🔄 **Apenas abre os acordeões se houver resultado**
+        if (hasResults) {
+            document.querySelectorAll(".accordion-item.cat").forEach(category => {
+                if (category.style.display === "block") {
+                    let categoryButton = category.querySelector(".accordion-button");
+                    categoryButton.classList.remove("collapsed");
+                    categoryButton.setAttribute("aria-expanded", "true");
+                    document.querySelector(`#${categoryButton.getAttribute("data-bs-target").substring(1)}`).classList.add("show");
+                }
+            });
+
+            document.querySelectorAll(".accordion-item.sub").forEach(subcategory => {
+                if (subcategory.style.display === "block") {
+                    let subCategoryButton = subcategory.querySelector(".accordion-button");
+                    subCategoryButton.classList.remove("collapsed");
+                    subCategoryButton.setAttribute("aria-expanded", "true");
+                    document.querySelector(`#${subCategoryButton.getAttribute("data-bs-target").substring(1)}`).classList.add("show");
+                }
+            });
+        } else {
+            console.warn("Nenhuma camada correspondente encontrada.");
+        }
+    }
+
+    // **Modificação importante**: Remove a abertura automática ao clicar no botão de pesquisa
+    searchButton.addEventListener("click", () => {
+        if (searchInput.value.trim() !== "") {
+            searchLayers();
+        }
+    });
+
+    // Evento de pressionar Enter no campo de busca
+    searchInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            searchLayers();
+        }
+    });
+
+    // Exibe ou esconde o botão de limpar dentro do input
+    searchInput.addEventListener("input", () => {
+        clearButton.style.display = searchInput.value ? "block" : "none";
+    });
+
+    // Evento de clique no botão de limpar busca
+    clearButton.addEventListener("click", function () {
+        searchInput.value = "";
+        clearButton.style.display = "none";
+
+        // 🔄 Reseta a exibição para mostrar todas as camadas
+        document.querySelectorAll(".sub-list li").forEach(layer => layer.style.display = "block");
+        document.querySelectorAll(".accordion-item.sub, .accordion-item.cat").forEach(el => el.style.display = "block");
+
+        // 🔄 **Reseta os acordeões para o estado fechado**
+        document.querySelectorAll(".accordion-collapse").forEach(collapse => collapse.classList.remove("show"));
+        document.querySelectorAll(".accordion-button").forEach(button => {
+            button.classList.add("collapsed");
+            button.setAttribute("aria-expanded", "false");
+        });
     });
 }
+
+
+
+
+    
 
 function toggleFullScreen() {
     // Verifica se o navegador está no modo de tela cheia
@@ -79,30 +230,54 @@ function initializeExpandButton() {
 }
 
 // Função para inicializar os toggles de camadas (checkboxes)
+// Inicializa os toggles das camadas
 function initializeLayerToggles() {
-    const layer5Checkbox = document.getElementById("transol_linha_5");
-    const layer6Checkbox = document.getElementById("transol_linha_6");
+    document.querySelectorAll(".layer-toggle").forEach((checkbox) => {
+        checkbox.addEventListener("change", function () {
+            // Converte o atributo data-layer de volta para objeto JSON
+            const layerData = JSON.parse(this.getAttribute("data-layer"));
 
-    // Listener para a camada Linha 5
-    layer5Checkbox.addEventListener("change", function () {
-        toggleLayer(window.map, "transol_linha_5", this.checked);
-    });
+            // Chama toggleLayer passando o mapa e os dados da camada
+            toggleLayer(window.map, layerData, this.checked);
 
-    // Adicionando suporte para dispositivos móveis
-    layer5Checkbox.addEventListener("touchstart", function () {
-        toggleLayer(window.map, "transol_linha_5", this.checked);
-    });
-
-    // Listener para a camada Linha 6
-    layer6Checkbox.addEventListener("change", function () {
-        toggleLayer(window.map, "transol_linha_6", this.checked);
-    });
-
-    // Adicionando suporte para dispositivos móveis
-    layer6Checkbox.addEventListener("touchstart", function () {
-        toggleLayer(window.map, "transol_linha_6", this.checked);
+            // Atualiza a exibição das legendas
+            updateLegends(layerData, this.checked);
+        });
     });
 }
+
+// Função para atualizar as legendas em "Mapas Ativos"
+function updateLegends(layerData, isChecked) {
+    console.log("🛠 Dados recebidos em RemoveWmsLayer:", JSON.stringify(layerData, null, 2));
+    
+    if (typeof layerData === "string") {
+        try {
+            layerData = JSON.parse(layerData);
+            console.log("✅ JSON convertido para objeto:", layerData);
+        } catch (error) {
+            console.error("❌ ERRO ao converter JSON para objeto:", error);
+            return;
+        }
+    }
+    const layerName = layerData.layer_name;
+
+    const layerElement = document.getElementById(`active-layer-${layerName}`);
+    if (layerElement) {
+        if (isChecked) {
+            // Se marcado, exibe a camada nos "Mapas Ativos"
+            layerElement.style.display = "block";
+            console.log(`✅ Camada ${layerName} adicionada à seção de legendas.`);
+        } else {
+            // Se desmarcado, oculta dos "Mapas Ativos"
+            layerElement.style.display = "none";
+            console.log(`❌ Camada ${layerName} removida da seção de legendas.`);
+        }
+    } else {
+        console.warn(`⚠️ Elemento de legenda para "${layerName}" não encontrado.`);
+    }
+}
+
+
 
 function enableSwipeToDeleteAccordion(accordionId) {
     const items = document.querySelectorAll(`#${accordionId} .accordion-item`);
@@ -271,13 +446,148 @@ function initializeActionButtons() {
     });
 }
 
+function statistic() {
+    console.log("📊 Função statistic() inicializada...");
+
+    let tempoInicio = Date.now();
+    let mapasSelecionados = {};
+
+    // Gera um identificador único para a sessão (se não existir na localStorage)
+    let sessionId = sessionStorage.getItem("sessionId");
+    if (!sessionId) {
+        sessionId = Math.floor(100000 + Math.random() * 900000).toString(); // Gera um número de 6 dígitos
+        sessionStorage.setItem("sessionId", sessionId);
+    }
+    console.log(`🆔 ID da sessão: ${sessionId}`);
+
+    function atualizarMapas(layerData, isChecked) {
+        if (typeof layerData === "string") {
+            try {
+                layerData = JSON.parse(layerData);
+                console.log("✅ JSON convertido para objeto:", layerData);
+            } catch (error) {
+                console.error("❌ ERRO ao converter JSON para objeto:", error);
+                return;
+            }
+        }
+    
+        const layerName = layerData.layer_name;
+    
+        // Garante que o valor não seja indefinido
+        if (!mapasSelecionados[layerName]) {
+            mapasSelecionados[layerName] = 0;
+        }
+    
+        if (!isChecked) {
+            console.log(`🛠 Camada "${layerName}" desmarcada. Contador mantido: ${mapasSelecionados[layerName]}`);
+        }
+    
+        // 🚀 Atualiza SOMENTE as camadas que estão ativas!
+        document.querySelectorAll(".layer-toggle:checked").forEach((checkbox) => {
+            try {
+                let activeLayerData = checkbox.getAttribute("data-layer");
+    
+                if (!activeLayerData) {
+                    console.warn("⚠️ data-layer ausente no checkbox:", checkbox);
+                    return;
+                }
+    
+                console.log("🔍 Conteúdo bruto do data-layer:", activeLayerData);
+    
+                // Converte para objeto JSON
+                if (typeof activeLayerData === "string") {
+                    try {
+                        activeLayerData = JSON.parse(activeLayerData);
+                        activeLayerData = JSON.parse(activeLayerData);
+                    } catch (parseError) {
+                        console.error("❌ ERRO ao converter data-layer para JSON:", parseError, "Conteúdo:", activeLayerData);
+                        return;
+                    }
+                }
+    
+                console.log("📦 Objeto convertido:", activeLayerData);
+    
+                if (!activeLayerData || typeof activeLayerData !== "object" || !activeLayerData.layer_name) {
+                    console.warn("⚠️ Estrutura inválida no objeto após parse:", activeLayerData);
+                    return;
+                }
+    
+                let activeLayerName = activeLayerData.layer_name;
+                console.log(`📌 Nome da camada ativa detectado: ${activeLayerName}`);
+    
+                // ✅ Agora só aumenta a contagem de camadas ATIVAS, sem duplicar
+                mapasSelecionados[activeLayerName] = (mapasSelecionados[activeLayerName] || 0) + 1;
+    
+            } catch (error) {
+                console.error("❌ ERRO ao processar camada ativa:", error);
+            }
+        });
+    
+        console.log("📊 Mapas Selecionados Atualizados:", JSON.stringify(mapasSelecionados, null, 2));
+    }
+    
+    
+    
+    
+
+    window.updateStatistics = atualizarMapas;
+
+    // Captura mudanças nos checkboxes das camadas
+    document.addEventListener("change", function (event) {
+        if (event.target.classList.contains("layer-toggle")) {
+            let layerData = JSON.parse(event.target.getAttribute("data-layer"));
+            atualizarMapas(layerData, event.target.checked);
+            console.log(`🛠 Camada "${layerData.layer_name}" foi ${event.target.checked ? "selecionada" : "desmarcada"}`);
+        }
+    });
+
+    // Função para enviar estatísticas periodicamente
+    function enviarEstatisticas() {
+        let tempoAtual = Date.now();
+        let tempoTotal = Math.round((tempoAtual - tempoInicio) / 1000); // Tempo em segundos
+
+        let estatisticas = {
+            session_id: sessionId, // Enviamos o identificador único da sessão
+            mapas_selecionados: mapasSelecionados, // Apenas os nomes das camadas e contagem
+            tempo_total: tempoTotal,
+        };
+
+        console.log("📤 Enviando estatísticas a cada 30s:", estatisticas);
+
+        fetch(`${window.location.origin}/sobralmapas/public/api/estatisticas`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(estatisticas),
+        })
+        .then((response) => response.json())
+        .then((data) => console.log("📊 Estatísticas enviadas com sucesso:", data))
+        .catch((error) => console.error("❌ Erro ao enviar estatísticas:", error));
+    }
+
+    // **Envia estatísticas a cada 30 segundos**
+    setInterval(enviarEstatisticas, 30000);
+
+    // Envia estatísticas finais ao sair da página
+    window.addEventListener("beforeunload", enviarEstatisticas);
+}
+
+
+
+
+
+
+
 export function InitializeUI() {
     initializeSidebar();
     initializeTooltip();
+    statistic();
+    initializeLayerToggles();
     initializeSearch();
     toggleFullScreen();
     initializeExpandButton();
-    initializeLayerToggles();
     enableSwipeToDeleteAccordion("accordionMapasAtivos");
     initializeActionButtons();
+    
 }

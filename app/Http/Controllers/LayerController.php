@@ -40,7 +40,11 @@ class LayerController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Accessed LayerController@store', ['request_data' => $request->all()]);
+       // Logando todos os dados do request e o tipo de 'is_public'
+    Log::info('Accessed LayerController@store', [
+        'request_data' => $request->all(),
+        'is_public_type' => gettype($request->input('is_public')),
+    ]);
     
         try {
             $request->validate([
@@ -56,13 +60,13 @@ class LayerController extends Controller
                 'max_scale' => 'nullable|numeric',
                 'symbol' => 'nullable|string|max:255',
                 'wms_link_id' => 'required|integer',
+                'is_public' => 'nullable|integer|in:0,1', // Alterado para validar como inteiro
             ]);
     
             // Verifica se o layer já existe
             if ($this->layerService->existsByLayerName($request->input('name'))) {
                 return redirect()->route('admin.layers.index')->with('error', 'A camada já existe.');
             }
-    
             // Criação do layer
             $this->layerService->create($request->all());
     
@@ -101,6 +105,7 @@ class LayerController extends Controller
                 'max_scale' => 'nullable|numeric',
                 'symbol' => 'nullable|string|max:255',
                 'wms_link_id' => 'required|integer',
+                'is_public' => 'nullable|integer|in:0,1', // Alterado para validar como inteiro
             ]);
     
             $this->layerService->update($id, $request->all());

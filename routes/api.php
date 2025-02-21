@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GeoServerProxyController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\EstatisticasController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,3 +23,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/proxy-wms', [GeoServerProxyController::class, 'proxyWms']);
 Route::get('/layer/legend', [GeoServerProxyController::class, 'getLegendGraphic']);
 Route::post('/send-message', [ChatbotController::class, 'sendMessage'])->name('chat.sendMessage');
+Route::post('/estatisticas', [EstatisticasController::class, 'registrar']);

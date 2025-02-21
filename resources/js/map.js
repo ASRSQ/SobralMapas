@@ -88,123 +88,163 @@ async function showError(message, layerName) {
 }
 
 // Função para adicionar uma camada WMS ao mapa com cache habilitado
-async function addWmsLayer(map, layerName) {
+async function addWmsLayer(map, layerData) {
+    //console.log("🛠 Dados recebidos em addWmsLayer:", JSON.stringify(layerData, null, 2));
+    if (typeof layerData === "string") {
+        try {
+            layerData = JSON.parse(layerData);
+            //console.log("✅ JSON convertido para objeto:", layerData);
+        } catch (error) {
+            console.error("❌ ERRO ao converter JSON para objeto:", error);
+            return;
+        }
+    }
+    //console.log(layerData.layer_name)
     try {
+       
+        
+
+        const layerName = layerData.layer_name;
+        const maxScale = layerData.max_scale;
+        const order = layerData.order;
+        const crs = layerData.crs || "EPSG:3857"; // Padrão
+        const wmsLinkId = layerData.wms_link_id;
+        const legendUrl = layerData.legend_url;
+
+        //console.log(`⚡️ Processando camada: ${layerName}`);
+        //console.log("📌 CRS:", crs, "| MaxScale:", maxScale, "| Order:", order, "| WMS Link ID:", wmsLinkId);
+        //console.log("🔗 URL da Legenda:", legendUrl || "Nenhuma legenda disponível");
+
         if (layersCache[layerName]) {
             map.addLayer(layersCache[layerName]);
-            console.log("camada sendo usada do cache local");
+            //console.log(`✅ Camada "${layerName}" carregada do cache local.`);
         } else {
             let isError = 0;
             let totalTilesLoading = 0;
             let totalTilesLoaded = 0;
+
+            //console.log(`🛠 Criando camada WMS: ${layerName}`);
+
             const geoServerLayer = new ol.layer.Tile({
                 source: new ol.source.TileWMS({
-                    url: "api/proxy-wms", // URL relativa para o proxy no Laravel
+                    url: "api/proxy-wms",
                     params: {
-                        LAYERS: layerName, // Nome da camada do GeoServer
+                        LAYERS: layerName,
                         TILED: true,
                         FORMAT: "image/png",
                         TRANSPARENT: true,
                         VERSION: "1.3.0",
-                        SRS: "EPSG:3857",
+                        SRS: crs,
                     },
                     serverType: "geoserver",
                     crossOrigin: "anonymous",
                     tileLoadFunction: function (imageTile, src) {
+                        //console.log(`🎯 Carregando tile: ${src}`);
                         const xhr = new XMLHttpRequest();
                         xhr.open("GET", src, true);
                         xhr.responseType = "blob";
 
                         xhr.onload = async function () {
                             if (xhr.status === 200) {
+                                //console.log(`✅ Tile carregado com sucesso: ${src}`);
                                 const reader = new FileReader();
                                 reader.readAsDataURL(xhr.response);
                                 reader.onload = function () {
                                     imageTile.getImage().src = reader.result;
                                 };
                             } else {
-                                // Captura erros de tiles defeituosos ou camadas inexistentes
-
-                                await showError(
-                                    `Erro ao carregar tile ${src}. Status: ${xhr.status}`,
-                                    geoServerLayer.get("name")
-                                );
+                                console.error(`❌ Erro ao carregar tile ${src}: Status ${xhr.status}`);
+                                await showError(`Erro ao carregar tile ${src}. Status: ${xhr.status}`, geoServerLayer.get("name"));
                             }
                         };
 
                         xhr.onerror = async function () {
-                            await showError(
-                                `Erro de rede ao carregar tile ${src}.`,
-                                geoServerLayer.get("name")
-                            );
+                            console.error(`🚨 ERRO de rede ao carregar tile: ${src}`);
+                            await showError(`Erro de rede ao carregar tile ${src}.`, geoServerLayer.get("name"));
                         };
 
                         xhr.send();
                     },
-                    cacheSize: 2048, // Define o tamanho do cache de tiles
+                    cacheSize: 2048,
                     preload: 4,
                 }),
                 name: layerName,
+                zIndex: order || 1,
+                maxResolution: maxScale || undefined,
             });
 
+            //console.log(`🗺 Adicionando camada "${layerName}" ao mapa.`);
             map.addLayer(geoServerLayer);
-            //console.log("layer adicionado no mapa");
             layersCache[layerName] = geoServerLayer;
-            //console.log("layer adicionada no cache local");
+            //console.log(`✅ Camada "${layerName}" armazenada no cache.`);
 
-            // Adiciona eventos de monitoramento para o carregamento de tiles
             geoServerLayer.getSource().on("tileloadstart", function () {
                 totalTilesLoading++;
-                //   console.log("inciando :", geoServerLayer.get("name"));
+                //console.log(`🔄 Iniciando carregamento de tile para "${layerName}". Total carregando: ${totalTilesLoading}`);
             });
 
             geoServerLayer.getSource().on("tileloadend", function () {
                 totalTilesLoaded++;
-                //   console.log("finalizando", geoServerLayer.get("name"));
-                if (totalTilesLoaded === totalTilesLoading) {
-                    //layersCache[layerName] = geoServerLayer;
-                    if (!layersCache[layerName])
-                        console.log(
-                            "camada inserida no cache",
-                            geoServerLayer.get("name")
-                        );
-                }
+                //console.log(`✅ Tile carregado para "${layerName}". Total carregados: ${totalTilesLoaded}`);
             });
 
             geoServerLayer.getSource().on("tileloaderror", function () {
                 isError++;
+                console.error(`🚨 ERRO: Falha ao carregar tiles da camada "${layerName}"`);
                 if (isError === 1) {
+                    console.warn(`⚠️ Removendo camada "${layerName}" do mapa devido a erro.`);
                     map.removeLayer(geoServerLayer);
                     delete layersCache[geoServerLayer.get("name")];
-                    // console.log(
-                    //     "layer removida do cache",
-                    //     geoServerLayer.get("name")
-                    // );
-                    showError(
-                        `A camada ${layerName} possui erros e não será carregada.`,
-                        geoServerLayer.get("name")
-                    );
+                    showError(`A camada ${layerName} possui erros e não será carregada.`, geoServerLayer.get("name"));
                 }
             });
+
+            if (legendUrl) {
+                //console.log(`📜 Legenda disponível para "${layerName}": ${legendUrl}`);
+            }
         }
     } catch (error) {
-        //console.error(`Erro ao carregar a camada ${layerName}:`, error);
-        alert(
-            `Erro ao carregar a camada ${layerName}. Verifique no GeoServer.`
-        );
+        console.error(`❌ ERRO FATAL ao carregar a camada ${layerData?.layer_name || "Desconhecida"}:`, error);
+        alert(`Erro ao carregar a camada. Verifique no GeoServer.`);
     }
 }
 
-// Função para remover uma camada WMS do mapa
-async function removeWmsLayer(map, layerName) {
+
+
+// Função para remover uma camada WMS específica do mapa e do cache
+// Função para ocultar uma camada WMS do mapa (sem removê-la do cache)
+async function removeWmsLayer(map, layerData) {
+    //console.log("🛠 Dados recebidos em RemoveWmsLayer:", JSON.stringify(layerData, null, 2));
+    if (typeof layerData === "string") {
+        try {
+            layerData = JSON.parse(layerData);
+            //console.log("✅ JSON convertido para objeto:", layerData);
+        } catch (error) {
+            console.error("❌ ERRO ao converter JSON para objeto:", error);
+            return;
+        }
+    }
+    //console.log(layerData.layer_name)
+    const layerName = layerData.layer_name;
+    //console.log(`🕶 Tentando ocultar camada: ${layerName}`);
+
+    // Obtém todas as camadas carregadas no mapa
     const layers = map.getLayers().getArray();
-    const layerToRemove = layers.find(
-        (layer) => layer.get("name") === layerName
-    );
+    //console.log("📌 Camadas carregadas no mapa:", layers.map(layer => layer.get("name") || "Sem Nome"));
+
+    // Encontra a camada correspondente pelo nome
+    const layerToRemove = layers.find(layer => layer.get("name") === layerName);
+
     if (layerToRemove) {
-        map.removeLayer(layerToRemove);
+        //console.log(`✅ Ocultando camada "${layerName}" no mapa.`);
+        map.removeLayer(layerToRemove); 
+    } else {
+        console.warn(`⚠️ Camada "${layerName}" não encontrada no mapa.`);
     }
 }
+
+
+
 
 // Função para manipular camadas do mapa de fora do arquivo
 export function toggleLayer(map, layerName, shouldAdd) {
@@ -216,7 +256,7 @@ export function toggleLayer(map, layerName, shouldAdd) {
     if (shouldAdd) {
         //if (existingLayer) {
         // Se a camada já está no mapa, não faz nada
-        //   console.log(`A camada ${layerName} já está no mapa.`);
+        //   //console.log(`A camada ${layerName} já está no mapa.`);
         //   return;
         // }
         // Se a camada não existe, chama a função para adicioná-la
@@ -226,3 +266,8 @@ export function toggleLayer(map, layerName, shouldAdd) {
         removeWmsLayer(map, layerName);
     }
 }
+
+
+
+
+

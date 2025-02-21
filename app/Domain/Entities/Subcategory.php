@@ -65,6 +65,8 @@ class Subcategory
         return $this->category;
     }
 
+
+
     // Método renomeia a subcategoria
     public function updateName(string $newName): void
     {

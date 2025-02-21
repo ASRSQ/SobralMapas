@@ -1,3 +1,4 @@
+import { toggleLayer } from "./map";
 // Função para inicializar a caixa de seleção (mover e redimensionar)
 function initializeSelectionBox() {
     const selectionBox = document.getElementById("selection-box");
@@ -149,6 +150,11 @@ function initializeFloatingButton() {
     }
 
 }
+document.querySelector(".dropdown-toggle").addEventListener("touchend", function (event) {
+    event.stopPropagation();
+    let dropdown = new bootstrap.Dropdown(this);
+    dropdown.toggle();
+});
 
 
 // Card com opcoes de medição
@@ -298,7 +304,7 @@ function initializeMeasure() {
                 new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: selectedLineColor,
-                        width: 2,
+                        width: 5,
                         lineDash: null,
                     }),
                     fill: new ol.style.Fill({
@@ -431,18 +437,28 @@ function initializeChat() {
     const messageInput = document.getElementById("message-input");
     const messagesContainer = document.getElementById("messages");
 
-    // Função para mostrar a caixa de chat ao clicar no botão
-    showChatButton.addEventListener("click", function () {
-        chatContainer.style.display = "flex";
-        showChatButton.style.display = "none"; // Esconde o botão depois que o chat é mostrado
+    showChatButton.addEventListener("click", () => {
+        if (window.innerWidth > 800) {
+          // Desktop
+          chatContainer.style.display = "flex";
+        } else {
+          // Mobile
+          chatContainer.classList.add("open");
+        }
+        showChatButton.style.display = "none";
     });
-
-    // Função para esconder o chat ao clicar no botão "X"
-    toggleChatButton.addEventListener("click", function () {
-        chatContainer.style.display = "none";
+      
+    toggleChatButton.addEventListener("click", () => {
+        if (window.innerWidth > 800) {
+            // Desktop
+            chatContainer.style.display = "none";
+        } else {
+            // Mobile
+            chatContainer.classList.remove("open");
+        }
         showChatButton.style.display = "block";
     });
-
+    
     // Função para envio de mensagens com AJAX
     sendButton.addEventListener("click", function () {
         const message = messageInput.value.trim();
@@ -472,6 +488,7 @@ function initializeChat() {
             })
             .then((data) => {
                 console.log('Dados recebidos do servidor:', data);
+                handleServerResponse(data);
     
                 if (data && data.length > 0) {
                     data.forEach((msg) => {
@@ -525,84 +542,102 @@ function initializeChat() {
     if (firstEmptyMessage) {
         firstEmptyMessage.remove();
     }
-
-    // Adicionar suporte para toques nos botões de chat
-    showChatButton.addEventListener("touchstart", function () {
-        chatContainer.style.display = "flex";
-        showChatButton.style.display = "none"; // Esconde o botão depois que o chat é mostrado
-    });
-
-    toggleChatButton.addEventListener("touchstart", function () {
-        chatContainer.style.display = "none";
-        showChatButton.style.display = "block";
-    });
-
-    sendButton.addEventListener("touchstart", function () {
-        const message = messageInput.value.trim();
-        if (message !== "") {
-            addMessageToChat("user", message);
-            messageInput.value = "";
+}
+function handleServerResponse(responseData) {
+    // Verifica se há um objeto com `map_type` na resposta
+    const mapTypeData = responseData.find(item => item.custom && item.custom.map_type);
     
-            // Send the message to the server using AJAX
-            fetch(`${window.location.origin}/sobralmapas/public/api/send-message`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: JSON.stringify({
-                    sender: "user",  // Include a sender field as Rasa expects
-                    message: message
-                }),
-            })
-            .then(response => {
-                console.log('Resposta do servidor:', response);
-    
-                if (!response.ok) {
-                    throw new Error("Erro ao comunicar com o servidor");
-                }
-                return response.json();  // Convert response to JSON
-            })
-            .then((data) => {
-                console.log('Dados recebidos do servidor:', data);
-    
-                if (data && data.length > 0) {
-                    data.forEach((msg) => {
-                        addMessageToChat("bot", msg.text);
-                    });
-                } else {
-                    addMessageToChat("bot", "Nenhuma resposta encontrada.");
-                }
-            })
-            .catch((error) => {
-                console.error("Erro:", error);
-                addMessageToChat("bot", "Erro ao se comunicar com o servidor.");
-            });
+    if (mapTypeData) {
+        const mapType = mapTypeData.custom.map_type.toLowerCase();
+        console.log(`📍 Tentando marcar a camada: ${mapType}`);
+
+        // Expande o menu lateral automaticamente
+        const sidebar = document.getElementById("sidebar");
+        if (sidebar) {
+            sidebar.classList.add("open"); // Certifique-se de que essa classe abre o menu
         }
-    });
+
+        // Percorre todas as camadas e encontra a que corresponde ao `map_type`
+        let foundLayer = false;
+        document.querySelectorAll(".layer-toggle").forEach(layerCheckbox => {
+            let layerData;
+
+            try {
+                layerData = JSON.parse(layerCheckbox.getAttribute("data-layer").replace(/&quot;/g, '"'));
+                if (typeof layerData === "string") {
+                    layerData = JSON.parse(layerData);
+                }
+
+                // Se o `map_type` for igual ao nome da camada, marca e ativa
+                if (layerData.name.toLowerCase() === mapType) {
+                    foundLayer = true;
+                    layerCheckbox.checked = true;
+                    console.log(`✅ Marcando automaticamente: ${layerData.layer_name}`);
+
+                    // 🚀 Disparar evento "change" para ativar a camada no mapa
+                    layerCheckbox.dispatchEvent(new Event("change"));
+
+                    // Atualiza estatísticas
+                    window.updateStatistics(layerData, true);
+
+                    // Adiciona a camada ao mapa
+                    toggleLayer(window.map, layerData, true);
+
+                    // **Abre automaticamente a categoria e subcategoria**
+                    expandCategoryAndSubcategory(layerCheckbox);
+                }
+            } catch (error) {
+                console.error("❌ ERRO ao processar data-layer:", error);
+            }
+        });
+
+        if (!foundLayer) {
+            console.warn("⚠ Nenhuma camada correspondente encontrada para:", mapType);
+        }
+    }
 }
 
-function mobileMenu() {
-    const hamburger = document.getElementById('hamburger-btn');
-    const menu = document.getElementById('menu');
-    const closeBtn = document.getElementById('close-btn');
-    
-    hamburger.addEventListener('click', () => {
-        menu.classList.add('open');
-    });
-    
-    closeBtn.addEventListener('click', () => {
-        menu.classList.remove('open');
-    });
-    
+// **Função para abrir a categoria e subcategoria automaticamente**
+function expandCategoryAndSubcategory(layerCheckbox) {
+    // Encontra a subcategoria e categoria associadas
+    let subcategory = layerCheckbox.closest(".accordion-item.sub");
+    let category = layerCheckbox.closest(".accordion-item.cat");
+
+    // Expande a subcategoria se estiver fechada
+    if (subcategory) {
+        subcategory.style.display = "block";
+        let subCategoryButton = subcategory.querySelector(".accordion-button");
+        if (subCategoryButton) {
+            subCategoryButton.classList.remove("collapsed");
+            subCategoryButton.setAttribute("aria-expanded", "true");
+            let subCategoryContent = document.querySelector(`#${subCategoryButton.getAttribute("data-bs-target").substring(1)}`);
+            if (subCategoryContent) {
+                subCategoryContent.classList.add("show");
+            }
+        }
+    }
+
+    // Expande a categoria se estiver fechada
+    if (category) {
+        category.style.display = "block";
+        let categoryButton = category.querySelector(".accordion-button");
+        if (categoryButton) {
+            categoryButton.classList.remove("collapsed");
+            categoryButton.setAttribute("aria-expanded", "true");
+            let categoryContent = document.querySelector(`#${categoryButton.getAttribute("data-bs-target").substring(1)}`);
+            if (categoryContent) {
+                categoryContent.classList.add("show");
+            }
+        }
+    }
 }
 
 
 export function InitializeComponents() {
-
     initializeSelectionBox();
     initializeFloatingButton();
     initializeChat();
     initializeMeasure();
-    mobileMenu();
+    handleServerResponse();
+   
 }
