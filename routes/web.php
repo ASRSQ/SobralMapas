@@ -26,14 +26,16 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
-
-
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/tiles', [HomeController::class, 'tile']);
 Route::get('/coord', [HomeController::class, 'coord']);
+
 //admin
-Route::get('/admin', [AdminController::class, 'index']);
+Route::middleware('auth')->group(function () {
+    Route::get('/admin', 'AdminController@index')->name('admin');
+});
+//Route::get('/admin', 'AdminController@index')->name('admin');
+
 // Definir rotas para categorias
 Route::prefix('admin/categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index'])->name('categories.index');
@@ -62,7 +64,7 @@ Route::prefix('admin/wms')->group(function () {
     Route::get('{id}/edit', [WmsController::class, 'edit'])->name('admin.wms.edit');  // Editar WMS link
     Route::put('{id}', [WmsController::class, 'update'])->name('admin.wms.update');  // Atualizar WMS link
     Route::delete('{id}', [WmsController::class, 'destroy'])->name('admin.wms.destroy');  // Deletar WMS link
-    Route::get('/{id}/layers',[WmsController::class, 'getWmsLayersByLink']);
+    Route::get('/{id}/layers', [WmsController::class, 'getWmsLayersByLink']);
 });
 
 Route::prefix('admin/users')->group(function () {
@@ -73,6 +75,20 @@ Route::prefix('admin/users')->group(function () {
     Route::put('{id}', [UserController::class, 'update'])->name('admin.users.update'); // Atualizar usuário
     Route::delete('{id}', [UserController::class, 'destroy'])->name('admin.users.destroy'); // Deletar usuário
 });
+
+
+// Rota para exibir o formulário de login
+Route::get('/acesso-restrito', 'LoginController@showLoginForm')->name('login');
+
+// Rota para processar o login
+Route::post('/acesso-restrito', 'LoginController@login');
+
+// Rota para logout
+Route::post('/logout', 'LoginController@logout')->name('logout');
+
+
+
+
 
 
 /*

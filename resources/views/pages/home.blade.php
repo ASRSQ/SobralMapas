@@ -2,6 +2,11 @@
 
 @section('title', 'Mapa de Sobral')
 
+
+@section('sidebar')
+    @include('partials.sidebar')
+@endsection
+
 @section('content')
 
 <x-selection-box />

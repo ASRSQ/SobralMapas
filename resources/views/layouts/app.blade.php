@@ -19,7 +19,7 @@
 
     <div class="container-fluid">
         <div class="row" style="position: relative">     
-            @include('partials.sidebar')        
+            @yield('sidebar')      
             <main class="col">
                 <span id="error-message"> </span>
                 @yield('content')

@@ -313,7 +313,7 @@
 
         if (wmsLinkId) {
             const serverURL = window.location.origin;
-            const endpoint = `${serverURL}/sobralmapas/public/admin/wms/${wmsLinkId}/layers`;
+            const endpoint = `${serverURL}/sobralmapas2/public/admin/wms/${wmsLinkId}/layers`;
             fetch(endpoint)
                 .then(response => response.json())
                 .then(data => {

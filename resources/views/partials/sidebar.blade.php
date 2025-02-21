@@ -1,3 +1,5 @@
+@section('sidebar')
+
 <div class="sidebar" id="mainSidebar">
     <!-- Parte interna da sidebar com camadas/categorias -->
     <div class="sidebar-content">
@@ -221,3 +223,5 @@
     </div>
     
 </div>
+
+@endsection

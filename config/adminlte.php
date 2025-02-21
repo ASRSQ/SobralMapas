@@ -348,7 +348,7 @@ return [
             'url' => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
         ],
-        
+
     ],
 
     /*
